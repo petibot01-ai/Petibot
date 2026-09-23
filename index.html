@@ -28,6 +28,61 @@ h1{font-size:26px;line-height:1.5;margin:0;font-weight:900;background:linear-gra
 .section.gold{border-color:#e1b92e;background:linear-gradient(180deg,rgba(42,39,20,.68),rgba(25,27,23,.62))}
 .section.pink{border-color:#ed4b99;background:linear-gradient(180deg,rgba(44,16,38,.68),rgba(27,16,31,.62))}
 
+/* بخش فرماندهی */
+.command-section{
+border-color:#3ca8ff;
+background:linear-gradient(180deg,rgba(12,34,59,.78),rgba(8,20,37,.72));
+}
+
+.command-box{
+background:rgba(3,10,20,.78);
+border:1px solid #1d5f91;
+border-radius:30px;
+padding:22px;
+text-align:center;
+box-shadow:inset 0 0 30px rgba(40,130,220,.08);
+}
+
+.command-icon{
+font-size:42px;
+margin-bottom:10px;
+}
+
+.command-title{
+font-size:18px;
+font-weight:900;
+margin:0 0 10px;
+color:#8fd1ff;
+}
+
+.command-text{
+font-size:13px;
+line-height:2;
+color:#9db5d1;
+margin:0 0 18px;
+}
+
+.command-btn{
+display:flex;
+align-items:center;
+justify-content:center;
+height:48px;
+border:1px solid #2384c8;
+border-radius:28px;
+background:linear-gradient(90deg,#0b4f83,#146da9);
+color:#fff;
+text-decoration:none;
+font-size:14px;
+font-weight:800;
+box-shadow:0 8px 25px rgba(30,130,210,.18);
+transition:.2s;
+}
+
+.command-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 10px 30px rgba(30,130,210,.3);
+}
+
 .title{font-size:19px;font-weight:900;text-align:right;margin:0 6px 24px;display:flex;align-items:center;justify-content:flex-start;gap:11px}
 .title .ico{color:#37a5ff;font-size:25px;line-height:1}
 .title .bar{width:5px;height:40px;background:#3ca8ff;border-radius:5px;display:none}
@@ -80,6 +135,23 @@ h1{font-size:22px;line-height:1.5}
 .contact h3{font-size:18px}
 .contact p{font-size:16px}
 .up{width:68px;height:68px;left:15px;bottom:18px;font-size:34px}
+
+.command-box{
+padding:20px 15px;
+}
+
+.command-title{
+font-size:17px;
+}
+
+.command-text{
+font-size:12px;
+}
+
+.command-btn{
+height:45px;
+font-size:13px;
+}
 }
 </style>
 </head>
@@ -186,6 +258,38 @@ h1{font-size:22px;line-height:1.5}
 <button class="copy" onclick="copyText('@Peti_Bot_Dastorat')">
 کپی　▣
 </button>
+
+</div>
+
+</section>
+
+
+<!-- بخش فرماندهی پتی -->
+<section class="section command-section">
+
+<h2 class="title">
+<span class="ico">⚙️</span>
+فرماندهی پتی
+</h2>
+
+<div class="command-box">
+
+<div class="command-icon">🛠️</div>
+
+<h3 class="command-title">
+پنل فرماندهی Peti
+</h3>
+
+<p class="command-text">
+مدیریت و اجرای دستورات ربات پتی از طریق بخش فرماندهی
+</p>
+
+<a
+class="command-btn"
+href="https://rubika.ir/Peti_Bot"
+target="_blank">
+ورود به فرماندهی پتی ↗
+</a>
 
 </div>
 
