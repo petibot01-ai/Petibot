@@ -1,72 +1,620 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>دسترسی سریع به سرویس های Peti</title>
+
+<script data-goatcounter="https://petibot01.goatcounter.com/count"
+async src="https://gc.zgo.at/count.js"></script>
+
 <style>
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#07101f;color:#f7f9ff;font-family:Tahoma,Arial,sans-serif;min-height:100vh;overflow-x:hidden}
-body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 20% 20%,rgba(40,104,165,.18),transparent 35%),radial-gradient(circle at 85% 55%,rgba(93,43,105,.16),transparent 36%),linear-gradient(180deg,#081122 0,#07101f 100%);z-index:-2}
-body:after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.11;background-image:radial-gradient(#7fa6d8 1px,transparent 1px);background-size:22px 22px;z-index:-1}
-.wrap{width:min(780px,calc(100% - 24px));margin:auto;padding:18px 0 40px}.hero{text-align:center;padding:30px 10px 42px}
-.logo{width:76px;height:76px;margin:0 auto 18px;border-radius:24px;background:conic-gradient(from 30deg,#e5484d,#f2c94c,#56d364,#35c9d9,#6b62ff,#d84eff,#e5484d);padding:10px;box-shadow:0 0 34px rgba(55,170,255,.18)}.logo-in{width:100%;height:100%;display:grid;place-items:center;border-radius:17px;background:#f4f4f4;color:#151515;font-size:34px;font-weight:900}
-h1{font-size:26px;line-height:1.5;margin:0;font-weight:900;background:linear-gradient(90deg,#d8e6f5,#f4d957,#79d8ff);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 5px 25px rgba(79,170,255,.13)}
-.sub{font-size:15px;margin:4px 0 25px;color:#e4e8f1}.pills{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}.pill{padding:9px 17px;border:1px solid #31415a;background:rgba(20,30,48,.75);border-radius:999px;color:#aebbd5;font-size:13px;box-shadow:inset 0 0 18px rgba(255,255,255,.02)}
-.section{border:1px solid #26374f;border-radius:42px;padding:28px 26px 30px;margin:18px 0;background:rgba(10,20,36,.72);box-shadow:0 18px 55px rgba(0,0,0,.24)}.section.gold{border-color:#e1b92e;background:linear-gradient(180deg,rgba(42,39,20,.68),rgba(25,27,23,.62))}.section.pink{border-color:#ed4b99;background:linear-gradient(180deg,rgba(44,16,38,.68),rgba(27,16,31,.62))}
-.title{font-size:19px;font-weight:900;text-align:right;margin:0 6px 24px;display:flex;align-items:center;justify-content:flex-start;gap:11px}.title .ico{color:#37a5ff;font-size:25px;line-height:1}.title .bar{width:5px;height:40px;background:#3ca8ff;border-radius:5px;display:none}
-.item{background:rgba(4,11,22,.78);border:1px solid #17263d;border-radius:34px;padding:16px 28px 22px;margin:20px 0;box-shadow:inset 0 0 30px rgba(0,0,0,.15)}
-.badge{height:42px;border-radius:30px;border:1px solid #a38825;background:linear-gradient(90deg,rgba(116,89,21,.42),rgba(67,67,25,.38));display:flex;align-items:center;justify-content:center;color:#ffe36b;font-size:13px;font-weight:800;margin-bottom:14px}.badge span{margin-right:7px;font-size:13px}.rubika-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;margin-inline-start:7px;vertical-align:middle}.rubika-logo{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:conic-gradient(#ff3b30,#ff9500,#ffcc00,#34c759,#00c7be,#5856d6,#af52de,#ff2d55,#ff3b30);box-shadow:0 2px 7px rgba(255,80,150,.35);color:#fff;font-size:17px;font-weight:900;line-height:1;font-family:Arial,sans-serif}
-.name{font-size:16px;font-weight:800;color:#b9d9ff;text-align:right;direction:rtl;margin:0 0 16px}.name a{color:#b9d9ff;text-decoration:none}.copy{height:44px;border:1px solid #1764a5;border-radius:30px;background:#0b1323;color:#fff;width:100%;font-size:14px;cursor:pointer;box-shadow:inset 0 0 15px rgba(40,100,180,.08)}
-.note{text-align:center;color:#8194b5;font-size:13px;line-height:2;margin:12px 15px 0}.support-title{color:#f7f9ff}.support-title .ico{color:#3ca8ff}
-.contact{background:rgba(12,22,39,.82);border:1px solid #286da5;border-radius:36px;padding:25px 26px}.contact .row{background:rgba(3,10,20,.75);border:1px solid #172940;border-radius:28px;margin:13px 0;padding:20px;text-align:center}.contact .symbol{font-size:34px;color:#3ca8ff}.contact h3{margin:6px 0 8px;font-size:16px}.contact p{margin:0;color:#9dcaef;font-size:14px;direction:ltr}.contact a{color:#9dcaef;text-decoration:none}
-footer{text-align:center;color:#7e8ca6;font-size:14px;line-height:2;padding:20px}.up{position:fixed;left:30px;bottom:30px;width:76px;height:76px;border-radius:50%;border:2px solid #86d0ff;background:#218de5;color:#07101f;font-size:40px;font-weight:900;box-shadow:0 0 35px rgba(44,158,255,.55);cursor:pointer}
-@media(max-width:600px){.wrap{width:min(100% - 14px,780px);padding-top:8px}.hero{padding:28px 7px 32px}.logo{width:68px;height:68px}.logo-in{font-size:30px}h1{font-size:22px;line-height:1.5}.sub{font-size:14px}.pill{font-size:12px;padding:8px 13px}.section{border-radius:32px;padding:24px 17px 26px}.title{font-size:18px;margin-bottom:16px}.title .ico{font-size:23px}.item{border-radius:27px;padding:13px 16px 18px}.badge{height:42px;font-size:14px}.name{font-size:16px;margin-bottom:16px}.copy{height:42px;font-size:14px}.note{font-size:12px}.contact{padding:16px}.contact h3{font-size:18px}.contact p{font-size:16px}.up{width:68px;height:68px;left:15px;bottom:18px;font-size:34px}}
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Tahoma,Arial,sans-serif;
+    background:linear-gradient(135deg,#06152e,#0b2d5c,#06152e);
+    color:white;
+    min-height:100vh;
+}
+
+.container{
+    width:92%;
+    max-width:850px;
+    margin:auto;
+    padding:30px 0;
+}
+
+.header{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.logo{
+    width:90px;
+    height:90px;
+    margin:auto;
+    border-radius:50%;
+    background:linear-gradient(135deg,#168cff,#004caa);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:55px;
+    font-weight:bold;
+    box-shadow:0 0 30px #087cff88;
+}
+
+h1{
+    margin-top:15px;
+    font-size:25px;
+}
+
+.subtitle{
+    color:#b8d7ff;
+    margin-top:8px;
+}
+
+.section{
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:20px;
+    padding:20px;
+    margin:18px 0;
+    box-shadow:0 10px 30px #0004;
+}
+
+.section h2{
+    font-size:20px;
+    margin-bottom:15px;
+}
+
+.item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    background:rgba(0,0,0,.18);
+    border-radius:14px;
+    padding:13px;
+    margin:10px 0;
+}
+
+.item a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+    flex:1;
+}
+
+.copy{
+    border:0;
+    background:#168cff;
+    color:white;
+    padding:8px 12px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.copy:hover{
+    background:#006ddc;
+}
+
+.command{
+    display:block;
+    text-align:center;
+    text-decoration:none;
+    color:white;
+    background:linear-gradient(135deg,#006eff,#00a2ff);
+    padding:15px;
+    border-radius:15px;
+    font-weight:bold;
+    margin-top:12px;
+}
+
+.command:hover{
+    opacity:.9;
+}
+
+.admin{
+    display:none;
+}
+
+.login{
+    text-align:center;
+}
+
+.login input{
+    width:100%;
+    max-width:350px;
+    padding:13px;
+    border:0;
+    border-radius:12px;
+    margin:10px 0;
+    outline:none;
+    text-align:center;
+}
+
+.login button{
+    padding:12px 25px;
+    border:0;
+    border-radius:12px;
+    background:#168cff;
+    color:white;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+}
+
+.stat{
+    background:rgba(0,0,0,.2);
+    border-radius:15px;
+    padding:18px;
+    text-align:center;
+}
+
+.stat strong{
+    display:block;
+    font-size:25px;
+    margin-top:8px;
+}
+
+.back{
+    display:block;
+    text-align:center;
+    color:white;
+    text-decoration:none;
+    margin-top:20px;
+}
+
+footer{
+    text-align:center;
+    color:#aac7eb;
+    font-size:13px;
+    line-height:2;
+    padding:25px 0;
+}
+
+.hidden{
+    display:none;
+}
+
+@media(max-width:600px){
+    h1{
+        font-size:21px;
+    }
+
+    .item{
+        flex-wrap:wrap;
+    }
+
+    .copy{
+        width:100%;
+    }
+}
 </style>
 </head>
+
 <body>
-<main class="wrap" id="top">
-<header class="hero">
-<div class="logo"><div class="logo-in">P</div></div>
-<h1>دسترسی سریع به سرویس های Peti</h1>
-<p class="sub">ربات مدیریت گروه و سرگرمی</p>
-<div class="pills"><span class="pill">♥ پشتیبانی ۲۴/۷</span><span class="pill">☺ رضایت کاربران</span><span class="pill">★ سریع و پایدار</span></div>
+
+<div class="container">
+
+<!-- ================= سایت اصلی ================= -->
+
+<div id="mainSite">
+
+<header class="header">
+    <div class="logo">P</div>
+    <h1>دسترسی سریع به سرویس های Peti</h1>
+    <p class="subtitle">همه سرویس‌های پتی در یکجا 💙</p>
 </header>
 
-<section class="section gold">
-<h2 class="title"><span class="ico">🤖</span> ربات‌های Peti</h2>
-<div class="item"><div class="badge"><span class="rubika-icon" aria-label="روبیکا"><span class="rubika-logo">R</span></span><span>روبیکا</span></div><p class="name"><a href="https://rubika.ir/Peti_Sokhango_Bot" target="_blank">↗ پتی | Peti</a></p><button class="copy" onclick="copyText('@Peti_Sokhango_Bot')">کپی　▣</button></div>
-<div class="item"><div class="badge"><span class="rubika-icon" aria-label="روبیکا"><span class="rubika-logo">R</span></span><span>روبیکا</span></div><p class="name"><a href="https://rubika.ir/Peti_Bot" target="_blank">↗ پتی | Peti Bot²</a></p><button class="copy" onclick="copyText('@Peti_Bot')">کپی　▣</button></div>
-<p class="note">از چند ربات در یک گروه استفاده نکنید؛ در هر گروه فقط از یکی از ربات‌های Peti استفاده کنید.</p>
+<section class="section" id="bots">
+<h2>🤖 ربات‌های Peti</h2>
+
+<div class="item">
+<a href="https://rubika.ir/Peti_Sokhango_Bot"
+target="_blank"
+onclick="gcEvent('bot-peti-sokhango')">
+پتی | Peti
+</a>
+<button class="copy" onclick="copyText('@Peti_Sokhango_Bot')">کپی</button>
+</div>
+
+<div class="item">
+<a href="https://rubika.ir/Peti_Bot"
+target="_blank"
+onclick="gcEvent('bot-peti-bot')">
+پتی | Peti Bot²
+</a>
+<button class="copy" onclick="copyText('@Peti_Bot')">کپی</button>
+</div>
+
+</section>
+
+<section class="section" id="guide">
+<h2>📚 راهنمایی دستورات پتی</h2>
+
+<div class="item">
+<a href="https://rubika.ir/Peti_Bot_Dastorat"
+target="_blank"
+onclick="gcEvent('guide-dastorat')">
+@Peti_Bot_Dastorat
+</a>
+<button class="copy" onclick="copyText('@Peti_Bot_Dastorat')">کپی</button>
+</div>
+
+</section>
+
+<section class="section" id="news">
+<h2>📢 اطلاع رسانی پتی</h2>
+
+<div class="item">
+<a href="https://rubika.ir/Etla_Resani_Peti"
+target="_blank"
+onclick="gcEvent('news-etla')">
+@Etla_Resani_Peti
+</a>
+<button class="copy" onclick="copyText('@Etla_Resani_Peti')">کپی</button>
+</div>
+
+</section>
+
+<section class="section" id="linkdoni">
+<h2>🔗 لینکدونی</h2>
+
+<div class="item">
+<a href="https://rubika.ir/joing/BBEGCABAE0NUMKJCEQSMEDMYPUOKQOER"
+target="_blank"
+onclick="gcEvent('linkdoni-join')">
+عضویت در گروه
+</a>
+</div>
+
+</section>
+
+<section class="section" id="support">
+<h2>🛠 گروه پشتیبانی</h2>
+
+<div class="item">
+<a href="https://rubika.ir/joing/BBEIEAHIC0BFMRHOQMKJQEUYKZRKPESX"
+target="_blank"
+onclick="gcEvent('support-join')">
+عضویت در گروه
+</a>
+</div>
+
 </section>
 
 <section class="section">
-<h2 class="title"><span class="ico">📖</span> راهنمایی دستورات پتی</h2>
-<div class="item"><div class="badge"><span class="rubika-icon" aria-label="روبیکا"><span class="rubika-logo">R</span></span><span>روبیکا</span></div><p class="name"><a href="https://rubika.ir/Peti_Bot_Dastorat" target="_blank">↗ @Peti_Bot_Dastorat</a></p><button class="copy" onclick="copyText('@Peti_Bot_Dastorat')">کپی　▣</button></div>
+<h2>📞 ارتباط با پشتیبانی</h2>
+
+<div class="item">
+<a href="mailto:petibot01@gmail.com"
+onclick="gcEvent('support-email')">
+📧 petibot01@gmail.com
+</a>
+</div>
+
+<div class="item">
+<a href="https://rubika.ir/Mohamad_Taha_Salemi"
+target="_blank"
+onclick="gcEvent('support-rubika')">
+روبیکا: @Mohamad_Taha_Salemi
+</a>
+</div>
+
 </section>
-
-
 
 <section class="section">
-<h2 class="title"><span class="ico">📢</span> اطلاع رسانی پتی</h2>
-<div class="item"><div class="badge"><span class="rubika-icon" aria-label="روبیکا"><span class="rubika-logo">R</span></span><span>روبیکا</span></div><p class="name"><a href="https://rubika.ir/Etla_Resani_Peti" target="_blank">↗ @Etla_Resani_Peti</a></p><button class="copy" onclick="copyText('@Etla_Resani_Peti')">کپی　▣</button></div>
+<h2>⚙️ فرماندهی PETI</h2>
+
+<p style="color:#b8d7ff;line-height:2;">
+ورود به بخش مدیریت و مشاهده آمار سایت
+</p>
+
+<a class="command"
+href="#admin"
+onclick="showAdmin();return false;">
+⚙️ ورود به فرماندهی PETI
+</a>
 </section>
 
-<section class="section">
-<h2 class="title"><span class="ico">🔗</span> لینکدونی</h2>
-<div class="item"><div class="badge"><span class="rubika-icon" aria-label="روبیکا"><span class="rubika-logo">R</span></span><span>روبیکا</span></div><p class="name"><a href="https://rubika.ir/joing/BBEGCABAE0NUMKJCEQSMEDMYPUOKQOER" target="_blank">↗ عضویت در گروه</a></p><button class="copy" onclick="copyText('https://rubika.ir/joing/BBEGCABAE0NUMKJCEQSMEDMYPUOKQOER')">کپی　▣</button></div>
-</section>
+<footer>
+ما همیشه در کنار شما هستیم تا بهترین تجربه را داشته باشید 💜
+<br>
+© 2026 PETI BOT
+<br>
+ارائه شده توسط طاها سالمی
+</footer>
 
-<section class="section">
-<h2 class="title"><span class="ico">👥</span> گروه پشتیبانی</h2>
-<div class="item"><div class="badge"><span class="rubika-icon" aria-label="روبیکا"><span class="rubika-logo">R</span></span><span>روبیکا</span></div><p class="name"><a href="https://rubika.ir/joing/BBEIEAHIC0BFMRHOQMKJQEUYKZRKPESX" target="_blank">↗ عضویت در گروه</a></p><button class="copy" onclick="copyText('https://rubika.ir/joing/BBEIEAHIC0BFMRHOQMKJQEUYKZRKPESX')">کپی　▣</button></div>
-</section>
+</div>
 
-<section class="section contact">
-<h2 class="title support-title"><span class="ico">◧</span> ارتباط با پشتیبانی</h2>
-<div class="row"><div class="symbol">✉</div><h3>ایمیل</h3><p><a href="mailto:petibot01@gmail.com">petibot01@gmail.com</a></p></div>
-<div class="row"><div class="symbol">●</div><h3>ایدی روبیکا</h3><p><a href="https://rubika.ir/Mohamad_Taha_Salemi" target="_blank">@Mohamad_Taha_Salemi</a></p></div>
-</section>
-<footer>ما همیشه در کنار شما هستیم تا بهترین تجربه را داشته باشید 💜<br>© 2026 PETI BOT<br><span class="creator">ارائه شده توسط طاها سالمی</span></footer>
-</main>
-<button class="up" onclick="window.scrollTo({top:0,behavior:'smooth'})">⌃</button>
-<script>function copyText(t){if(navigator.clipboard){navigator.clipboard.writeText(t)}else{let x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();document.execCommand('copy');x.remove()}let n=document.createElement('div');n.textContent='کپی شد ✅';n.style='position:fixed;bottom:115px;left:50%;transform:translateX(-50%);background:#16243b;color:white;padding:11px 18px;border-radius:14px;border:1px solid #3c6a9d;z-index:99;font-size:14px';document.body.appendChild(n);setTimeout(()=>n.remove(),1300)}</script>
-</body></html>
+
+<!-- ================= فرماندهی ================= -->
+
+<div id="admin" class="admin">
+
+<div class="header">
+    <div class="logo">P</div>
+    <h1>⚙️ فرماندهی PETI</h1>
+    <p class="subtitle">پنل مدیریت و آمار سایت</p>
+</div>
+
+
+<!-- ورود -->
+
+<div id="loginBox" class="section login">
+
+<h2>🔐 ورود به فرماندهی</h2>
+
+<p style="color:#b8d7ff;margin:15px 0;">
+رمز مدیریت را وارد کنید
+</p>
+
+<input
+type="password"
+id="password"
+placeholder="رمز عبور">
+
+<br>
+
+<button onclick="login()">ورود</button>
+
+<p id="error"
+style="color:#ff7777;margin-top:12px;">
+</p>
+
+</div>
+
+
+<!-- پنل -->
+
+<div id="dashboard" class="hidden">
+
+<div class="section">
+
+<h2>📊 آمار سایت</h2>
+
+<div class="stats">
+
+<div class="stat">
+بازدید کل
+<strong id="total">-</strong>
+</div>
+
+<div class="stat">
+امروز
+<strong id="today">-</strong>
+</div>
+
+<div class="stat">
+این هفته
+<strong id="week">-</strong>
+</div>
+
+<div class="stat">
+این ماه
+<strong id="month">-</strong>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="section">
+
+<h2>🖱 رویدادهای سایت</h2>
+
+<div class="stats">
+
+<div class="stat">
+ربات Peti
+<strong id="bot1">-</strong>
+</div>
+
+<div class="stat">
+Peti Bot²
+<strong id="bot2">-</strong>
+</div>
+
+<div class="stat">
+راهنمای دستورات
+<strong id="guideStat">-</strong>
+</div>
+
+<div class="stat">
+اطلاع‌رسانی
+<strong id="newsStat">-</strong>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="section">
+
+<h2>🔄 بروزرسانی</h2>
+
+<button class="command"
+onclick="loadStats()">
+🔄 بروزرسانی آمار
+</button>
+
+<p id="status"
+style="text-align:center;color:#b8d7ff;margin-top:12px;">
+در حال دریافت آمار...
+</p>
+
+</div>
+
+</div>
+
+
+<a class="back"
+href="#"
+onclick="showMain();return false;">
+⬅️ بازگشت به سایت PETI
+</a>
+
+</div>
+
+</div>
+
+
+<script>
+
+const ADMIN_PASSWORD = "PetiAdmin2026!";
+
+
+function gcEvent(path){
+
+    if(window.goatcounter && window.goatcounter.count){
+
+        window.goatcounter.count({
+            path:path,
+            event:true,
+            no_session:true
+        });
+
+    }
+
+}
+
+
+function copyText(text){
+
+    navigator.clipboard.writeText(text);
+
+    alert("کپی شد ✅");
+
+}
+
+
+function showAdmin(){
+
+    document.getElementById("mainSite").style.display="none";
+
+    document.getElementById("admin").style.display="block";
+
+    window.location.hash="admin";
+
+}
+
+
+function showMain(){
+
+    document.getElementById("admin").style.display="none";
+
+    document.getElementById("mainSite").style.display="block";
+
+    window.location.hash="";
+
+}
+
+
+function login(){
+
+    const password=document.getElementById("password").value;
+
+    if(password===ADMIN_PASSWORD){
+
+        document.getElementById("loginBox").style.display="none";
+
+        document.getElementById("dashboard").classList.remove("hidden");
+
+        loadStats();
+
+    }else{
+
+        document.getElementById("error").textContent=
+        "رمز عبور اشتباه است ❌";
+
+    }
+
+}
+
+
+async function getCount(path){
+
+    try{
+
+        const url=
+        "https://petibot01.goatcounter.com/counter/"
+        +encodeURIComponent(path)
+        +".json";
+
+        const response=await fetch(url);
+
+        if(!response.ok) return 0;
+
+        const data=await response.json();
+
+        return Number(data.count)||0;
+
+    }catch(e){
+
+        return 0;
+
+    }
+
+}
+
+
+async function loadStats(){
+
+    document.getElementById("status").textContent=
+    "در حال دریافت آمار...";
+
+    const total=await getCount("/");
+
+    const bot1=await getCount("bot-peti-sokhango");
+    const bot2=await getCount("bot-peti-bot");
+    const guide=await getCount("guide-dastorat");
+    const news=await getCount("news-etla");
+
+    document.getElementById("total").textContent=total;
+
+    document.getElementById("bot1").textContent=bot1;
+
+    document.getElementById("bot2").textContent=bot2;
+
+    document.getElementById("guideStat").textContent=guide;
+
+    document.getElementById("newsStat").textContent=news;
+
+    document.getElementById("today").textContent=
+    "از داشبورد GoatCounter";
+
+    document.getElementById("week").textContent=
+    "از داشبورد GoatCounter";
+
+    document.getElementById("month").textContent=
+    "از داشبورد GoatCounter";
+
+    document.getElementById("status").textContent=
+    "آخرین بروزرسانی انجام شد ✅";
+
+}
+
+
+if(window.location.hash==="#admin"){
+
+    showAdmin();
+
+}
+
+</script>
+
+</body>
+  </html>
