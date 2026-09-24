@@ -715,8 +715,6 @@ petibot01@gmail.com
 
 </div>
 
-<!-- چت ناشناس جایگزین آیدی روبیکا -->
-
 <div class="row">
 
 <div class="symbol">💬</div>
@@ -813,42 +811,42 @@ autocomplete="off"
 <div class="real-stat-grid">
 
 <div class="real-stat">
-<strong id="petiVisits">—</strong>
+<strong id="petiVisits">۰</strong>
 <span>بازدید سایت</span>
 </div>
 
 <div class="real-stat">
-<strong id="petiClicks">—</strong>
+<strong id="petiClicks">۰</strong>
 <span>کلیک‌ها</span>
 </div>
 
 <div class="real-stat">
-<strong id="petiBotClicks">—</strong>
+<strong id="petiBotClicks">۰</strong>
 <span>کلیک Peti</span>
 </div>
 
 <div class="real-stat">
-<strong id="petiBot2Clicks">—</strong>
+<strong id="petiBot2Clicks">۰</strong>
 <span>کلیک Peti Bot²</span>
 </div>
 
 <div class="real-stat">
-<strong id="petiChannelClicks">—</strong>
+<strong id="petiChannelClicks">۰</strong>
 <span>اطلاع‌رسانی</span>
 </div>
 
 <div class="real-stat">
-<strong id="petiLinkClicks">—</strong>
+<strong id="petiLinkClicks">۰</strong>
 <span>لینکدونی</span>
 </div>
 
 <div class="real-stat">
-<strong id="petiGroupClicks">—</strong>
+<strong id="petiGroupClicks">۰</strong>
 <span>گروه پشتیبانی</span>
 </div>
 
 <div class="real-stat">
-<strong id="petiSupportClicks">—</strong>
+<strong id="petiSupportClicks">۰</strong>
 <span>پشتیبانی</span>
 </div>
 
@@ -865,7 +863,7 @@ data-goatcounter-title="باز کردن داشبورد آمار PETI"
 </a>
 
 <div class="stats-status" id="statsStatus">
-آمار از GoatCounter دریافت می‌شود
+در انتظار دریافت آمار...
 </div>
 
 </div>
@@ -1035,7 +1033,7 @@ error.style.display="block";
 
 
 /* =========================
-   خروج از پنل
+   خروج از پنل فرماندهی
 ========================= */
 
 function logoutCommandPanel(){
@@ -1052,34 +1050,50 @@ document.getElementById("commandError").style.display="none";
 
 
 /* =========================
-   آمار GoatCounter
+   تبدیل عدد به فارسی
 ========================= */
 
-function loadPetiStats(){
+function persianNumber(number){
 
-const status=document.getElementById("statsStatus");
+return Number(number || 0).toLocaleString("fa-IR");
 
-if(!status)return;
+}
 
-status.textContent="در حال دریافت آمار...";
 
-if(
-window.goatcounter &&
-typeof window.goatcounter.visit_count==="function"
-){
+/* =========================
+   دریافت شمارنده عمومی GoatCounter
+========================= */
 
-window.goatcounter.visit_count({
-append:"#petiVisits",
-type:"html",
-no_branding:true
+async function getGoatCounterCount(path){
+
+try{
+
+const url =
+"https://petibot.goatcounter.com/counter/" +
+encodeURIComponent(path) +
+".json?rnd=" +
+Date.now();
+
+const response = await fetch(url,{
+method:"GET",
+cache:"no-store"
 });
 
-status.textContent="آمار بازدید دریافت شد";
+if(!response.ok){
 
-}else{
+return 0;
 
-status.textContent=
-"GoatCounter هنوز آماده نشده؛ دوباره بروزرسانی کن.";
+}
+
+const data = await response.json();
+
+return Number(data.count || 0);
+
+}catch(error){
+
+console.error("GoatCounter error:",path,error);
+
+return 0;
 
 }
 
@@ -1087,27 +1101,188 @@ status.textContent=
 
 
 /* =========================
-   بروزرسانی خودکار بعد از بارگذاری
+   آمار واقعی سایت
+========================= */
+
+async function loadPetiStats(){
+
+const status =
+document.getElementById("statsStatus");
+
+if(!status)return;
+
+status.textContent =
+"در حال دریافت آمار واقعی...";
+
+
+/*
+   بازدید کل سایت
+   TOTAL طبق قابلیت رسمی GoatCounter
+*/
+
+const visits =
+await getGoatCounterCount("TOTAL");
+
+
+document.getElementById("petiVisits").textContent =
+persianNumber(visits);
+
+
+/*
+   Eventهای ثبت‌شده در سایت
+*/
+
+const eventNames = {
+
+petiBotClicks:
+"peti-bot",
+
+petiBot2Clicks:
+"peti-bot2",
+
+petiChannelClicks:
+"peti-channel",
+
+petiLinkClicks:
+"peti-linkdoni",
+
+petiGroupClicks:
+"peti-support-group",
+
+supportEmail:
+"support-email",
+
+anonymousChat:
+"anonymous-chat"
+
+};
+
+
+const results =
+await Promise.all(
+
+Object.entries(eventNames).map(
+async ([key,path])=>{
+
+return [
+key,
+await getGoatCounterCount(path)
+];
+
+})
+
+);
+
+
+const stats =
+Object.fromEntries(results);
+
+
+/*
+   Peti
+*/
+
+document.getElementById("petiBotClicks").textContent =
+persianNumber(stats.petiBotClicks);
+
+
+/*
+   Peti Bot²
+*/
+
+document.getElementById("petiBot2Clicks").textContent =
+persianNumber(stats.petiBot2Clicks);
+
+
+/*
+   اطلاع‌رسانی
+*/
+
+document.getElementById("petiChannelClicks").textContent =
+persianNumber(stats.petiChannelClicks);
+
+
+/*
+   لینکدونی
+*/
+
+document.getElementById("petiLinkClicks").textContent =
+persianNumber(stats.petiLinkClicks);
+
+
+/*
+   گروه پشتیبانی
+*/
+
+document.getElementById("petiGroupClicks").textContent =
+persianNumber(stats.petiGroupClicks);
+
+
+/*
+   پشتیبانی
+   ایمیل + چت ناشناس
+*/
+
+const supportClicks =
+(stats.supportEmail || 0) +
+(stats.anonymousChat || 0);
+
+document.getElementById("petiSupportClicks").textContent =
+persianNumber(supportClicks);
+
+
+/*
+   مجموع کلیک‌های اصلی
+*/
+
+const totalClicks =
+(stats.petiBotClicks || 0) +
+(stats.petiBot2Clicks || 0) +
+(stats.petiChannelClicks || 0) +
+(stats.petiLinkClicks || 0) +
+(stats.petiGroupClicks || 0) +
+(stats.supportEmail || 0) +
+(stats.anonymousChat || 0);
+
+document.getElementById("petiClicks").textContent =
+persianNumber(totalClicks);
+
+
+status.textContent =
+"آخرین بروزرسانی: " +
+new Date().toLocaleTimeString("fa-IR");
+
+}
+
+
+/* =========================
+   بروزرسانی خودکار
 ========================= */
 
 window.addEventListener("load",function(){
 
 setTimeout(function(){
 
+loadPetiStats();
+
+},1800);
+
+
+/*
+   هر 60 ثانیه بروزرسانی
+*/
+
+setInterval(function(){
+
 if(
-window.goatcounter &&
-typeof window.goatcounter.visit_count==="function"
+document.getElementById("commandContent").style.display === "block"
 ){
 
-window.goatcounter.visit_count({
-append:"#petiVisits",
-type:"html",
-no_branding:true
-});
+loadPetiStats();
 
 }
 
-},1500);
+},60000);
 
 });
 
