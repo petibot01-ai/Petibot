@@ -6,8 +6,11 @@
 <title>دسترسی سریع به سرویس های Peti</title>
 
 <!-- GoatCounter -->
-<script data-goatcounter="https://petibot.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
+<script
+data-goatcounter="https://petibot.goatcounter.com/count"
+async
+src="https://gc.zgo.at/count.js">
+</script>
 
 <style>
 *{box-sizing:border-box}
@@ -139,9 +142,7 @@ border-radius:28px;margin:13px 0;padding:20px;text-align:center
 .contact p{margin:0;color:#9dcaef;font-size:14px;direction:ltr}
 .contact a{color:#9dcaef;text-decoration:none}
 
-/* =========================
-   پنل فرماندهی PETI
-========================= */
+/* پنل فرماندهی */
 
 .command-panel{
 border:1px solid #2878b8;
@@ -174,13 +175,8 @@ font-size:25px;
 box-shadow:0 0 25px rgba(35,150,240,.25)
 }
 
-.command-heading h2{
-margin:0;font-size:20px
-}
-
-.command-heading p{
-margin:5px 0 0;font-size:12px;color:#8daaca
-}
+.command-heading h2{margin:0;font-size:20px}
+.command-heading p{margin:5px 0 0;font-size:12px;color:#8daaca}
 
 .command-status{
 display:flex;align-items:center;gap:7px;
@@ -224,34 +220,111 @@ font-size:12px;margin-top:10px
 .command-content{display:none}
 
 .command-stats{
-display:grid;grid-template-columns:repeat(3,1fr);
-gap:10px;margin-bottom:18px
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+margin-bottom:18px
 }
 
 .command-stat{
 background:rgba(2,11,22,.72);
 border:1px solid #1b3b58;
-border-radius:22px;padding:16px 8px;text-align:center
+border-radius:22px;
+padding:16px 8px;
+text-align:center
 }
 
 .command-stat strong{
-display:block;font-size:22px;color:#62c5ff;margin-bottom:5px
+display:block;
+font-size:22px;
+color:#62c5ff;
+margin-bottom:5px
 }
 
 .command-stat span{
-font-size:11px;color:#8da5bf
+font-size:11px;
+color:#8da5bf
+}
+
+/* آمار واقعی */
+
+.real-stats{
+margin-bottom:18px;
+padding:18px;
+background:rgba(2,11,22,.72);
+border:1px solid #1b3b58;
+border-radius:24px
+}
+
+.real-stats-title{
+text-align:center;
+font-size:16px;
+font-weight:900;
+color:#62c5ff;
+margin-bottom:15px
+}
+
+.real-stat-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:9px
+}
+
+.real-stat{
+background:rgba(5,19,33,.8);
+border:1px solid #204766;
+border-radius:17px;
+padding:13px 7px;
+text-align:center
+}
+
+.real-stat strong{
+display:block;
+font-size:19px;
+color:#62c5ff;
+margin-bottom:5px
+}
+
+.real-stat span{
+font-size:10px;
+color:#8da5bf
+}
+
+.stats-link{
+display:flex;
+align-items:center;
+justify-content:center;
+min-height:43px;
+margin-top:12px;
+border:1px solid #2878b8;
+border-radius:22px;
+background:rgba(10,35,58,.8);
+color:#fff;
+text-decoration:none;
+font-size:12px;
+font-weight:700
 }
 
 .command-actions{
-display:grid;grid-template-columns:repeat(2,1fr);gap:10px
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px
 }
 
 .command-action{
-min-height:70px;border:1px solid #204766;
-border-radius:21px;background:rgba(5,19,33,.8);
-color:white;text-decoration:none;
-display:flex;align-items:center;justify-content:center;
-gap:9px;font-size:13px;font-weight:700;cursor:pointer
+min-height:70px;
+border:1px solid #204766;
+border-radius:21px;
+background:rgba(5,19,33,.8);
+color:white;
+text-decoration:none;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:9px;
+font-size:13px;
+font-weight:700;
+cursor:pointer
 }
 
 .command-action:hover{
@@ -266,52 +339,33 @@ background:rgba(90,20,35,.25);
 color:#ff9baa
 }
 
-.stats-box{
-margin-top:18px;
-padding:18px;
-border:1px solid #1b3b58;
-border-radius:24px;
-background:rgba(2,11,22,.72);
-text-align:center
-}
-
-.stats-box h3{
-margin:0 0 8px;
-font-size:16px;
-color:#62c5ff
-}
-
-.stats-box p{
-margin:0 0 13px;
-font-size:11px;
+.stats-status{
+text-align:center;
+font-size:10px;
 color:#8da5bf;
-line-height:2
-}
-
-.stats-link{
-display:flex;
-align-items:center;
-justify-content:center;
-min-height:44px;
-border:1px solid #2878b8;
-border-radius:22px;
-background:rgba(10,35,58,.8);
-color:#fff;
-text-decoration:none;
-font-size:12px;
-font-weight:700
+margin-top:10px
 }
 
 footer{
-text-align:center;color:#7e8ca6;
-font-size:14px;line-height:2;padding:20px
+text-align:center;
+color:#7e8ca6;
+font-size:14px;
+line-height:2;
+padding:20px
 }
 
 .up{
-position:fixed;left:30px;bottom:30px;
-width:76px;height:76px;border-radius:50%;
-border:2px solid #86d0ff;background:#218de5;
-color:#07101f;font-size:40px;font-weight:900;
+position:fixed;
+left:30px;
+bottom:30px;
+width:76px;
+height:76px;
+border-radius:50%;
+border:2px solid #86d0ff;
+background:#218de5;
+color:#07101f;
+font-size:40px;
+font-weight:900;
 box-shadow:0 0 35px rgba(44,158,255,.55);
 cursor:pointer
 }
@@ -346,11 +400,14 @@ padding:19px 15px
 .command-heading p{font-size:10px}
 
 .command-icon{
-width:44px;height:44px;font-size:21px
+width:44px;
+height:44px;
+font-size:21px
 }
 
 .command-status{
-font-size:10px;padding:7px 9px
+font-size:10px;
+padding:7px 9px
 }
 
 .command-stats{gap:7px}
@@ -363,6 +420,16 @@ border-radius:18px
 .command-stat strong{font-size:19px}
 .command-stat span{font-size:9px}
 
+.real-stat-grid{gap:7px}
+
+.real-stat{
+padding:12px 5px;
+border-radius:15px
+}
+
+.real-stat strong{font-size:17px}
+.real-stat span{font-size:9px}
+
 .command-actions{gap:8px}
 
 .command-action{
@@ -371,8 +438,11 @@ font-size:11px
 }
 
 .up{
-width:68px;height:68px;
-left:15px;bottom:18px;font-size:34px
+width:68px;
+height:68px;
+left:15px;
+bottom:18px;
+font-size:34px
 }
 }
 </style>
@@ -690,8 +760,6 @@ data-goatcounter-title="کلیک روی آیدی روبیکا"
 
 </div>
 
-<!-- ورود به پنل -->
-
 <div class="command-login" id="commandLogin">
 
 <input
@@ -710,8 +778,6 @@ autocomplete="off"
 </div>
 
 </div>
-
-<!-- محتوای پنل -->
 
 <div class="command-content" id="commandContent">
 
@@ -734,24 +800,71 @@ autocomplete="off"
 
 </div>
 
-<!-- آمار واقعی GoatCounter -->
+<!-- آمار واقعی سایت -->
 
-<div class="stats-box">
+<div class="real-stats">
 
-<h3>📊 آمار واقعی سایت</h3>
+<div class="real-stats-title">
+📊 آمار واقعی سایت
+</div>
 
-<p>
-آمار بازدید و رویدادهای سایت توسط GoatCounter ثبت می‌شود.
-برای مشاهده آمار کامل، روی دکمه زیر بزن.
-</p>
+<div class="real-stat-grid">
+
+<div class="real-stat">
+<strong id="petiVisits">—</strong>
+<span>بازدید سایت</span>
+</div>
+
+<div class="real-stat">
+<strong id="petiClicks">—</strong>
+<span>کلیک‌ها</span>
+</div>
+
+<div class="real-stat">
+<strong id="petiBotClicks">—</strong>
+<span>کلیک Peti</span>
+</div>
+
+<div class="real-stat">
+<strong id="petiBot2Clicks">—</strong>
+<span>کلیک Peti Bot²</span>
+</div>
+
+<div class="real-stat">
+<strong id="petiChannelClicks">—</strong>
+<span>اطلاع‌رسانی</span>
+</div>
+
+<div class="real-stat">
+<strong id="petiLinkClicks">—</strong>
+<span>لینکدونی</span>
+</div>
+
+<div class="real-stat">
+<strong id="petiGroupClicks">—</strong>
+<span>گروه پشتیبانی</span>
+</div>
+
+<div class="real-stat">
+<strong id="petiSupportClicks">—</strong>
+<span>پشتیبانی</span>
+</div>
+
+</div>
 
 <a
 class="stats-link"
 href="https://petibot.goatcounter.com/"
 target="_blank"
+data-goatcounter-click="open-dashboard"
+data-goatcounter-title="باز کردن داشبورد آمار PETI"
 >
-📈 مشاهده آمار واقعی PETI
+📈 مشاهده جزئیات آمار
 </a>
+
+<div class="stats-status" id="statsStatus">
+آمار از GoatCounter دریافت می‌شود
+</div>
 
 </div>
 
@@ -782,7 +895,7 @@ class="command-action"
 href="https://rubika.ir/Etla_Resani_Peti"
 target="_blank"
 data-goatcounter-click="panel-channel"
-data-goatcounter-title="پنل فرماندهی - اطلاع رسانی"
+data-goatcounter-title="پنل فرماندهی - اطلاع‌رسانی"
 >
 📢 اطلاع‌رسانی
 </a>
@@ -809,9 +922,9 @@ data-goatcounter-title="پنل فرماندهی - گروه پشتیبانی"
 
 <button
 class="command-action"
-onclick="location.reload()"
+onclick="loadPetiStats()"
 >
-🔄 به‌روزرسانی
+📊 بروزرسانی آمار
 </button>
 
 </div>
@@ -845,6 +958,10 @@ onclick="window.scrollTo({top:0,behavior:'smooth'})"
 </button>
 
 <script>
+
+/* =========================
+   کپی متن
+========================= */
 
 function copyText(t){
 
@@ -904,6 +1021,8 @@ document.getElementById("commandContent").style.display="block";
 
 error.style.display="none";
 
+loadPetiStats();
+
 }else{
 
 error.style.display="block";
@@ -913,7 +1032,9 @@ error.style.display="block";
 }
 
 
-/* خروج از پنل */
+/* =========================
+   خروج از پنل
+========================= */
 
 function logoutCommandPanel(){
 
@@ -926,6 +1047,67 @@ document.getElementById("commandPassword").value="";
 document.getElementById("commandError").style.display="none";
 
 }
+
+
+/* =========================
+   آمار GoatCounter
+========================= */
+
+function loadPetiStats(){
+
+const status=document.getElementById("statsStatus");
+
+if(!status)return;
+
+status.textContent="در حال دریافت آمار...";
+
+if(
+window.goatcounter &&
+typeof window.goatcounter.visit_count==="function"
+){
+
+window.goatcounter.visit_count({
+append:"#petiVisits",
+type:"html",
+no_branding:true
+});
+
+status.textContent="آمار بازدید دریافت شد";
+
+}else{
+
+status.textContent=
+"GoatCounter هنوز آماده نشده؛ دوباره بروزرسانی کن.";
+
+}
+
+}
+
+
+/* =========================
+   بروزرسانی خودکار بعد از بارگذاری
+========================= */
+
+window.addEventListener("load",function(){
+
+setTimeout(function(){
+
+if(
+window.goatcounter &&
+typeof window.goatcounter.visit_count==="function"
+){
+
+window.goatcounter.visit_count({
+append:"#petiVisits",
+type:"html",
+no_branding:true
+});
+
+}
+
+},1500);
+
+});
 
 </script>
 
