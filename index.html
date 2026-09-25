@@ -15,142 +15,585 @@ src="https://gc.zgo.at/count.js">
 <style>
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:#07101f;color:#f7f9ff;font-family:Tahoma,Arial,sans-serif;min-height:100vh;overflow-x:hidden}
+body{
+margin:0;
+background:#07101f;
+color:#f7f9ff;
+font-family:Tahoma,Arial,sans-serif;
+min-height:100vh;
+overflow-x:hidden
+}
 
 body:before{
-content:"";position:fixed;inset:0;pointer-events:none;
-background:radial-gradient(circle at 20% 20%,rgba(40,104,165,.18),transparent 35%),
+content:"";
+position:fixed;
+inset:0;
+pointer-events:none;
+background:
+radial-gradient(circle at 20% 20%,rgba(40,104,165,.18),transparent 35%),
 radial-gradient(circle at 85% 55%,rgba(93,43,105,.16),transparent 36%),
 linear-gradient(180deg,#081122 0,#07101f 100%);
 z-index:-2
 }
 
 body:after{
-content:"";position:fixed;inset:0;pointer-events:none;opacity:.11;
+content:"";
+position:fixed;
+inset:0;
+pointer-events:none;
+opacity:.11;
 background-image:radial-gradient(#7fa6d8 1px,transparent 1px);
-background-size:22px 22px;z-index:-1
+background-size:22px 22px;
+z-index:-1
 }
 
-.wrap{width:min(780px,calc(100% - 24px));margin:auto;padding:18px 0 40px}
-.hero{text-align:center;padding:30px 10px 42px}
+.wrap{
+width:min(780px,calc(100% - 24px));
+margin:auto;
+padding:18px 0 40px
+}
+
+.hero{
+text-align:center;
+padding:30px 10px 25px
+}
 
 .logo{
-width:76px;height:76px;margin:0 auto 18px;border-radius:24px;
-background:conic-gradient(from 30deg,#e5484d,#f2c94c,#56d364,#35c9d9,#6b62ff,#d84eff,#e5484d);
-padding:10px;box-shadow:0 0 34px rgba(55,170,255,.18)
+width:76px;
+height:76px;
+margin:0 auto 18px;
+border-radius:24px;
+background:conic-gradient(
+from 30deg,
+#e5484d,
+#f2c94c,
+#56d364,
+#35c9d9,
+#6b62ff,
+#d84eff,
+#e5484d
+);
+padding:10px;
+box-shadow:0 0 34px rgba(55,170,255,.18)
 }
 
 .logo-in{
-width:100%;height:100%;display:grid;place-items:center;
-border-radius:17px;background:#f4f4f4;color:#151515;
-font-size:34px;font-weight:900
+width:100%;
+height:100%;
+display:grid;
+place-items:center;
+border-radius:17px;
+background:#f4f4f4;
+color:#151515;
+font-size:34px;
+font-weight:900
 }
 
 h1{
-font-size:26px;line-height:1.5;margin:0;font-weight:900;
+font-size:26px;
+line-height:1.5;
+margin:0;
+font-weight:900;
 background:linear-gradient(90deg,#d8e6f5,#f4d957,#79d8ff);
--webkit-background-clip:text;background-clip:text;color:transparent;
+-webkit-background-clip:text;
+background-clip:text;
+color:transparent;
 text-shadow:0 5px 25px rgba(79,170,255,.13)
 }
 
-.sub{font-size:15px;margin:4px 0 25px;color:#e4e8f1}
+.sub{
+font-size:15px;
+margin:4px 0 25px;
+color:#e4e8f1
+}
 
-.pills{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.pills{
+display:flex;
+justify-content:center;
+gap:12px;
+flex-wrap:wrap
+}
 
 .pill{
-padding:9px 17px;border:1px solid #31415a;
-background:rgba(20,30,48,.75);border-radius:999px;
-color:#aebbd5;font-size:13px;
+padding:9px 17px;
+border:1px solid #31415a;
+background:rgba(20,30,48,.75);
+border-radius:999px;
+color:#aebbd5;
+font-size:13px;
 box-shadow:inset 0 0 18px rgba(255,255,255,.02)
 }
 
+
+/* =========================
+   منوی اصلی
+========================= */
+
+.main-nav{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:9px;
+margin:8px 0 25px;
+padding:6px;
+border:1px solid #26374f;
+border-radius:30px;
+background:rgba(7,17,31,.82);
+box-shadow:0 12px 35px rgba(0,0,0,.22)
+}
+
+.nav-btn{
+min-height:48px;
+border:1px solid transparent;
+border-radius:24px;
+background:transparent;
+color:#aebbd5;
+font-family:inherit;
+font-size:13px;
+font-weight:800;
+cursor:pointer;
+transition:.2s
+}
+
+.nav-btn:hover,
+.nav-btn.active{
+color:#fff;
+border-color:#2878b8;
+background:linear-gradient(
+90deg,
+rgba(20,119,188,.22),
+rgba(35,156,231,.14)
+);
+box-shadow:0 0 18px rgba(35,145,235,.08)
+}
+
+.page{
+display:none
+}
+
+.page.active{
+display:block
+}
+
+
+/* =========================
+   بخش‌ها
+========================= */
+
 .section{
-border:1px solid #26374f;border-radius:42px;
-padding:28px 26px 30px;margin:18px 0;
+border:1px solid #26374f;
+border-radius:42px;
+padding:28px 26px 30px;
+margin:18px 0;
 background:rgba(10,20,36,.72);
 box-shadow:0 18px 55px rgba(0,0,0,.24)
 }
 
 .section.gold{
 border-color:#e1b92e;
-background:linear-gradient(180deg,rgba(42,39,20,.68),rgba(25,27,23,.62))
+background:linear-gradient(
+180deg,
+rgba(42,39,20,.68),
+rgba(25,27,23,.62)
+)
 }
 
 .title{
-font-size:19px;font-weight:900;text-align:right;margin:0 6px 24px;
-display:flex;align-items:center;justify-content:flex-start;gap:11px
+font-size:19px;
+font-weight:900;
+text-align:right;
+margin:0 6px 24px;
+display:flex;
+align-items:center;
+justify-content:flex-start;
+gap:11px
 }
 
-.title .ico{color:#37a5ff;font-size:25px;line-height:1}
+.title .ico{
+color:#37a5ff;
+font-size:25px;
+line-height:1
+}
 
 .item{
-background:rgba(4,11,22,.78);border:1px solid #17263d;
-border-radius:34px;padding:16px 28px 22px;margin:20px 0;
+background:rgba(4,11,22,.78);
+border:1px solid #17263d;
+border-radius:34px;
+padding:16px 28px 22px;
+margin:20px 0;
 box-shadow:inset 0 0 30px rgba(0,0,0,.15)
 }
 
 .badge{
-height:42px;border-radius:30px;border:1px solid #a38825;
-background:linear-gradient(90deg,rgba(116,89,21,.42),rgba(67,67,25,.38));
-display:flex;align-items:center;justify-content:center;
-color:#ffe36b;font-size:13px;font-weight:800;margin-bottom:14px
+height:42px;
+border-radius:30px;
+border:1px solid #a38825;
+background:linear-gradient(
+90deg,
+rgba(116,89,21,.42),
+rgba(67,67,25,.38)
+);
+display:flex;
+align-items:center;
+justify-content:center;
+color:#ffe36b;
+font-size:13px;
+font-weight:800;
+margin-bottom:14px
 }
 
-.badge span{margin-right:7px;font-size:13px}
+.badge span{
+margin-right:7px;
+font-size:13px
+}
 
 .rubika-icon{
-display:inline-flex;align-items:center;justify-content:center;
-width:28px;height:28px;margin-inline-start:7px;vertical-align:middle
+display:inline-flex;
+align-items:center;
+justify-content:center;
+width:28px;
+height:28px;
+margin-inline-start:7px;
+vertical-align:middle
 }
 
 .rubika-logo{
-width:28px;height:28px;border-radius:50%;
-display:flex;align-items:center;justify-content:center;
-background:conic-gradient(#ff3b30,#ff9500,#ffcc00,#34c759,#00c7be,#5856d6,#af52de,#ff2d55,#ff3b30);
+width:28px;
+height:28px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+background:conic-gradient(
+#ff3b30,
+#ff9500,
+#ffcc00,
+#34c759,
+#00c7be,
+#5856d6,
+#af52de,
+#ff2d55,
+#ff3b30
+);
 box-shadow:0 2px 7px rgba(255,80,150,.35);
-color:#fff;font-size:17px;font-weight:900;line-height:1;
+color:#fff;
+font-size:17px;
+font-weight:900;
+line-height:1;
 font-family:Arial,sans-serif
 }
 
 .name{
-font-size:16px;font-weight:800;color:#b9d9ff;
-text-align:right;direction:rtl;margin:0 0 16px
+font-size:16px;
+font-weight:800;
+color:#b9d9ff;
+text-align:right;
+direction:rtl;
+margin:0 0 16px
 }
 
-.name a{color:#b9d9ff;text-decoration:none}
+.name a{
+color:#b9d9ff;
+text-decoration:none
+}
 
 .copy{
-height:44px;border:1px solid #1764a5;border-radius:30px;
-background:#0b1323;color:#fff;width:100%;font-size:14px;
-cursor:pointer;box-shadow:inset 0 0 15px rgba(40,100,180,.08)
+height:44px;
+border:1px solid #1764a5;
+border-radius:30px;
+background:#0b1323;
+color:#fff;
+width:100%;
+font-size:14px;
+cursor:pointer;
+box-shadow:inset 0 0 15px rgba(40,100,180,.08)
 }
 
-.note{text-align:center;color:#8194b5;font-size:13px;line-height:2;margin:12px 15px 0}
+.note{
+text-align:center;
+color:#8194b5;
+font-size:13px;
+line-height:2;
+margin:12px 15px 0
+}
 
 .contact{
-background:rgba(12,22,39,.82);border:1px solid #286da5;
-border-radius:36px;padding:25px 26px
+background:rgba(12,22,39,.82);
+border:1px solid #286da5;
+border-radius:36px;
+padding:25px 26px
 }
 
 .contact .row{
-background:rgba(3,10,20,.75);border:1px solid #172940;
-border-radius:28px;margin:13px 0;padding:20px;text-align:center
+background:rgba(3,10,20,.75);
+border:1px solid #172940;
+border-radius:28px;
+margin:13px 0;
+padding:20px;
+text-align:center
 }
 
-.contact .symbol{font-size:34px;color:#3ca8ff}
-.contact h3{margin:6px 0 8px;font-size:16px}
-.contact p{margin:0;color:#9dcaef;font-size:14px;direction:ltr}
-.contact a{color:#9dcaef;text-decoration:none}
+.contact .symbol{
+font-size:34px;
+color:#3ca8ff
+}
 
-/* پنل فرماندهی */
+.contact h3{
+margin:6px 0 8px;
+font-size:16px
+}
+
+.contact p{
+margin:0;
+color:#9dcaef;
+font-size:14px;
+direction:ltr
+}
+
+.contact a{
+color:#9dcaef;
+text-decoration:none
+}
+
+
+/* =========================
+   فروشگاه
+========================= */
+
+.shop-page{
+padding-top:4px
+}
+
+.shop-heading{
+text-align:center;
+font-size:24px;
+font-weight:900;
+color:#b9c9e8;
+margin:8px 0 28px
+}
+
+.shop-back{
+display:block;
+width:max-content;
+min-width:150px;
+margin:0 auto 28px;
+padding:13px 27px;
+border:1px solid #17658c;
+border-radius:30px;
+background:rgba(7,20,35,.8);
+color:#36c9f2;
+font-weight:900;
+text-decoration:none;
+text-align:center
+}
+
+.ad-card{
+border:1px solid #17658c;
+border-radius:42px;
+padding:42px 42px 30px;
+background:linear-gradient(
+180deg,
+rgba(9,22,42,.97),
+rgba(6,15,30,.98)
+);
+box-shadow:
+0 20px 60px rgba(0,0,0,.35),
+0 0 35px rgba(0,190,255,.05);
+text-align:center
+}
+
+.ad-icon{
+width:106px;
+height:106px;
+margin:0 auto 28px;
+border-radius:28px;
+display:grid;
+place-items:center;
+background:linear-gradient(
+145deg,
+rgba(12,53,84,.95),
+rgba(6,28,55,.95)
+);
+border:1px solid #164f77;
+color:#25d1f3;
+font-size:48px;
+box-shadow:0 0 30px rgba(20,190,240,.09)
+}
+
+.ad-title{
+font-size:30px;
+font-weight:900;
+margin:0 0 34px;
+color:#f4f6ff
+}
+
+.ad-price{
+height:108px;
+border:1px dashed #756324;
+border-radius:28px;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:10px;
+margin-bottom:25px;
+color:#7f91b0;
+font-size:20px
+}
+
+.ad-price strong{
+color:#ffc928;
+font-size:29px
+}
+
+.ad-feature{
+min-height:78px;
+display:flex;
+align-items:center;
+justify-content:flex-start;
+gap:12px;
+padding:15px 20px;
+margin:12px 0;
+border-right:5px solid #10b9dc;
+border-radius:20px;
+background:rgba(5,23,42,.9);
+color:#dce4f2;
+font-size:17px;
+line-height:1.8;
+text-align:right
+}
+
+.ad-check{
+color:#43dfaa;
+font-size:25px;
+font-weight:900;
+flex-shrink:0
+}
+
+.ad-feature strong{
+color:#25c9ef
+}
+
+.buy-btn{
+width:100%;
+height:70px;
+margin-top:26px;
+border:0;
+border-radius:28px;
+background:linear-gradient(
+90deg,
+#10b7d7,
+#347fea
+);
+color:white;
+font-family:inherit;
+font-size:18px;
+font-weight:900;
+cursor:pointer;
+box-shadow:0 12px 30px rgba(25,150,240,.16)
+}
+
+
+/* =========================
+   راهنمای خرید
+========================= */
+
+.purchase-guide{
+display:none;
+margin-top:22px;
+padding:32px 24px;
+border:1px solid #17658c;
+border-radius:36px;
+background:rgba(7,19,38,.98);
+text-align:center
+}
+
+.purchase-guide.show{
+display:block
+}
+
+.purchase-icon{
+width:72px;
+height:72px;
+border-radius:50%;
+margin:0 auto 18px;
+display:grid;
+place-items:center;
+background:#082e4b;
+color:#26cef1;
+font-size:35px
+}
+
+.purchase-guide h2{
+font-size:24px;
+margin:8px 0 16px
+}
+
+.purchase-guide p{
+color:#95a7c5;
+font-size:16px;
+line-height:2;
+margin:0 0 18px
+}
+
+.admin-id{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:12px;
+flex-wrap:wrap;
+margin:15px 0 24px
+}
+
+.admin-id strong{
+font-size:23px;
+color:#26ccef;
+direction:ltr;
+background:#061326;
+border:1px dashed #1d5475;
+padding:14px 22px;
+border-radius:18px
+}
+
+.copy-id{
+height:48px;
+padding:0 25px;
+border-radius:24px;
+border:1px solid #176da0;
+background:#09243b;
+color:#29c8ef;
+font-family:inherit;
+font-weight:800;
+cursor:pointer
+}
+
+.close-guide{
+width:100%;
+height:52px;
+border:1px solid #163a59;
+border-radius:25px;
+background:transparent;
+color:#8fa2c0;
+font-family:inherit;
+cursor:pointer
+}
+
+
+/* =========================
+   پنل فرماندهی
+========================= */
 
 .command-panel{
 border:1px solid #2878b8;
 border-radius:42px;
 padding:25px;
 margin:18px 0;
-background:linear-gradient(145deg,rgba(10,35,58,.96),rgba(7,17,31,.98));
-box-shadow:0 20px 65px rgba(0,0,0,.35),0 0 35px rgba(35,145,235,.08)
+background:linear-gradient(
+145deg,
+rgba(10,35,58,.96),
+rgba(7,17,31,.98)
+);
+box-shadow:
+0 20px 65px rgba(0,0,0,.35),
+0 0 35px rgba(35,145,235,.08)
 }
 
 .command-header{
@@ -168,36 +611,62 @@ gap:12px
 }
 
 .command-icon{
-width:52px;height:52px;border-radius:17px;
-display:grid;place-items:center;
+width:52px;
+height:52px;
+border-radius:17px;
+display:grid;
+place-items:center;
 background:linear-gradient(145deg,#168fe5,#0b4d86);
 font-size:25px;
 box-shadow:0 0 25px rgba(35,150,240,.25)
 }
 
-.command-heading h2{margin:0;font-size:20px}
-.command-heading p{margin:5px 0 0;font-size:12px;color:#8daaca}
+.command-heading h2{
+margin:0;
+font-size:20px
+}
+
+.command-heading p{
+margin:5px 0 0;
+font-size:12px;
+color:#8daaca
+}
 
 .command-status{
-display:flex;align-items:center;gap:7px;
-padding:8px 12px;border-radius:20px;
+display:flex;
+align-items:center;
+gap:7px;
+padding:8px 12px;
+border-radius:20px;
 border:1px solid rgba(50,220,130,.3);
 background:rgba(30,180,100,.08);
-color:#58e69b;font-size:11px
+color:#58e69b;
+font-size:11px
 }
 
 .status-dot{
-width:8px;height:8px;border-radius:50%;
-background:#35df82;box-shadow:0 0 10px #35df82
+width:8px;
+height:8px;
+border-radius:50%;
+background:#35df82;
+box-shadow:0 0 10px #35df82
 }
 
-.command-login{text-align:center}
+.command-login{
+text-align:center
+}
 
 .command-login input{
-width:100%;height:48px;
-border:1px solid #244967;border-radius:25px;
-background:#071322;color:white;padding:0 18px;
-font-size:14px;outline:none;text-align:center
+width:100%;
+height:48px;
+border:1px solid #244967;
+border-radius:25px;
+background:#071322;
+color:white;
+padding:0 18px;
+font-size:14px;
+outline:none;
+text-align:center
 }
 
 .command-login input:focus{
@@ -206,18 +675,28 @@ box-shadow:0 0 15px rgba(54,170,245,.12)
 }
 
 .command-btn{
-width:100%;height:46px;margin-top:12px;
-border:1px solid #247db5;border-radius:24px;
+width:100%;
+height:46px;
+margin-top:12px;
+border:1px solid #247db5;
+border-radius:24px;
 background:linear-gradient(90deg,#1478bd,#229ce7);
-color:white;font-size:14px;font-weight:800;cursor:pointer
+color:white;
+font-size:14px;
+font-weight:800;
+cursor:pointer
 }
 
 .command-error{
-display:none;color:#ff7070;
-font-size:12px;margin-top:10px
+display:none;
+color:#ff7070;
+font-size:12px;
+margin-top:10px
 }
 
-.command-content{display:none}
+.command-content{
+display:none
+}
 
 .command-stats{
 display:grid;
@@ -245,8 +724,6 @@ margin-bottom:5px
 font-size:11px;
 color:#8da5bf
 }
-
-/* آمار واقعی */
 
 .real-stats{
 margin-bottom:18px;
@@ -370,34 +847,186 @@ box-shadow:0 0 35px rgba(44,158,255,.55);
 cursor:pointer
 }
 
+
+/* =========================
+   موبایل
+========================= */
+
 @media(max-width:600px){
 
-.wrap{width:min(100% - 14px,780px);padding-top:8px}
-.hero{padding:28px 7px 32px}
-.logo{width:68px;height:68px}
-.logo-in{font-size:30px}
-h1{font-size:22px;line-height:1.5}
-.sub{font-size:14px}
-.pill{font-size:12px;padding:8px 13px}
-.section{border-radius:32px;padding:24px 17px 26px}
-.title{font-size:18px;margin-bottom:16px}
-.title .ico{font-size:23px}
-.item{border-radius:27px;padding:13px 16px 18px}
-.badge{height:42px;font-size:14px}
-.name{font-size:16px;margin-bottom:16px}
-.copy{height:42px;font-size:14px}
-.note{font-size:12px}
-.contact{padding:16px}
-.contact h3{font-size:18px}
-.contact p{font-size:16px}
+.wrap{
+width:min(100% - 14px,780px);
+padding-top:8px
+}
+
+.hero{
+padding:28px 7px 22px
+}
+
+.logo{
+width:68px;
+height:68px
+}
+
+.logo-in{
+font-size:30px
+}
+
+h1{
+font-size:22px;
+line-height:1.5
+}
+
+.sub{
+font-size:14px
+}
+
+.pill{
+font-size:12px;
+padding:8px 13px
+}
+
+.main-nav{
+gap:5px;
+border-radius:25px;
+padding:5px
+}
+
+.nav-btn{
+min-height:46px;
+font-size:11px;
+border-radius:20px
+}
+
+.section{
+border-radius:32px;
+padding:24px 17px 26px
+}
+
+.title{
+font-size:18px;
+margin-bottom:16px
+}
+
+.title .ico{
+font-size:23px
+}
+
+.item{
+border-radius:27px;
+padding:13px 16px 18px
+}
+
+.badge{
+height:42px;
+font-size:14px
+}
+
+.name{
+font-size:16px;
+margin-bottom:16px
+}
+
+.copy{
+height:42px;
+font-size:14px
+}
+
+.note{
+font-size:12px
+}
+
+.contact{
+padding:16px
+}
+
+.contact h3{
+font-size:18px
+}
+
+.contact p{
+font-size:16px
+}
+
+.shop-heading{
+font-size:21px
+}
+
+.shop-back{
+min-width:130px;
+padding:11px 22px
+}
+
+.ad-card{
+border-radius:32px;
+padding:30px 17px 24px
+}
+
+.ad-icon{
+width:82px;
+height:82px;
+font-size:38px;
+border-radius:24px
+}
+
+.ad-title{
+font-size:25px;
+margin-bottom:27px
+}
+
+.ad-price{
+height:88px;
+font-size:17px
+}
+
+.ad-price strong{
+font-size:25px
+}
+
+.ad-feature{
+font-size:14px;
+min-height:72px;
+padding:13px 14px;
+border-radius:18px
+}
+
+.ad-check{
+font-size:22px
+}
+
+.buy-btn{
+height:62px;
+font-size:16px
+}
+
+.purchase-guide{
+padding:27px 17px
+}
+
+.purchase-guide h2{
+font-size:21px
+}
+
+.purchase-guide p{
+font-size:14px
+}
+
+.admin-id strong{
+font-size:20px
+}
 
 .command-panel{
 border-radius:32px;
 padding:19px 15px
 }
 
-.command-heading h2{font-size:18px}
-.command-heading p{font-size:10px}
+.command-heading h2{
+font-size:18px
+}
+
+.command-heading p{
+font-size:10px
+}
 
 .command-icon{
 width:44px;
@@ -410,27 +1039,43 @@ font-size:10px;
 padding:7px 9px
 }
 
-.command-stats{gap:7px}
+.command-stats{
+gap:7px
+}
 
 .command-stat{
 padding:14px 5px;
 border-radius:18px
 }
 
-.command-stat strong{font-size:19px}
-.command-stat span{font-size:9px}
+.command-stat strong{
+font-size:19px
+}
 
-.real-stat-grid{gap:7px}
+.command-stat span{
+font-size:9px
+}
+
+.real-stat-grid{
+gap:7px
+}
 
 .real-stat{
 padding:12px 5px;
 border-radius:15px
 }
 
-.real-stat strong{font-size:17px}
-.real-stat span{font-size:9px}
+.real-stat strong{
+font-size:17px
+}
 
-.command-actions{gap:8px}
+.real-stat span{
+font-size:9px
+}
+
+.command-actions{
+gap:8px
+}
 
 .command-action{
 min-height:64px;
@@ -470,6 +1115,47 @@ font-size:34px
 
 </header>
 
+
+<!-- =========================
+     منوی اصلی
+========================= -->
+
+<nav class="main-nav">
+
+<button
+class="nav-btn active"
+id="navHome"
+onclick="showPage('home')"
+>
+⌂ خانه
+</button>
+
+<button
+class="nav-btn"
+id="navShop"
+onclick="showPage('shop')"
+>
+🛍 فروشگاه
+</button>
+
+<button
+class="nav-btn"
+id="navCommand"
+onclick="showPage('command')"
+>
+⚡ پنل فرماندهی
+</button>
+
+</nav>
+
+
+<!-- =========================
+     صفحه خانه
+========================= -->
+
+<div class="page active" id="homePage">
+
+
 <!-- ربات‌های Peti -->
 
 <section class="section gold">
@@ -499,11 +1185,15 @@ data-goatcounter-title="کلیک روی ربات Peti"
 </a>
 </p>
 
-<button class="copy" onclick="copyText('@Peti_Sokhango_Bot')">
+<button
+class="copy"
+onclick="copyText('@Peti_Sokhango_Bot')"
+>
 کپی　▣
 </button>
 
 </div>
+
 
 <div class="item">
 
@@ -525,7 +1215,10 @@ data-goatcounter-title="کلیک روی Peti Bot²"
 </a>
 </p>
 
-<button class="copy" onclick="copyText('@Peti_Bot')">
+<button
+class="copy"
+onclick="copyText('@Peti_Bot')"
+>
 کپی　▣
 </button>
 
@@ -536,6 +1229,7 @@ data-goatcounter-title="کلیک روی Peti Bot²"
 </p>
 
 </section>
+
 
 <!-- راهنمایی دستورات -->
 
@@ -566,13 +1260,17 @@ data-goatcounter-title="کلیک روی راهنمای دستورات پتی"
 </a>
 </p>
 
-<button class="copy" onclick="copyText('@Peti_Bot_Dastorat')">
+<button
+class="copy"
+onclick="copyText('@Peti_Bot_Dastorat')"
+>
 کپی　▣
 </button>
 
 </div>
 
 </section>
+
 
 <!-- چنل اطلاع رسانی -->
 
@@ -603,13 +1301,17 @@ data-goatcounter-title="کلیک روی اطلاع رسانی پتی"
 </a>
 </p>
 
-<button class="copy" onclick="copyText('@Etla_Resani_Peti')">
+<button
+class="copy"
+onclick="copyText('@Etla_Resani_Peti')"
+>
 کپی　▣
 </button>
 
 </div>
 
 </section>
+
 
 <!-- لینکدونی -->
 
@@ -640,13 +1342,17 @@ data-goatcounter-title="کلیک روی لینکدونی پتی"
 </a>
 </p>
 
-<button class="copy" onclick="copyText('@LinkDoni_Peti')">
+<button
+class="copy"
+onclick="copyText('@LinkDoni_Peti')"
+>
 کپی　▣
 </button>
 
 </div>
 
 </section>
+
 
 <!-- گروه پشتیبانی -->
 
@@ -688,6 +1394,7 @@ onclick="copyText('https://rubika.ir/joing/BBEIEAHIC0BFMRHOQMKJQEUYKZRKPESX')"
 
 </section>
 
+
 <!-- ارتباط با پشتیبانی -->
 
 <section class="section contact">
@@ -715,6 +1422,7 @@ petibot01@gmail.com
 
 </div>
 
+
 <div class="row">
 
 <div class="symbol">💬</div>
@@ -736,7 +1444,139 @@ data-goatcounter-title="کلیک روی چت ناشناس پشتیبانی"
 
 </section>
 
-<!-- پنل فرماندهی PETI -->
+</div>
+
+
+<!-- =========================
+     صفحه فروشگاه
+========================= -->
+
+<div class="page shop-page" id="shopPage">
+
+<h2 class="shop-heading">
+بسته‌های ویژه برای ارتقای تجربه کاربری ربات شما
+</h2>
+
+<a
+href="javascript:void(0)"
+class="shop-back"
+onclick="showPage('home')"
+>
+بازگشت ←
+</a>
+
+
+<div class="ad-card">
+
+<div class="ad-icon">
+📣
+</div>
+
+<h2 class="ad-title">
+تبلیغات (گروه ها)
+</h2>
+
+<div class="ad-price">
+<span>تومان</span>
+<strong>۲۵۰,۰۰۰</strong>
+</div>
+
+
+<div class="ad-feature">
+
+<span class="ad-check">✓</span>
+
+<span>
+ارسال پیام تبلیغاتی به
+<strong>تمامی گروه های ثبت شده</strong>
+در ربات
+</span>
+
+</div>
+
+
+<div class="ad-feature">
+
+<span class="ad-check">✓</span>
+
+<span>
+تعداد گروه ها به صورت زنده در سایت
+<strong>قابل مشاهده است</strong>
+</span>
+
+</div>
+
+
+<div class="ad-feature">
+
+<span class="ad-check">✓</span>
+
+<span>
+تحویل فوری و پشتیبانی سریع
+</span>
+
+</div>
+
+
+<button
+class="buy-btn"
+onclick="showPurchaseGuide()"
+>
+🛍 خرید پکیج تبلیغات
+</button>
+
+</div>
+
+
+<!-- راهنمای خرید -->
+
+<div
+class="purchase-guide"
+id="purchaseGuide"
+>
+
+<div class="purchase-icon">
+✉
+</div>
+
+<h2>
+راهنمای خرید
+</h2>
+
+<p>
+برای خرید این پکیج، لطفاً به آیدی زیر در روبیکا پیام دهید:
+</p>
+
+<div class="admin-id">
+
+<strong>@Tahaa_sss</strong>
+
+<button
+class="copy-id"
+onclick="copyText('@Tahaa_sss')"
+>
+کپی ▣
+</button>
+
+</div>
+
+<button
+class="close-guide"
+onclick="hidePurchaseGuide()"
+>
+متوجه شدم
+</button>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     صفحه پنل فرماندهی
+========================= -->
+
+<div class="page" id="commandPage">
 
 <section class="command-panel">
 
@@ -744,23 +1584,39 @@ data-goatcounter-title="کلیک روی چت ناشناس پشتیبانی"
 
 <div class="command-heading">
 
-<div class="command-icon">⚡</div>
+<div class="command-icon">
+⚡
+</div>
 
 <div>
-<h2>پنل فرماندهی PETI</h2>
-<p>مرکز مدیریت سرویس‌های Peti</p>
+
+<h2>
+پنل فرماندهی PETI
+</h2>
+
+<p>
+مرکز مدیریت سرویس‌های Peti
+</p>
+
 </div>
 
 </div>
 
 <div class="command-status">
+
 <span class="status-dot"></span>
+
 آنلاین
-</div>
 
 </div>
 
-<div class="command-login" id="commandLogin">
+</div>
+
+
+<div
+class="command-login"
+id="commandLogin"
+>
 
 <input
 type="password"
@@ -769,17 +1625,27 @@ placeholder="رمز ورود پنل فرماندهی"
 autocomplete="off"
 >
 
-<button class="command-btn" onclick="loginCommandPanel()">
+<button
+class="command-btn"
+onclick="loginCommandPanel()"
+>
 🔐 ورود به پنل فرماندهی
 </button>
 
-<div class="command-error" id="commandError">
+<div
+class="command-error"
+id="commandError"
+>
 رمز وارد شده صحیح نیست ❌
 </div>
 
 </div>
 
-<div class="command-content" id="commandContent">
+
+<div
+class="command-content"
+id="commandContent"
+>
 
 <div class="command-stats">
 
@@ -799,6 +1665,7 @@ autocomplete="off"
 </div>
 
 </div>
+
 
 <!-- آمار واقعی سایت -->
 
@@ -852,6 +1719,7 @@ autocomplete="off"
 
 </div>
 
+
 <a
 class="stats-link"
 href="https://petibot.goatcounter.com/"
@@ -862,11 +1730,15 @@ data-goatcounter-title="باز کردن داشبورد آمار PETI"
 📈 مشاهده جزئیات آمار
 </a>
 
-<div class="stats-status" id="statsStatus">
+<div
+class="stats-status"
+id="statsStatus"
+>
 در انتظار دریافت آمار...
 </div>
 
 </div>
+
 
 <div class="command-actions">
 
@@ -929,6 +1801,7 @@ onclick="loadPetiStats()"
 
 </div>
 
+
 <button
 class="command-btn command-logout"
 onclick="logoutCommandPanel()"
@@ -940,15 +1813,26 @@ onclick="logoutCommandPanel()"
 
 </section>
 
+</div>
+
+
 <footer>
-ما همیشه در کنار شما هستیم تا بهترین تجربه را داشته باشید 💜<br>
-© 2026 PETI BOT<br>
+
+ما همیشه در کنار شما هستیم تا بهترین تجربه را داشته باشید 💜
+<br>
+
+© 2026 PETI BOT
+
+<br>
+
 <span class="creator">
 ارائه شده توسط طاها سالمی
 </span>
+
 </footer>
 
 </main>
+
 
 <button
 class="up"
@@ -957,7 +1841,45 @@ onclick="window.scrollTo({top:0,behavior:'smooth'})"
 ⌃
 </button>
 
+
 <script>
+
+/* =========================
+   جابه‌جایی بین صفحات
+========================= */
+
+function showPage(page){
+
+const pages={
+home:document.getElementById("homePage"),
+shop:document.getElementById("shopPage"),
+command:document.getElementById("commandPage")
+};
+
+const buttons={
+home:document.getElementById("navHome"),
+shop:document.getElementById("navShop"),
+command:document.getElementById("navCommand")
+};
+
+Object.values(pages).forEach(function(p){
+p.classList.remove("active");
+});
+
+Object.values(buttons).forEach(function(b){
+b.classList.remove("active");
+});
+
+pages[page].classList.add("active");
+buttons[page].classList.add("active");
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+
 
 /* =========================
    کپی متن
@@ -1000,10 +1922,44 @@ setTimeout(()=>n.remove(),1300)
 
 
 /* =========================
+   راهنمای خرید
+========================= */
+
+function showPurchaseGuide(){
+
+document
+.getElementById("purchaseGuide")
+.classList.add("show");
+
+setTimeout(function(){
+
+document
+.getElementById("purchaseGuide")
+.scrollIntoView({
+behavior:"smooth",
+block:"center"
+});
+
+},100);
+
+}
+
+
+function hidePurchaseGuide(){
+
+document
+.getElementById("purchaseGuide")
+.classList.remove("show");
+
+}
+
+
+/* =========================
    ورود پنل فرماندهی
 ========================= */
 
 const PETI_ADMIN_PASSWORD = "PetiAdmin2026!";
+
 
 function loginCommandPanel(){
 
@@ -1033,7 +1989,7 @@ error.style.display="block";
 
 
 /* =========================
-   خروج از پنل فرماندهی
+   خروج از پنل
 ========================= */
 
 function logoutCommandPanel(){
@@ -1061,7 +2017,7 @@ return Number(number || 0).toLocaleString("fa-IR");
 
 
 /* =========================
-   دریافت شمارنده عمومی GoatCounter
+   دریافت شمارنده GoatCounter
 ========================= */
 
 async function getGoatCounterCount(path){
@@ -1074,7 +2030,8 @@ encodeURIComponent(path) +
 ".json?rnd=" +
 Date.now();
 
-const response = await fetch(url,{
+const response =
+await fetch(url,{
 method:"GET",
 cache:"no-store"
 });
@@ -1085,13 +2042,18 @@ return 0;
 
 }
 
-const data = await response.json();
+const data =
+await response.json();
 
 return Number(data.count || 0);
 
 }catch(error){
 
-console.error("GoatCounter error:",path,error);
+console.error(
+"GoatCounter error:",
+path,
+error
+);
 
 return 0;
 
@@ -1115,22 +2077,12 @@ status.textContent =
 "در حال دریافت آمار واقعی...";
 
 
-/*
-   بازدید کل سایت
-   TOTAL طبق قابلیت رسمی GoatCounter
-*/
-
 const visits =
 await getGoatCounterCount("TOTAL");
-
 
 document.getElementById("petiVisits").textContent =
 persianNumber(visits);
 
-
-/*
-   Eventهای ثبت‌شده در سایت
-*/
 
 const eventNames = {
 
@@ -1178,50 +2130,25 @@ const stats =
 Object.fromEntries(results);
 
 
-/*
-   Peti
-*/
-
 document.getElementById("petiBotClicks").textContent =
 persianNumber(stats.petiBotClicks);
 
-
-/*
-   Peti Bot²
-*/
 
 document.getElementById("petiBot2Clicks").textContent =
 persianNumber(stats.petiBot2Clicks);
 
 
-/*
-   اطلاع‌رسانی
-*/
-
 document.getElementById("petiChannelClicks").textContent =
 persianNumber(stats.petiChannelClicks);
 
-
-/*
-   لینکدونی
-*/
 
 document.getElementById("petiLinkClicks").textContent =
 persianNumber(stats.petiLinkClicks);
 
 
-/*
-   گروه پشتیبانی
-*/
-
 document.getElementById("petiGroupClicks").textContent =
 persianNumber(stats.petiGroupClicks);
 
-
-/*
-   پشتیبانی
-   ایمیل + چت ناشناس
-*/
 
 const supportClicks =
 (stats.supportEmail || 0) +
@@ -1230,10 +2157,6 @@ const supportClicks =
 document.getElementById("petiSupportClicks").textContent =
 persianNumber(supportClicks);
 
-
-/*
-   مجموع کلیک‌های اصلی
-*/
 
 const totalClicks =
 (stats.petiBotClicks || 0) +
@@ -1268,13 +2191,10 @@ loadPetiStats();
 },1800);
 
 
-/*
-   هر 60 ثانیه بروزرسانی
-*/
-
 setInterval(function(){
 
 if(
+document.getElementById("commandPage").classList.contains("active") &&
 document.getElementById("commandContent").style.display === "block"
 ){
 
@@ -1286,7 +2206,24 @@ loadPetiStats();
 
 });
 
+
+/* =========================
+   ورود با Enter
+========================= */
+
+document
+.getElementById("commandPassword")
+.addEventListener("keydown",function(e){
+
+if(e.key === "Enter"){
+
+loginCommandPanel();
+
+}
+
+});
+
 </script>
 
 </body>
-</html>
+   </html>
