@@ -353,6 +353,80 @@ text-decoration:none
 }
 
 /* =========================
+   آمار پلتفرم - پایین صفحه
+========================= */
+
+.platform-stats{
+margin:28px 0 10px;
+padding:22px 18px;
+border:1px solid #286da5;
+border-radius:35px;
+background:linear-gradient(
+145deg,
+rgba(10,31,53,.94),
+rgba(6,16,30,.96)
+);
+box-shadow:
+0 18px 55px rgba(0,0,0,.28),
+0 0 30px rgba(35,145,235,.06)
+}
+
+.platform-stats-title{
+text-align:center;
+font-size:18px;
+font-weight:900;
+color:#dceaff;
+margin:0 0 18px
+}
+
+.platform-stats-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px
+}
+
+.platform-stat{
+min-height:92px;
+padding:17px 12px;
+border:1px solid #1c4665;
+border-radius:24px;
+background:rgba(3,12,24,.78);
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+text-align:center
+}
+
+.platform-stat-icon{
+font-size:27px;
+margin-bottom:7px
+}
+
+.platform-stat-label{
+font-size:12px;
+color:#8fa5c0;
+margin-bottom:6px
+}
+
+.platform-stat-value{
+font-size:17px;
+font-weight:900;
+color:#55caff
+}
+
+.platform-stat-value a{
+color:#55caff;
+text-decoration:none;
+border-bottom:1px dashed rgba(85,202,255,.55);
+padding-bottom:2px
+}
+
+.platform-stat-value a:hover{
+color:#8bddff
+}
+
+/* =========================
    فروشگاه
 ========================= */
 
@@ -382,8 +456,6 @@ font-weight:900;
 text-decoration:none;
 text-align:center
 }
-
-/* کارت‌های فروشگاه */
 
 .shop-products{
 display:grid;
@@ -503,7 +575,7 @@ box-shadow:0 15px 35px rgba(25,150,240,.25)
 }
 
 /* =========================
-   راهنمای خرید - صفحه جلویی
+   راهنمای خرید
 ========================= */
 
 .purchase-overlay{
@@ -525,12 +597,8 @@ animation:overlayIn .2s ease
 }
 
 @keyframes overlayIn{
-from{
-opacity:0
-}
-to{
-opacity:1
-}
+from{opacity:0}
+to{opacity:1}
 }
 
 .purchase-box{
@@ -1048,6 +1116,37 @@ font-size:18px
 font-size:16px
 }
 
+.platform-stats{
+border-radius:30px;
+padding:19px 13px
+}
+
+.platform-stats-title{
+font-size:17px
+}
+
+.platform-stats-grid{
+gap:9px
+}
+
+.platform-stat{
+min-height:95px;
+padding:14px 8px;
+border-radius:20px
+}
+
+.platform-stat-icon{
+font-size:25px
+}
+
+.platform-stat-label{
+font-size:11px
+}
+
+.platform-stat-value{
+font-size:14px
+}
+
 .shop-heading{
 font-size:21px
 }
@@ -1226,10 +1325,6 @@ font-size:34px
 </header>
 
 
-<!-- =========================
-     منوی اصلی
-========================= -->
-
 <nav class="main-nav">
 
 <button
@@ -1258,10 +1353,6 @@ onclick="showPage('command')"
 
 </nav>
 
-
-<!-- =========================
-     صفحه خانه
-========================= -->
 
 <div class="page active" id="homePage">
 
@@ -1541,6 +1632,65 @@ data-goatcounter-title="کلیک روی چت ناشناس پشتیبانی"
 
 </section>
 
+
+<!-- =========================
+     آمار پلتفرم - پایین صفحه
+========================= -->
+
+<section class="platform-stats">
+
+<h2 class="platform-stats-title">
+📊 آمار پلتفرم PETI
+</h2>
+
+<div class="platform-stats-grid">
+
+<div class="platform-stat">
+
+<div class="platform-stat-icon">
+👤
+</div>
+
+<div class="platform-stat-label">
+کاربران
+</div>
+
+<div class="platform-stat-value">
+۱٬۶۰۰+
+</div>
+
+</div>
+
+
+<div class="platform-stat">
+
+<div class="platform-stat-icon">
+👥
+</div>
+
+<div class="platform-stat-label">
+گروه‌ها
+</div>
+
+<div class="platform-stat-value">
+
+<a
+href="https://rubika.ir/Peti_Sokhango_Bot"
+target="_blank"
+data-goatcounter-click="platform-groups-bot"
+data-goatcounter-title="مشاهده گروه‌های ثبت‌شده در ربات"
+>
+در ربات قابل مشاهده می‌باشد
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
 </div>
 
 
@@ -1562,11 +1712,7 @@ onclick="showPage('home')"
 بازگشت ←
 </a>
 
-
 <div class="shop-products">
-
-
-<!-- تبلیغات پیوی -->
 
 <div class="ad-card">
 
@@ -1584,38 +1730,29 @@ onclick="showPage('home')"
 </div>
 
 <div class="ad-feature">
-
 <span class="ad-check">✓</span>
-
 <span>
 ارسال پیام تبلیغاتی به
 <strong>کاربران ثبت‌شده</strong>
 در ربات
 </span>
-
 </div>
 
 <div class="ad-feature">
-
 <span class="ad-check">✓</span>
-
 <span>
 تبلیغات مستقیم در
 <strong>پیام خصوصی</strong>
 کاربران
 </span>
-
 </div>
 
 <div class="ad-feature">
-
 <span class="ad-check">✓</span>
-
 <span>
 تحویل فوری و
 <strong>پشتیبانی سریع</strong>
 </span>
-
 </div>
 
 <button
@@ -1627,8 +1764,6 @@ onclick="showPurchaseGuide('تبلیغات (پیوی)','۴۰,۰۰۰')"
 
 </div>
 
-
-<!-- تبلیغات گروه‌ها -->
 
 <div class="ad-card">
 
@@ -1646,37 +1781,28 @@ onclick="showPurchaseGuide('تبلیغات (پیوی)','۴۰,۰۰۰')"
 </div>
 
 <div class="ad-feature">
-
 <span class="ad-check">✓</span>
-
 <span>
 ارسال پیام تبلیغاتی به
 <strong>تمامی گروه‌های ثبت شده</strong>
 در ربات
 </span>
-
 </div>
 
 <div class="ad-feature">
-
 <span class="ad-check">✓</span>
-
 <span>
 تعداد گروه‌ها به صورت زنده در سایت
 <strong>قابل مشاهده است</strong>
 </span>
-
 </div>
 
 <div class="ad-feature">
-
 <span class="ad-check">✓</span>
-
 <span>
 تحویل فوری و
 <strong>پشتیبانی سریع</strong>
 </span>
-
 </div>
 
 <button
@@ -1952,9 +2078,7 @@ onclick="logoutCommandPanel()"
 </main>
 
 
-<!-- =========================
-     راهنمای خرید جلوی صفحه
-========================= -->
+<!-- راهنمای خرید -->
 
 <div
 class="purchase-overlay"
@@ -2119,7 +2243,7 @@ setTimeout(()=>n.remove(),1300)
 
 
 /* =========================
-   راهنمای خرید جلوی صفحه
+   راهنمای خرید
 ========================= */
 
 function showPurchaseGuide(product,price){
