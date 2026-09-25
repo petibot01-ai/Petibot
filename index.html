@@ -15,6 +15,7 @@ src="https://gc.zgo.at/count.js">
 <style>
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
+
 body{
 margin:0;
 background:#07101f;
@@ -124,7 +125,6 @@ font-size:13px;
 box-shadow:inset 0 0 18px rgba(255,255,255,.02)
 }
 
-
 /* =========================
    منوی اصلی
 ========================= */
@@ -173,7 +173,6 @@ display:none
 .page.active{
 display:block
 }
-
 
 /* =========================
    بخش‌ها
@@ -304,8 +303,7 @@ background:#0b1323;
 color:#fff;
 width:100%;
 font-size:14px;
-cursor:pointer;
-box-shadow:inset 0 0 15px rgba(40,100,180,.08)
+cursor:pointer
 }
 
 .note{
@@ -354,7 +352,6 @@ color:#9dcaef;
 text-decoration:none
 }
 
-
 /* =========================
    فروشگاه
 ========================= */
@@ -386,10 +383,18 @@ text-decoration:none;
 text-align:center
 }
 
+/* کارت‌های فروشگاه */
+
+.shop-products{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:18px
+}
+
 .ad-card{
 border:1px solid #17658c;
-border-radius:42px;
-padding:42px 42px 30px;
+border-radius:38px;
+padding:30px 22px 25px;
 background:linear-gradient(
 180deg,
 rgba(9,22,42,.97),
@@ -402,10 +407,10 @@ text-align:center
 }
 
 .ad-icon{
-width:106px;
-height:106px;
-margin:0 auto 28px;
-border-radius:28px;
+width:90px;
+height:90px;
+margin:0 auto 20px;
+border-radius:25px;
 display:grid;
 place-items:center;
 background:linear-gradient(
@@ -415,55 +420,55 @@ rgba(6,28,55,.95)
 );
 border:1px solid #164f77;
 color:#25d1f3;
-font-size:48px;
+font-size:40px;
 box-shadow:0 0 30px rgba(20,190,240,.09)
 }
 
 .ad-title{
-font-size:30px;
+font-size:23px;
 font-weight:900;
-margin:0 0 34px;
+margin:0 0 22px;
 color:#f4f6ff
 }
 
 .ad-price{
-height:108px;
+height:78px;
 border:1px dashed #756324;
-border-radius:28px;
+border-radius:23px;
 display:flex;
 align-items:center;
 justify-content:center;
-gap:10px;
-margin-bottom:25px;
+gap:8px;
+margin-bottom:20px;
 color:#7f91b0;
-font-size:20px
+font-size:15px
 }
 
 .ad-price strong{
 color:#ffc928;
-font-size:29px
+font-size:25px
 }
 
 .ad-feature{
-min-height:78px;
+min-height:68px;
 display:flex;
 align-items:center;
 justify-content:flex-start;
-gap:12px;
-padding:15px 20px;
-margin:12px 0;
-border-right:5px solid #10b9dc;
-border-radius:20px;
+gap:9px;
+padding:12px 13px;
+margin:10px 0;
+border-right:4px solid #10b9dc;
+border-radius:17px;
 background:rgba(5,23,42,.9);
 color:#dce4f2;
-font-size:17px;
+font-size:13px;
 line-height:1.8;
 text-align:right
 }
 
 .ad-check{
 color:#43dfaa;
-font-size:25px;
+font-size:21px;
 font-weight:900;
 flex-shrink:0
 }
@@ -474,10 +479,10 @@ color:#25c9ef
 
 .buy-btn{
 width:100%;
-height:70px;
-margin-top:26px;
+height:60px;
+margin-top:18px;
 border:0;
-border-radius:28px;
+border-radius:24px;
 background:linear-gradient(
 90deg,
 #10b7d7,
@@ -485,77 +490,160 @@ background:linear-gradient(
 );
 color:white;
 font-family:inherit;
-font-size:18px;
+font-size:16px;
 font-weight:900;
 cursor:pointer;
-box-shadow:0 12px 30px rgba(25,150,240,.16)
+box-shadow:0 12px 30px rgba(25,150,240,.16);
+transition:.2s
 }
 
+.buy-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 15px 35px rgba(25,150,240,.25)
+}
 
 /* =========================
-   راهنمای خرید
+   راهنمای خرید - صفحه جلویی
 ========================= */
 
-.purchase-guide{
+.purchase-overlay{
+position:fixed;
+inset:0;
+z-index:1000;
 display:none;
-margin-top:22px;
-padding:32px 24px;
-border:1px solid #17658c;
-border-radius:36px;
-background:rgba(7,19,38,.98);
-text-align:center
+align-items:center;
+justify-content:center;
+padding:18px;
+background:rgba(1,7,17,.88);
+backdrop-filter:blur(10px);
+-webkit-backdrop-filter:blur(10px)
 }
 
-.purchase-guide.show{
-display:block
+.purchase-overlay.show{
+display:flex;
+animation:overlayIn .2s ease
+}
+
+@keyframes overlayIn{
+from{
+opacity:0
+}
+to{
+opacity:1
+}
+}
+
+.purchase-box{
+width:min(520px,100%);
+max-height:92vh;
+overflow-y:auto;
+border:1px solid #207da9;
+border-radius:35px;
+padding:28px 22px 23px;
+background:
+linear-gradient(
+180deg,
+rgba(10,31,53,.99),
+rgba(5,14,28,.99)
+);
+box-shadow:
+0 25px 100px rgba(0,0,0,.7),
+0 0 45px rgba(20,170,240,.12);
+text-align:center;
+animation:boxIn .22s ease
+}
+
+@keyframes boxIn{
+from{
+transform:translateY(20px) scale(.97)
+}
+to{
+transform:translateY(0) scale(1)
+}
+}
+
+.purchase-close{
+width:42px;
+height:42px;
+border-radius:50%;
+border:1px solid #31506a;
+background:#09192c;
+color:#a9c2d9;
+font-size:22px;
+cursor:pointer;
+float:left
 }
 
 .purchase-icon{
-width:72px;
-height:72px;
-border-radius:50%;
-margin:0 auto 18px;
+width:75px;
+height:75px;
+border-radius:23px;
+margin:5px auto 17px;
 display:grid;
 place-items:center;
 background:#082e4b;
 color:#26cef1;
-font-size:35px
+font-size:35px;
+box-shadow:0 0 30px rgba(20,190,240,.12)
 }
 
-.purchase-guide h2{
+.purchase-box h2{
 font-size:24px;
-margin:8px 0 16px
+margin:8px 0 12px
 }
 
-.purchase-guide p{
+.purchase-product{
+display:inline-block;
+padding:8px 18px;
+border-radius:20px;
+background:rgba(18,115,160,.16);
+border:1px solid #236d8f;
+color:#4dd5fa;
+font-weight:900;
+font-size:14px;
+margin-bottom:16px
+}
+
+.purchase-price{
+font-size:18px;
+color:#a6b5c9;
+margin:7px 0 20px
+}
+
+.purchase-price strong{
+color:#ffd13a;
+font-size:27px
+}
+
+.purchase-box p{
 color:#95a7c5;
-font-size:16px;
+font-size:14px;
 line-height:2;
-margin:0 0 18px
+margin:0 0 16px
 }
 
 .admin-id{
 display:flex;
 align-items:center;
 justify-content:center;
-gap:12px;
+gap:10px;
 flex-wrap:wrap;
-margin:15px 0 24px
+margin:15px 0 20px
 }
 
 .admin-id strong{
-font-size:23px;
+font-size:22px;
 color:#26ccef;
 direction:ltr;
 background:#061326;
 border:1px dashed #1d5475;
-padding:14px 22px;
+padding:13px 20px;
 border-radius:18px
 }
 
 .copy-id{
 height:48px;
-padding:0 25px;
+padding:0 22px;
 border-radius:24px;
 border:1px solid #176da0;
 background:#09243b;
@@ -565,17 +653,30 @@ font-weight:800;
 cursor:pointer
 }
 
+.rubika-order{
+display:block;
+width:100%;
+height:54px;
+line-height:54px;
+border-radius:25px;
+background:linear-gradient(90deg,#1478bd,#229ce7);
+color:#fff;
+text-decoration:none;
+font-weight:900;
+font-size:15px;
+margin-bottom:10px
+}
+
 .close-guide{
 width:100%;
-height:52px;
-border:1px solid #163a59;
+height:50px;
+border:1px solid #294258;
 border-radius:25px;
 background:transparent;
 color:#8fa2c0;
 font-family:inherit;
 cursor:pointer
 }
-
 
 /* =========================
    پنل فرماندهی
@@ -847,7 +948,6 @@ box-shadow:0 0 35px rgba(44,158,255,.55);
 cursor:pointer
 }
 
-
 /* =========================
    موبایل
 ========================= */
@@ -957,6 +1057,10 @@ min-width:130px;
 padding:11px 22px
 }
 
+.shop-products{
+grid-template-columns:1fr
+}
+
 .ad-card{
 border-radius:32px;
 padding:30px 17px 24px
@@ -999,16 +1103,21 @@ height:62px;
 font-size:16px
 }
 
-.purchase-guide{
-padding:27px 17px
+.purchase-overlay{
+padding:10px
 }
 
-.purchase-guide h2{
+.purchase-box{
+border-radius:30px;
+padding:24px 16px 20px
+}
+
+.purchase-box h2{
 font-size:21px
 }
 
-.purchase-guide p{
-font-size:14px
+.purchase-price strong{
+font-size:25px
 }
 
 .admin-id strong{
@@ -1089,6 +1198,7 @@ left:15px;
 bottom:18px;
 font-size:34px
 }
+
 }
 </style>
 </head>
@@ -1154,9 +1264,6 @@ onclick="showPage('command')"
 ========================= -->
 
 <div class="page active" id="homePage">
-
-
-<!-- ربات‌های Peti -->
 
 <section class="section gold">
 
@@ -1231,8 +1338,6 @@ onclick="copyText('@Peti_Bot')"
 </section>
 
 
-<!-- راهنمایی دستورات -->
-
 <section class="section">
 
 <h2 class="title">
@@ -1271,8 +1376,6 @@ onclick="copyText('@Peti_Bot_Dastorat')"
 
 </section>
 
-
-<!-- چنل اطلاع رسانی -->
 
 <section class="section">
 
@@ -1313,8 +1416,6 @@ onclick="copyText('@Etla_Resani_Peti')"
 </section>
 
 
-<!-- لینکدونی -->
-
 <section class="section">
 
 <h2 class="title">
@@ -1354,8 +1455,6 @@ onclick="copyText('@LinkDoni_Peti')"
 </section>
 
 
-<!-- گروه پشتیبانی -->
-
 <section class="section">
 
 <h2 class="title">
@@ -1394,8 +1493,6 @@ onclick="copyText('https://rubika.ir/joing/BBEIEAHIC0BFMRHOQMKJQEUYKZRKPESX')"
 
 </section>
 
-
-<!-- ارتباط با پشتیبانی -->
 
 <section class="section contact">
 
@@ -1454,7 +1551,7 @@ data-goatcounter-title="کلیک روی چت ناشناس پشتیبانی"
 <div class="page shop-page" id="shopPage">
 
 <h2 class="shop-heading">
-بسته‌های ویژه برای ارتقای تجربه کاربری ربات شما
+بسته‌های ویژه تبلیغاتی Peti
 </h2>
 
 <a
@@ -1466,21 +1563,25 @@ onclick="showPage('home')"
 </a>
 
 
+<div class="shop-products">
+
+
+<!-- تبلیغات پیوی -->
+
 <div class="ad-card">
 
 <div class="ad-icon">
-📣
+💬
 </div>
 
 <h2 class="ad-title">
-تبلیغات (گروه ها)
+تبلیغات (پیوی)
 </h2>
 
 <div class="ad-price">
 <span>تومان</span>
-<strong>۲۵۰,۰۰۰</strong>
+<strong>۴۰,۰۰۰</strong>
 </div>
-
 
 <div class="ad-feature">
 
@@ -1488,84 +1589,104 @@ onclick="showPage('home')"
 
 <span>
 ارسال پیام تبلیغاتی به
-<strong>تمامی گروه های ثبت شده</strong>
+<strong>کاربران ثبت‌شده</strong>
 در ربات
 </span>
 
 </div>
 
+<div class="ad-feature">
+
+<span class="ad-check">✓</span>
+
+<span>
+تبلیغات مستقیم در
+<strong>پیام خصوصی</strong>
+کاربران
+</span>
+
+</div>
 
 <div class="ad-feature">
 
 <span class="ad-check">✓</span>
 
 <span>
-تعداد گروه ها به صورت زنده در سایت
+تحویل فوری و
+<strong>پشتیبانی سریع</strong>
+</span>
+
+</div>
+
+<button
+class="buy-btn"
+onclick="showPurchaseGuide('تبلیغات (پیوی)','۴۰,۰۰۰')"
+>
+🛍 خرید پکیج
+</button>
+
+</div>
+
+
+<!-- تبلیغات گروه‌ها -->
+
+<div class="ad-card">
+
+<div class="ad-icon">
+📣
+</div>
+
+<h2 class="ad-title">
+تبلیغات (گروه‌ها)
+</h2>
+
+<div class="ad-price">
+<span>تومان</span>
+<strong>۴۵,۰۰۰</strong>
+</div>
+
+<div class="ad-feature">
+
+<span class="ad-check">✓</span>
+
+<span>
+ارسال پیام تبلیغاتی به
+<strong>تمامی گروه‌های ثبت شده</strong>
+در ربات
+</span>
+
+</div>
+
+<div class="ad-feature">
+
+<span class="ad-check">✓</span>
+
+<span>
+تعداد گروه‌ها به صورت زنده در سایت
 <strong>قابل مشاهده است</strong>
 </span>
 
 </div>
 
-
 <div class="ad-feature">
 
 <span class="ad-check">✓</span>
 
 <span>
-تحویل فوری و پشتیبانی سریع
+تحویل فوری و
+<strong>پشتیبانی سریع</strong>
 </span>
 
 </div>
 
-
 <button
 class="buy-btn"
-onclick="showPurchaseGuide()"
+onclick="showPurchaseGuide('تبلیغات (گروه‌ها)','۴۵,۰۰۰')"
 >
-🛍 خرید پکیج تبلیغات
+🛍 خرید پکیج
 </button>
 
 </div>
-
-
-<!-- راهنمای خرید -->
-
-<div
-class="purchase-guide"
-id="purchaseGuide"
->
-
-<div class="purchase-icon">
-✉
-</div>
-
-<h2>
-راهنمای خرید
-</h2>
-
-<p>
-برای خرید این پکیج، لطفاً به آیدی زیر در روبیکا پیام دهید:
-</p>
-
-<div class="admin-id">
-
-<strong>@Tahaa_sss</strong>
-
-<button
-class="copy-id"
-onclick="copyText('@Tahaa_sss')"
->
-کپی ▣
-</button>
-
-</div>
-
-<button
-class="close-guide"
-onclick="hidePurchaseGuide()"
->
-متوجه شدم
-</button>
 
 </div>
 
@@ -1667,8 +1788,6 @@ id="commandContent"
 </div>
 
 
-<!-- آمار واقعی سایت -->
-
 <div class="real-stats">
 
 <div class="real-stats-title">
@@ -1718,7 +1837,6 @@ id="commandContent"
 </div>
 
 </div>
-
 
 <a
 class="stats-link"
@@ -1834,6 +1952,85 @@ onclick="logoutCommandPanel()"
 </main>
 
 
+<!-- =========================
+     راهنمای خرید جلوی صفحه
+========================= -->
+
+<div
+class="purchase-overlay"
+id="purchaseOverlay"
+onclick="closePurchaseOutside(event)"
+>
+
+<div class="purchase-box">
+
+<button
+class="purchase-close"
+onclick="closePurchaseGuide()"
+>
+×
+</button>
+
+<div class="purchase-icon">
+🛍
+</div>
+
+<h2>
+راهنمای خرید
+</h2>
+
+<div
+class="purchase-product"
+id="purchaseProduct"
+>
+تبلیغات
+</div>
+
+<div class="purchase-price">
+قیمت:
+<strong id="purchasePrice">
+۰
+</strong>
+تومان
+</div>
+
+<p>
+برای ثبت سفارش این پکیج، به آیدی زیر در روبیکا پیام دهید.
+</p>
+
+<div class="admin-id">
+
+<strong>@Tahaa_sss</strong>
+
+<button
+class="copy-id"
+onclick="copyText('@Tahaa_sss')"
+>
+کپی ▣
+</button>
+
+</div>
+
+<a
+class="rubika-order"
+href="https://rubika.ir/Tahaa_sss"
+target="_blank"
+>
+💬 ورود به روبیکا و ثبت سفارش
+</a>
+
+<button
+class="close-guide"
+onclick="closePurchaseGuide()"
+>
+بستن
+</button>
+
+</div>
+
+</div>
+
+
 <button
 class="up"
 onclick="window.scrollTo({top:0,behavior:'smooth'})"
@@ -1893,7 +2090,7 @@ navigator.clipboard.writeText(t)
 
 }else{
 
-let x=document.createElement('textarea');
+let x=document.createElement("textarea");
 
 x.value=t;
 
@@ -1901,18 +2098,18 @@ document.body.appendChild(x);
 
 x.select();
 
-document.execCommand('copy');
+document.execCommand("copy");
 
 x.remove()
 
 }
 
-let n=document.createElement('div');
+let n=document.createElement("div");
 
-n.textContent='کپی شد ✅';
+n.textContent="کپی شد ✅";
 
 n.style=
-'position:fixed;bottom:115px;left:50%;transform:translateX(-50%);background:#16243b;color:white;padding:11px 18px;border-radius:14px;border:1px solid #3c6a9d;z-index:99;font-size:14px';
+"position:fixed;bottom:115px;left:50%;transform:translateX(-50%);background:#16243b;color:white;padding:11px 18px;border-radius:14px;border:1px solid #3c6a9d;z-index:2000;font-size:14px";
 
 document.body.appendChild(n);
 
@@ -1922,36 +2119,55 @@ setTimeout(()=>n.remove(),1300)
 
 
 /* =========================
-   راهنمای خرید
+   راهنمای خرید جلوی صفحه
 ========================= */
 
-function showPurchaseGuide(){
+function showPurchaseGuide(product,price){
 
-document
-.getElementById("purchaseGuide")
-.classList.add("show");
+document.getElementById("purchaseProduct").textContent=product;
 
-setTimeout(function(){
+document.getElementById("purchasePrice").textContent=price;
 
-document
-.getElementById("purchaseGuide")
-.scrollIntoView({
-behavior:"smooth",
-block:"center"
+document.getElementById("purchaseOverlay").classList.add("show");
+
+document.body.style.overflow="hidden";
+
+}
+
+
+function closePurchaseGuide(){
+
+document.getElementById("purchaseOverlay").classList.remove("show");
+
+document.body.style.overflow="";
+
+}
+
+
+function closePurchaseOutside(event){
+
+if(event.target === document.getElementById("purchaseOverlay")){
+
+closePurchaseGuide();
+
+}
+
+}
+
+
+/* =========================
+   بستن با ESC
+========================= */
+
+document.addEventListener("keydown",function(e){
+
+if(e.key==="Escape"){
+
+closePurchaseGuide();
+
+}
+
 });
-
-},100);
-
-}
-
-
-function hidePurchaseGuide(){
-
-document
-.getElementById("purchaseGuide")
-.classList.remove("show");
-
-}
 
 
 /* =========================
@@ -2133,18 +2349,14 @@ Object.fromEntries(results);
 document.getElementById("petiBotClicks").textContent =
 persianNumber(stats.petiBotClicks);
 
-
 document.getElementById("petiBot2Clicks").textContent =
 persianNumber(stats.petiBot2Clicks);
-
 
 document.getElementById("petiChannelClicks").textContent =
 persianNumber(stats.petiChannelClicks);
 
-
 document.getElementById("petiLinkClicks").textContent =
 persianNumber(stats.petiLinkClicks);
-
 
 document.getElementById("petiGroupClicks").textContent =
 persianNumber(stats.petiGroupClicks);
