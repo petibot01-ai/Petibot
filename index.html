@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>دسترسی سریع به سرویس های Peti</title>
 
+<!-- جلوگیری از نمایش سایت قبل از بررسی حالت تعمیرات -->
+<script>
+document.documentElement.classList.add("peti-maintenance-checking");
+</script>
+
 <!-- GoatCounter -->
 <script
 data-goatcounter="https://petibot.goatcounter.com/count"
@@ -15,6 +20,17 @@ src="https://gc.zgo.at/count.js">
 <style>
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
+
+html.peti-maintenance-checking body{
+overflow:hidden!important;
+}
+
+html.peti-maintenance-checking body > main,
+html.peti-maintenance-checking body > footer,
+html.peti-maintenance-checking body > .purchase-overlay,
+html.peti-maintenance-checking body > .up{
+visibility:hidden!important;
+}
 
 body{
 margin:0;
@@ -1119,10 +1135,6 @@ color:#42c8ff;
 font-weight:800;
 }
 
-/* =========================
-   دکمه ورود مدیر در صفحه تعمیرات
-========================= */
-
 .maintenance-admin-btn{
 width:100%;
 height:50px;
@@ -1574,14 +1586,13 @@ font-size:34px
 }
 
 }
-
 </style>
 </head>
 
 <body>
 
 <div
-class="maintenance-screen"
+class="maintenance-screen show"
 id="petiMaintenanceScreen"
 >
 
@@ -1589,21 +1600,18 @@ id="petiMaintenanceScreen"
 
 <div class="maintenance-spinner"></div>
 
-<h1 class="maintenance-title">
-ما درحال بروزرسانی سایت هستیم
+<h1 class="maintenance-title" id="maintenanceTitle">
+در حال بررسی وضعیت سایت...
 </h1>
 
-<p class="maintenance-text">
-ما درحال اعمال تغییرات سایت هستیم
-<br>
-لطفا دقایقی دیگر مراجعه کنید.
+<p class="maintenance-text" id="maintenanceText">
+لطفاً چند لحظه صبر کنید.
 </p>
 
 <div class="maintenance-brand">
 💙 PETI BOT
 </div>
 
-<!-- ورود مدیر از صفحه تعمیرات -->
 <button
 class="maintenance-admin-btn"
 onclick="maintenanceAdminLogin()">
@@ -1907,17 +1915,9 @@ data-goatcounter-title="کلیک روی چت ناشناس پشتیبانی">
 <div class="platform-stats-grid">
 
 <div class="platform-stat">
-
 <div class="platform-stat-icon">👤</div>
-
-<div class="platform-stat-label">
-کاربران
-</div>
-
-<div class="platform-stat-value">
-۱٬۶۰۰+
-</div>
-
+<div class="platform-stat-label">کاربران</div>
+<div class="platform-stat-value">۱٬۶۰۰+</div>
 </div>
 
 <div class="platform-stat">
@@ -2642,7 +2642,13 @@ function closePurchaseGuide(){
 
 document.getElementById("purchaseOverlay").classList.remove("show");
 
+if(
+!document.documentElement.classList.contains(
+"peti-maintenance-checking"
+)
+){
 document.body.style.overflow="";
+}
 
 }
 
@@ -2673,8 +2679,6 @@ closePurchaseGuide();
 
 const PETI_ADMIN_PASSWORD =
 "PetiAdmin2026!";
-
-/* آدرس واقعی Cloudflare Worker */
 
 const PETI_MAINTENANCE_API =
 "https://peti-maintenance.petibot01.workers.dev";
@@ -2764,11 +2768,19 @@ if(show){
 
 screen.classList.add("show");
 
+document.documentElement.classList.remove(
+"peti-maintenance-checking"
+);
+
 document.body.style.overflow="hidden";
 
 }else{
 
 screen.classList.remove("show");
+
+document.documentElement.classList.remove(
+"peti-maintenance-checking"
+);
 
 document.body.style.overflow="";
 
@@ -2806,13 +2818,10 @@ if(error){
 error.style.display="none";
 }
 
-/* بستن صفحه تعمیرات */
 showMaintenanceScreen(false);
 
-/* رفتن مستقیم به پنل فرماندهی */
 showPage("command");
 
-/* نمایش مستقیم محتوای پنل */
 document.getElementById(
 "commandLogin"
 ).style.display="none";
@@ -2821,7 +2830,6 @@ document.getElementById(
 "commandContent"
 ).style.display="block";
 
-/* دریافت وضعیت و آمار */
 updateMaintenanceUI();
 loadPetiStats();
 
@@ -2858,7 +2866,6 @@ document.getElementById(
 );
 
 if(!text || !badge || !btn)return;
-
 
 if(petiMaintenanceEnabled){
 
@@ -2905,6 +2912,26 @@ btn.textContent =
 
 async function getMaintenanceStatus(){
 
+const screen =
+document.getElementById(
+"petiMaintenanceScreen"
+);
+
+const title =
+document.getElementById(
+"maintenanceTitle"
+);
+
+const text =
+document.getElementById(
+"maintenanceText"
+);
+
+const isAdmin =
+sessionStorage.getItem(
+"petiMaintenanceAdmin"
+);
+
 try{
 
 const response =
@@ -2914,13 +2941,19 @@ PETI_MAINTENANCE_API +
 Date.now(),
 {
 method:"GET",
-cache:"no-store"
+cache:"no-store",
+headers:{
+"Accept":"application/json"
+}
 }
 );
 
 if(!response.ok){
 
-throw new Error("status");
+throw new Error(
+"status_http_" +
+response.status
+);
 
 }
 
@@ -2933,14 +2966,43 @@ data.maintenance === true;
 updateMaintenanceUI();
 
 if(
-!sessionStorage.getItem(
-"petiMaintenanceAdmin"
-)
+petiMaintenanceEnabled &&
+!isAdmin
 ){
 
-showMaintenanceScreen(
-petiMaintenanceEnabled
+if(title){
+
+title.textContent =
+"ما درحال بروزرسانی سایت هستیم";
+
+}
+
+if(text){
+
+text.innerHTML =
+"ما درحال اعمال تغییرات سایت هستیم" +
+"<br>" +
+"لطفا دقایقی دیگر مراجعه کنید.";
+
+}
+
+screen.classList.add("show");
+
+document.documentElement.classList.remove(
+"peti-maintenance-checking"
 );
+
+document.body.style.overflow="hidden";
+
+}else{
+
+screen.classList.remove("show");
+
+document.documentElement.classList.remove(
+"peti-maintenance-checking"
+);
+
+document.body.style.overflow="";
 
 }
 
@@ -2950,6 +3012,50 @@ console.error(
 "Maintenance status error:",
 error
 );
+
+/*
+اگر Worker پاسخ ندهد، سایت برای کاربران عادی
+باز نمی‌شود تا مشکل وضعیت تعمیرات باعث ورود
+ناخواسته به سایت نشود.
+*/
+
+if(!isAdmin){
+
+petiMaintenanceEnabled=true;
+
+if(title){
+
+title.textContent =
+"ما درحال بروزرسانی سایت هستیم";
+
+}
+
+if(text){
+
+text.innerHTML =
+"در حال بررسی وضعیت سرویس هستیم" +
+"<br>" +
+"لطفا دقایقی دیگر مراجعه کنید.";
+
+}
+
+screen.classList.add("show");
+
+document.documentElement.classList.remove(
+"peti-maintenance-checking"
+);
+
+document.body.style.overflow="hidden";
+
+}else{
+
+document.documentElement.classList.remove(
+"peti-maintenance-checking"
+);
+
+document.body.style.overflow="";
+
+}
 
 }
 
@@ -3287,12 +3393,13 @@ new Date().toLocaleTimeString(
 
 
 /* =========================
-   بروزرسانی خودکار
+   بررسی فوری تعمیرات
 ========================= */
 
-window.addEventListener(
-"load",
-function(){
+/*
+این قسمت عمداً خارج از window.load اجرا می‌شود
+تا قبل از لود کامل سایت وضعیت تعمیرات بررسی شود.
+*/
 
 getMaintenanceStatus();
 
@@ -3304,6 +3411,15 @@ getMaintenanceStatus();
 },
 30000
 );
+
+
+/* =========================
+   آمار و کارهای مربوط به load
+========================= */
+
+window.addEventListener(
+"load",
+function(){
 
 setTimeout(
 function(){
