@@ -1605,7 +1605,7 @@ id="petiMaintenanceScreen"
 </h1>
 
 <p class="maintenance-text" id="maintenanceText">
-ما درحال اعمال تغییرات سایت هستیم
+درحال بررسی وضعیت سرویس هستیم
 <br>
 لطفا دقایقی دیگر مراجعه کنید.
 </p>
@@ -2929,10 +2929,11 @@ document.getElementById(
 "maintenanceText"
 );
 
+/* بررسی دقیق ورود مدیر */
 const isAdmin =
 sessionStorage.getItem(
 "petiMaintenanceAdmin"
-);
+) === "1";
 
 try{
 
@@ -2982,7 +2983,7 @@ title.textContent =
 if(text){
 
 text.innerHTML =
-"ما درحال اعمال تغییرات سایت هستیم" +
+"درحال بررسی وضعیت سرویس هستیم" +
 "<br>" +
 "لطفا دقایقی دیگر مراجعه کنید.";
 
@@ -3035,7 +3036,7 @@ title.textContent =
 if(text){
 
 text.innerHTML =
-"ما درحال اعمال تغییرات سایت هستیم" +
+"درحال بررسی وضعیت سرویس هستیم" +
 "<br>" +
 "لطفا دقایقی دیگر مراجعه کنید.";
 
@@ -3414,6 +3415,7 @@ getMaintenanceStatus();
 30000
 );
 
+</script>
 
-/* =========================
-   آمار و کارهای مربوط به l
+</body>
+   </html>
