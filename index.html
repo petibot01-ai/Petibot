@@ -1,36 +1,20 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
-
 <head>
-
 <meta charset="utf-8">
-
-<meta
-name="viewport"
-content="width=device-width,initial-scale=1,viewport-fit=cover"
->
-
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>دسترسی سریع به سرویس های Peti</title>
 
-
 <!-- GoatCounter -->
-
 <script
 data-goatcounter="https://petibot.goatcounter.com/count"
 async
 src="https://gc.zgo.at/count.js">
 </script>
 
-
 <style>
-
-*{
-box-sizing:border-box
-}
-
-html{
-scroll-behavior:smooth
-}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
 
 body{
 margin:0;
@@ -69,77 +53,6 @@ width:min(780px,calc(100% - 24px));
 margin:auto;
 padding:18px 0 40px
 }
-
-
-/* =========================
-   حالت بروزرسانی سراسری
-========================= */
-
-#petiMaintenanceScreen{
-position:fixed;
-inset:0;
-z-index:999999;
-display:none;
-align-items:center;
-justify-content:center;
-flex-direction:column;
-text-align:center;
-padding:25px;
-background:
-radial-gradient(
-circle at 50% 35%,
-rgba(20,126,210,.20),
-transparent 40%
-),
-linear-gradient(
-180deg,
-#081629 0%,
-#07101f 100%
-);
-}
-
-#petiMaintenanceScreen.show{
-display:flex;
-}
-
-.peti-maintenance-spinner{
-width:68px;
-height:68px;
-border-radius:50%;
-border:5px solid rgba(85,202,255,.15);
-border-top-color:#55caff;
-border-right-color:#168ee5;
-animation:petiMaintenanceSpin 1s linear infinite;
-box-shadow:0 0 35px rgba(35,145,235,.25);
-}
-
-#petiMaintenanceScreen h2{
-margin:24px 0 10px;
-font-size:22px;
-font-weight:900;
-color:#d9f4ff;
-}
-
-#petiMaintenanceScreen p{
-max-width:430px;
-margin:0;
-color:#9fc5dd;
-font-size:12px;
-line-height:2.2;
-}
-
-@keyframes petiMaintenanceSpin{
-
-to{
-transform:rotate(360deg);
-}
-
-}
-
-
-/* =========================
-   هدر
-========================= */
 
 .hero{
 text-align:center;
@@ -211,7 +124,6 @@ font-size:11px;
 box-shadow:inset 0 0 18px rgba(50,170,255,.03)
 }
 
-
 /* =========================
    منوی اصلی
 ========================= */
@@ -253,14 +165,9 @@ rgba(35,156,231,.18)
 box-shadow:0 0 18px rgba(35,145,235,.12)
 }
 
-.page{
-display:none
-}
+.page{display:none}
 
-.page.active{
-display:block
-}
-
+.page.active{display:block}
 
 /* =========================
    بخش‌ها
@@ -434,7 +341,6 @@ color:#9dcaef;
 text-decoration:none
 }
 
-
 /* =========================
    آمار
 ========================= */
@@ -505,14 +411,15 @@ border-bottom:1px dashed rgba(85,202,255,.55);
 padding-bottom:2px
 }
 
+.platform-stat-value a:hover{
+color:#8bddff
+}
 
 /* =========================
    فروشگاه
 ========================= */
 
-.shop-page{
-padding-top:4px
-}
+.shop-page{padding-top:4px}
 
 .shop-heading{
 text-align:center;
@@ -573,7 +480,8 @@ rgba(5,32,60,.95)
 );
 border:1px solid #16608f;
 color:#25d1f3;
-font-size:40px
+font-size:40px;
+box-shadow:0 0 30px rgba(20,190,240,.10)
 }
 
 .ad-title{
@@ -625,9 +533,7 @@ font-weight:900;
 flex-shrink:0
 }
 
-.ad-feature strong{
-color:#25c9ef
-}
+.ad-feature strong{color:#25c9ef}
 
 .buy-btn{
 width:100%;
@@ -644,17 +550,21 @@ color:white;
 font-family:inherit;
 font-size:14px;
 font-weight:900;
-cursor:pointer
+cursor:pointer;
+box-shadow:0 12px 30px rgba(25,150,240,.16);
+transition:.2s
 }
 
+.buy-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 15px 35px rgba(25,150,240,.25)
+}
 
 /* =========================
    آموزش
 ========================= */
 
-.education-page{
-padding-top:4px
-}
+.education-page{padding-top:4px}
 
 .education-header{
 text-align:center;
@@ -742,14 +652,14 @@ margin-top:18px;
 padding-top:12px;
 border-top:1px solid rgba(42,133,187,.28);
 text-align:left;
+direction:rtl;
 font-size:10px;
 font-weight:800;
 color:#52c9ff
 }
 
-
 /* =========================
-   راهنمای خرید
+   خرید
 ========================= */
 
 .purchase-overlay{
@@ -761,11 +671,18 @@ align-items:center;
 justify-content:center;
 padding:18px;
 background:rgba(1,7,17,.88);
-backdrop-filter:blur(10px)
+backdrop-filter:blur(10px);
+-webkit-backdrop-filter:blur(10px)
 }
 
 .purchase-overlay.show{
-display:flex
+display:flex;
+animation:overlayIn .2s ease
+}
+
+@keyframes overlayIn{
+from{opacity:0}
+to{opacity:1}
 }
 
 .purchase-box{
@@ -781,7 +698,20 @@ linear-gradient(
 rgba(10,31,53,.99),
 rgba(5,14,28,.99)
 );
-text-align:center
+box-shadow:
+0 25px 100px rgba(0,0,0,.7),
+0 0 45px rgba(20,170,240,.12);
+text-align:center;
+animation:boxIn .22s ease
+}
+
+@keyframes boxIn{
+from{
+transform:translateY(20px) scale(.97)
+}
+to{
+transform:translateY(0) scale(1)
+}
 }
 
 .purchase-close{
@@ -805,7 +735,8 @@ display:grid;
 place-items:center;
 background:#082e4b;
 color:#26cef1;
-font-size:35px
+font-size:35px;
+box-shadow:0 0 30px rgba(20,190,240,.12)
 }
 
 .purchase-box h2{
@@ -899,7 +830,6 @@ font-family:inherit;
 cursor:pointer
 }
 
-
 /* =========================
    پنل فرماندهی
 ========================= */
@@ -940,7 +870,8 @@ border-radius:17px;
 display:grid;
 place-items:center;
 background:linear-gradient(145deg,#168fe5,#0b4d86);
-font-size:25px
+font-size:25px;
+box-shadow:0 0 25px rgba(35,150,240,.25)
 }
 
 .command-heading h2{
@@ -970,12 +901,11 @@ font-size:10px
 width:8px;
 height:8px;
 border-radius:50%;
-background:#35df82
+background:#35df82;
+box-shadow:0 0 10px #35df82
 }
 
-.command-login{
-text-align:center
-}
+.command-login{text-align:center}
 
 .command-login input{
 width:100%;
@@ -988,6 +918,11 @@ padding:0 18px;
 font-size:12px;
 outline:none;
 text-align:center
+}
+
+.command-login input:focus{
+border-color:#36aaf5;
+box-shadow:0 0 15px rgba(54,170,245,.12)
 }
 
 .command-btn{
@@ -1010,9 +945,7 @@ font-size:11px;
 margin-top:10px
 }
 
-.command-content{
-display:none
-}
+.command-content{display:none}
 
 .command-stats{
 display:grid;
@@ -1098,66 +1031,6 @@ font-size:11px;
 font-weight:700
 }
 
-
-/* =========================
-   کنترل تعمیرات
-========================= */
-
-.maintenance-control{
-margin:18px 0;
-padding:18px;
-border:1px solid #286da5;
-border-radius:25px;
-background:rgba(3,12,24,.72);
-}
-
-.maintenance-control-head{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:12px;
-margin-bottom:13px;
-}
-
-.maintenance-control-head strong{
-display:block;
-font-size:13px;
-color:#dff5ff;
-margin-bottom:6px;
-}
-
-.maintenance-control-head span{
-font-size:10px;
-color:#8da5bf;
-}
-
-#maintenanceStateBadge{
-padding:7px 12px;
-border-radius:18px;
-border:1px solid #31516b;
-color:#8da5bf;
-white-space:nowrap;
-}
-
-.maintenance-toggle{
-width:100%;
-min-height:52px;
-border:1px solid #2878b8;
-border-radius:22px;
-background:rgba(10,35,58,.8);
-color:#fff;
-font-family:inherit;
-font-size:11px;
-font-weight:800;
-cursor:pointer;
-}
-
-.maintenance-toggle:disabled{
-opacity:.5;
-cursor:not-allowed;
-}
-
-
 .command-actions{
 display:grid;
 grid-template-columns:repeat(2,1fr);
@@ -1180,6 +1053,11 @@ font-weight:700;
 cursor:pointer
 }
 
+.command-action:hover{
+border-color:#38aaf5;
+background:rgba(15,48,75,.8)
+}
+
 .command-logout{
 margin-top:12px;
 border-color:#703a48;
@@ -1192,6 +1070,144 @@ text-align:center;
 font-size:9px;
 color:#8da5bf;
 margin-top:10px
+}
+
+/* =========================
+   حالت تعمیرات
+========================= */
+
+.maintenance-screen{
+position:fixed;
+inset:0;
+z-index:99999;
+display:none;
+align-items:center;
+justify-content:center;
+padding:20px;
+background:
+radial-gradient(
+circle at 50% 25%,
+rgba(20,126,210,.20),
+transparent 38%
+),
+linear-gradient(
+180deg,
+#071629,
+#030914
+);
+text-align:center;
+}
+
+.maintenance-screen.show{
+display:flex;
+}
+
+.maintenance-box{
+width:min(500px,100%);
+padding:38px 24px;
+border:1px solid #216b9d;
+border-radius:35px;
+background:rgba(7,24,42,.94);
+box-shadow:
+0 25px 90px rgba(0,0,0,.6),
+0 0 40px rgba(35,145,235,.14);
+}
+
+.maintenance-spinner{
+width:72px;
+height:72px;
+margin:0 auto 25px;
+border-radius:50%;
+border:5px solid #173d5b;
+border-top-color:#42c8ff;
+border-right-color:#238fe0;
+animation:petiSpin 1s linear infinite;
+}
+
+@keyframes petiSpin{
+to{
+transform:rotate(360deg);
+}
+}
+
+.maintenance-title{
+font-size:21px;
+font-weight:900;
+color:#c9edff;
+margin:0 0 15px;
+}
+
+.maintenance-text{
+font-size:12px;
+line-height:2.2;
+color:#9fc4dc;
+margin:0;
+}
+
+.maintenance-brand{
+margin-top:25px;
+font-size:11px;
+color:#42c8ff;
+font-weight:800;
+}
+
+/* کنترل تعمیرات */
+
+.maintenance-control{
+margin:18px 0;
+padding:18px;
+border:1px solid #285a79;
+border-radius:24px;
+background:rgba(2,11,22,.72);
+}
+
+.maintenance-control-head{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+margin-bottom:13px;
+}
+
+.maintenance-control-head strong{
+display:block;
+font-size:12px;
+color:#ccecff;
+margin-bottom:5px;
+}
+
+#maintenanceStatusText{
+display:block;
+font-size:9px;
+color:#8da5bf;
+}
+
+#maintenanceStateBadge{
+padding:6px 11px;
+border:1px solid #31516b;
+border-radius:15px;
+font-size:9px;
+font-weight:900;
+color:#58e69b;
+white-space:nowrap;
+}
+
+.maintenance-toggle{
+width:100%;
+height:48px;
+border:1px solid #247db5;
+border-radius:24px;
+background:linear-gradient(90deg,#1478bd,#229ce7);
+color:#fff;
+font-family:inherit;
+font-size:11px;
+font-weight:900;
+cursor:pointer;
+}
+
+.maintenance-toggle:disabled{
+opacity:.55;
+cursor:wait;
 }
 
 footer{
@@ -1218,7 +1234,6 @@ box-shadow:0 0 35px rgba(44,158,255,.55);
 cursor:pointer
 }
 
-
 /* =========================
    موبایل
 ========================= */
@@ -1244,7 +1259,8 @@ font-size:30px
 }
 
 h1{
-font-size:20px
+font-size:20px;
+line-height:1.5
 }
 
 .sub{
@@ -1280,13 +1296,23 @@ font-size:15px;
 margin-bottom:16px
 }
 
+.title .ico{
+font-size:21px
+}
+
 .item{
 border-radius:27px;
 padding:13px 16px 18px
 }
 
+.badge{
+height:42px;
+font-size:11px
+}
+
 .name{
-font-size:13px
+font-size:13px;
+margin-bottom:16px
 }
 
 .copy{
@@ -1294,13 +1320,33 @@ height:42px;
 font-size:11px
 }
 
+.note{
+font-size:10px
+}
+
 .contact{
 padding:16px
+}
+
+.contact h3{
+font-size:13px
+}
+
+.contact p{
+font-size:11px
 }
 
 .platform-stats{
 border-radius:30px;
 padding:19px 13px
+}
+
+.platform-stats-title{
+font-size:15px
+}
+
+.platform-stats-grid{
+gap:9px
 }
 
 .platform-stat{
@@ -1309,8 +1355,26 @@ padding:14px 8px;
 border-radius:20px
 }
 
+.platform-stat-icon{
+font-size:23px
+}
+
+.platform-stat-label{
+font-size:10px
+}
+
+.platform-stat-value{
+font-size:13px
+}
+
 .shop-heading{
 font-size:19px
+}
+
+.shop-back{
+min-width:130px;
+padding:11px 22px;
+font-size:11px
 }
 
 .shop-products{
@@ -1322,13 +1386,58 @@ border-radius:32px;
 padding:30px 17px 24px
 }
 
+.ad-icon{
+width:82px;
+height:82px;
+font-size:38px;
+border-radius:24px
+}
+
+.ad-title{
+font-size:18px;
+margin-bottom:27px
+}
+
+.ad-price{
+height:88px;
+font-size:12px
+}
+
+.ad-price strong{
+font-size:20px
+}
+
+.ad-feature{
+font-size:11px;
+min-height:72px;
+padding:13px 14px;
+border-radius:18px
+}
+
+.ad-check{
+font-size:21px
+}
+
+.buy-btn{
+height:62px;
+font-size:13px
+}
+
 .education-header{
 padding:19px 12px;
 border-radius:28px
 }
 
+.education-header .education-icon{
+font-size:27px
+}
+
 .education-header h2{
 font-size:17px
+}
+
+.education-header p{
+font-size:10px
 }
 
 .education-card{
@@ -1336,8 +1445,17 @@ border-radius:26px;
 padding:17px 14px 15px
 }
 
+.education-card-title{
+font-size:13px
+}
+
 .education-text{
-font-size:10px
+font-size:10px;
+line-height:2.1
+}
+
+.education-sign{
+font-size:9px
 }
 
 .purchase-overlay{
@@ -1349,6 +1467,18 @@ border-radius:30px;
 padding:24px 16px 20px
 }
 
+.purchase-box h2{
+font-size:19px
+}
+
+.purchase-price strong{
+font-size:22px
+}
+
+.admin-id strong{
+font-size:18px
+}
+
 .command-panel{
 border-radius:32px;
 padding:19px 15px
@@ -1358,10 +1488,53 @@ padding:19px 15px
 font-size:17px
 }
 
+.command-heading p{
+font-size:10px
+}
+
 .command-icon{
 width:44px;
 height:44px;
 font-size:21px
+}
+
+.command-status{
+font-size:9px;
+padding:7px 9px
+}
+
+.command-stats{
+gap:7px
+}
+
+.command-stat{
+padding:14px 5px;
+border-radius:18px
+}
+
+.command-stat strong{
+font-size:18px
+}
+
+.command-stat span{
+font-size:9px
+}
+
+.real-stat-grid{
+gap:7px
+}
+
+.real-stat{
+padding:12px 5px;
+border-radius:15px
+}
+
+.real-stat strong{
+font-size:16px
+}
+
+.real-stat span{
+font-size:8px
 }
 
 .command-actions{
@@ -1373,12 +1546,22 @@ min-height:64px;
 font-size:10px
 }
 
-.maintenance-control-head{
-align-items:flex-start;
+.maintenance-box{
+padding:32px 18px;
+border-radius:30px
 }
 
-#maintenanceStateBadge{
-font-size:9px;
+.maintenance-title{
+font-size:18px
+}
+
+.maintenance-text{
+font-size:11px
+}
+
+.maintenance-spinner{
+width:62px;
+height:62px
 }
 
 .up{
@@ -1392,37 +1575,43 @@ font-size:34px
 }
 
 </style>
-
 </head>
-
 
 <body>
 
-
 <!-- =========================
-     صفحه بروزرسانی سراسری
+     صفحه حالت تعمیرات
 ========================= -->
 
 <div
+class="maintenance-screen"
 id="petiMaintenanceScreen"
-aria-live="polite"
 >
 
-<div class="peti-maintenance-spinner"></div>
+<div class="maintenance-box">
 
-<h2>
+<div class="maintenance-spinner"></div>
+
+<h1 class="maintenance-title">
 ما درحال بروزرسانی سایت هستیم
-</h2>
+</h1>
 
-<p>
-ما درحال اعمال تغییرات سایت هستیم لطفا دقایقی دیگر مراجعه کنید.
+<p class="maintenance-text">
+ما درحال اعمال تغییرات سایت هستیم
+<br>
+لطفا دقایقی دیگر مراجعه کنید.
 </p>
+
+<div class="maintenance-brand">
+💙 PETI BOT
+</div>
+
+</div>
 
 </div>
 
 
 <main class="wrap" id="top">
-
 
 <header class="hero">
 
@@ -1430,28 +1619,14 @@ aria-live="polite"
 <div class="logo-in">P</div>
 </div>
 
-<h1>
-دسترسی سریع به سرویس های Peti
-</h1>
+<h1>دسترسی سریع به سرویس های Peti</h1>
 
-<p class="sub">
-ربات مدیریت گروه و سرگرمی
-</p>
+<p class="sub">ربات مدیریت گروه و سرگرمی</p>
 
 <div class="pills">
-
-<span class="pill">
-♥ پشتیبانی ۲۴/۷
-</span>
-
-<span class="pill">
-☺ رضایت کاربران
-</span>
-
-<span class="pill">
-★ سریع و پایدار
-</span>
-
+<span class="pill">♥ پشتیبانی ۲۴/۷</span>
+<span class="pill">☺ رضایت کاربران</span>
+<span class="pill">★ سریع و پایدار</span>
 </div>
 
 </header>
@@ -1459,49 +1634,26 @@ aria-live="polite"
 
 <nav class="main-nav">
 
-<button
-class="nav-btn active"
-id="navHome"
-onclick="showPage('home')"
->
+<button class="nav-btn active" id="navHome" onclick="showPage('home')">
 ⌂ خانه
 </button>
 
-<button
-class="nav-btn"
-id="navShop"
-onclick="showPage('shop')"
->
+<button class="nav-btn" id="navShop" onclick="showPage('shop')">
 🛍 فروشگاه
 </button>
 
-<button
-class="nav-btn"
-id="navEducation"
-onclick="showPage('education')"
->
+<button class="nav-btn" id="navEducation" onclick="showPage('education')">
 📖 آموزش‌ها
 </button>
 
-<button
-class="nav-btn"
-id="navCommand"
-onclick="showPage('command')"
->
+<button class="nav-btn" id="navCommand" onclick="showPage('command')">
 ⚡ پنل فرماندهی
 </button>
 
 </nav>
 
 
-<!-- =========================
-     خانه
-========================= -->
-
-<div
-class="page active"
-id="homePage"
->
+<div class="page active" id="homePage">
 
 <section class="section gold">
 
@@ -1510,36 +1662,25 @@ id="homePage"
 ربات‌های Peti
 </h2>
 
-
 <div class="item">
 
 <div class="badge">
-
 <span class="rubika-icon">
 <span class="rubika-logo">R</span>
 </span>
-
 <span>روبیکا</span>
-
 </div>
 
 <p class="name">
-
-<a
-href="https://rubika.ir/Peti_Sokhango_Bot"
+<a href="https://rubika.ir/Peti_Sokhango_Bot"
 target="_blank"
 data-goatcounter-click="peti-bot"
-data-goatcounter-title="کلیک روی ربات Peti"
->
+data-goatcounter-title="کلیک روی ربات Peti">
 ↗ پتی | Peti
 </a>
-
 </p>
 
-<button
-class="copy"
-onclick="copyText('@Peti_Sokhango_Bot')"
->
+<button class="copy" onclick="copyText('@Peti_Sokhango_Bot')">
 کپی　▣
 </button>
 
@@ -1549,37 +1690,26 @@ onclick="copyText('@Peti_Sokhango_Bot')"
 <div class="item">
 
 <div class="badge">
-
 <span class="rubika-icon">
 <span class="rubika-logo">R</span>
 </span>
-
 <span>روبیکا</span>
-
 </div>
 
 <p class="name">
-
-<a
-href="https://rubika.ir/Peti_Bot"
+<a href="https://rubika.ir/Peti_Bot"
 target="_blank"
 data-goatcounter-click="peti-bot2"
-data-goatcounter-title="کلیک روی Peti Bot²"
->
+data-goatcounter-title="کلیک روی Peti Bot²">
 ↗ پتی | Peti Bot²
 </a>
-
 </p>
 
-<button
-class="copy"
-onclick="copyText('@Peti_Bot')"
->
+<button class="copy" onclick="copyText('@Peti_Bot')">
 کپی　▣
 </button>
 
 </div>
-
 
 <p class="note">
 از چند ربات در یک گروه استفاده نکنید؛ در هر گروه فقط از یکی از ربات‌های Peti استفاده کنید.
@@ -1598,32 +1728,22 @@ onclick="copyText('@Peti_Bot')"
 <div class="item">
 
 <div class="badge">
-
 <span class="rubika-icon">
 <span class="rubika-logo">R</span>
 </span>
-
 <span>روبیکا</span>
-
 </div>
 
 <p class="name">
-
-<a
-href="https://rubika.ir/Peti_Bot_Dastorat"
+<a href="https://rubika.ir/Peti_Bot_Dastorat"
 target="_blank"
 data-goatcounter-click="peti-guide"
-data-goatcounter-title="کلیک روی راهنمای دستورات پتی"
->
+data-goatcounter-title="کلیک روی راهنمای دستورات پتی">
 ↗ @Peti_Bot_Dastorat
 </a>
-
 </p>
 
-<button
-class="copy"
-onclick="copyText('@Peti_Bot_Dastorat')"
->
+<button class="copy" onclick="copyText('@Peti_Bot_Dastorat')">
 کپی　▣
 </button>
 
@@ -1642,32 +1762,22 @@ onclick="copyText('@Peti_Bot_Dastorat')"
 <div class="item">
 
 <div class="badge">
-
 <span class="rubika-icon">
 <span class="rubika-logo">R</span>
 </span>
-
 <span>روبیکا</span>
-
 </div>
 
 <p class="name">
-
-<a
-href="https://rubika.ir/Etla_Resani_Peti"
+<a href="https://rubika.ir/Etla_Resani_Peti"
 target="_blank"
 data-goatcounter-click="peti-channel"
-data-goatcounter-title="کلیک روی اطلاع رسانی پتی"
->
+data-goatcounter-title="کلیک روی اطلاع رسانی پتی">
 ↗ عضویت در چنل
 </a>
-
 </p>
 
-<button
-class="copy"
-onclick="copyText('@Etla_Resani_Peti')"
->
+<button class="copy" onclick="copyText('@Etla_Resani_Peti')">
 کپی　▣
 </button>
 
@@ -1686,32 +1796,22 @@ onclick="copyText('@Etla_Resani_Peti')"
 <div class="item">
 
 <div class="badge">
-
 <span class="rubika-icon">
 <span class="rubika-logo">R</span>
 </span>
-
 <span>روبیکا</span>
-
 </div>
 
 <p class="name">
-
-<a
-href="https://rubika.ir/LinkDoni_Peti"
+<a href="https://rubika.ir/LinkDoni_Peti"
 target="_blank"
 data-goatcounter-click="peti-linkdoni"
-data-goatcounter-title="کلیک روی لینکدونی پتی"
->
+data-goatcounter-title="کلیک روی لینکدونی پتی">
 ↗ عضویت در چنل
 </a>
-
 </p>
 
-<button
-class="copy"
-onclick="copyText('@LinkDoni_Peti')"
->
+<button class="copy" onclick="copyText('@LinkDoni_Peti')">
 کپی　▣
 </button>
 
@@ -1730,32 +1830,23 @@ onclick="copyText('@LinkDoni_Peti')"
 <div class="item">
 
 <div class="badge">
-
 <span class="rubika-icon">
 <span class="rubika-logo">R</span>
 </span>
-
 <span>روبیکا</span>
-
 </div>
 
 <p class="name">
-
-<a
-href="https://rubika.ir/joing/BBEIEAHIC0BFMRHOQMKJQEUYKZRKPESX"
+<a href="https://rubika.ir/joing/BBEIEAHIC0BFMRHOQMKJQEUYKZRKPESX"
 target="_blank"
 data-goatcounter-click="peti-support-group"
-data-goatcounter-title="کلیک روی گروه پشتیبانی"
->
+data-goatcounter-title="کلیک روی گروه پشتیبانی">
 ↗ عضویت در گروه
 </a>
-
 </p>
 
-<button
-class="copy"
-onclick="copyText('https://rubika.ir/joing/BBEIEAHIC0BFMRHOQMKJQEUYKZRKPESX')"
->
+<button class="copy"
+onclick="copyText('https://rubika.ir/joing/BBEIEAHIC0BFMRHOQMKJQEUYKZRKPESX')">
 کپی　▣
 </button>
 
@@ -1778,15 +1869,11 @@ onclick="copyText('https://rubika.ir/joing/BBEIEAHIC0BFMRHOQMKJQEUYKZRKPESX')"
 <h3>ایمیل</h3>
 
 <p>
-
-<a
-href="mailto:petibot01@gmail.com"
+<a href="mailto:petibot01@gmail.com"
 data-goatcounter-click="support-email"
-data-goatcounter-title="کلیک روی ایمیل پشتیبانی"
->
+data-goatcounter-title="کلیک روی ایمیل پشتیبانی">
 petibot01@gmail.com
 </a>
-
 </p>
 
 </div>
@@ -1799,16 +1886,12 @@ petibot01@gmail.com
 <h3>چت ناشناس</h3>
 
 <p>
-
-<a
-href="https://harfenashenas.ir/message.php?name=SupportPeti"
+<a href="https://harfenashenas.ir/message.php?name=SupportPeti"
 target="_blank"
 data-goatcounter-click="anonymous-chat"
-data-goatcounter-title="کلیک روی چت ناشناس پشتیبانی"
->
+data-goatcounter-title="کلیک روی چت ناشناس پشتیبانی">
 ارسال پیام ناشناس
 </a>
-
 </p>
 
 </div>
@@ -1826,9 +1909,7 @@ data-goatcounter-title="کلیک روی چت ناشناس پشتیبانی"
 
 <div class="platform-stat">
 
-<div class="platform-stat-icon">
-👤
-</div>
+<div class="platform-stat-icon">👤</div>
 
 <div class="platform-stat-label">
 کاربران
@@ -1843,9 +1924,7 @@ data-goatcounter-title="کلیک روی چت ناشناس پشتیبانی"
 
 <div class="platform-stat">
 
-<div class="platform-stat-icon">
-👥
-</div>
+<div class="platform-stat-icon">👥</div>
 
 <div class="platform-stat-label">
 گروه‌ها
@@ -1853,12 +1932,10 @@ data-goatcounter-title="کلیک روی چت ناشناس پشتیبانی"
 
 <div class="platform-stat-value">
 
-<a
-href="https://rubika.ir/Peti_Sokhango_Bot"
+<a href="https://rubika.ir/Peti_Sokhango_Bot"
 target="_blank"
 data-goatcounter-click="platform-groups-bot"
-data-goatcounter-title="مشاهده گروه‌های ثبت‌شده در ربات"
->
+data-goatcounter-title="مشاهده گروه‌های ثبت‌شده در ربات">
 در ربات قابل مشاهده می‌باشد
 </a>
 
@@ -1873,35 +1950,23 @@ data-goatcounter-title="مشاهده گروه‌های ثبت‌شده در رب
 </div>
 
 
-<!-- =========================
-     فروشگاه
-========================= -->
-
-<div
-class="page shop-page"
-id="shopPage"
->
+<div class="page shop-page" id="shopPage">
 
 <h2 class="shop-heading">
 بسته‌های ویژه تبلیغاتی Peti
 </h2>
 
-<a
-href="javascript:void(0)"
+<a href="javascript:void(0)"
 class="shop-back"
-onclick="showPage('home')"
->
+onclick="showPage('home')">
 بازگشت ←
 </a>
 
 <div class="shop-products">
 
-
 <div class="ad-card">
 
-<div class="ad-icon">
-💬
-</div>
+<div class="ad-icon">💬</div>
 
 <h2 class="ad-title">
 تبلیغات (پیوی)
@@ -1936,10 +2001,8 @@ onclick="showPage('home')"
 </span>
 </div>
 
-<button
-class="buy-btn"
-onclick="showPurchaseGuide('تبلیغات (پیوی)','۴۰,۰۰۰')"
->
+<button class="buy-btn"
+onclick="showPurchaseGuide('تبلیغات (پیوی)','۴۰,۰۰۰')">
 🛍 خرید پکیج
 </button>
 
@@ -1948,9 +2011,7 @@ onclick="showPurchaseGuide('تبلیغات (پیوی)','۴۰,۰۰۰')"
 
 <div class="ad-card">
 
-<div class="ad-icon">
-📣
-</div>
+<div class="ad-icon">📣</div>
 
 <h2 class="ad-title">
 تبلیغات (گروه‌ها)
@@ -1985,10 +2046,8 @@ onclick="showPurchaseGuide('تبلیغات (پیوی)','۴۰,۰۰۰')"
 </span>
 </div>
 
-<button
-class="buy-btn"
-onclick="showPurchaseGuide('تبلیغات (گروه‌ها)','۴۵,۰۰۰')"
->
+<button class="buy-btn"
+onclick="showPurchaseGuide('تبلیغات (گروه‌ها)','۴۵,۰۰۰')">
 🛍 خرید پکیج
 </button>
 
@@ -1999,20 +2058,11 @@ onclick="showPurchaseGuide('تبلیغات (گروه‌ها)','۴۵,۰۰۰')"
 </div>
 
 
-<!-- =========================
-     آموزش‌ها
-========================= -->
-
-<div
-class="page education-page"
-id="educationPage"
->
+<div class="page education-page" id="educationPage">
 
 <div class="education-header">
 
-<div class="education-icon">
-📖
-</div>
+<div class="education-icon">📖</div>
 
 <h2>
 آموزش ها و توضیحات پتی بات
@@ -2061,8 +2111,7 @@ id="educationPage"
 
 📖 راهنمای کامل و لیست دستورات:
 
-<a
-href="http://rubika.ir/Peti_Bot_Dastorat"
+<a href="http://rubika.ir/Peti_Bot_Dastorat"
 target="_blank">
 http://rubika.ir/Peti_Bot_Dastorat
 </a>
@@ -2093,7 +2142,7 @@ http://rubika.ir/Peti_Bot_Dastorat
 
 🧷 ما برای آپدیت کردن ربات پتی برخی از دکمه های کیبورد ربات رو تغییر میدهیم
 ممکنه بعضی از دکمه ها پاک بشن یا حتی ویرایش یا اضافه بشن ،
-برای همین تا شما ربات رو آپدیت نکنید دکمه های ربات کار نمیکنن. 🔒
+برای همین تا شما ربات رو آپدیت نکنید دکمه های کیبورد ربات کار نمیکنن. 🔒
 
 ♻️نکته: ما حداقل هفته ای 1 روز آپدیت رو برای پیشرفت ربات خواهیم داشت. ⚡
 
@@ -2109,8 +2158,7 @@ http://rubika.ir/Peti_Bot_Dastorat
 
 📖 آموزش و راهنمایی بیشتر:
 
-<a
-href="https://rubika.ir/Peti_Bot_Dastorat"
+<a href="https://rubika.ir/Peti_Bot_Dastorat"
 target="_blank">
 rubika.ir/Peti_Bot_Dastorat
 </a>
@@ -2140,10 +2188,8 @@ rubika.ir/Peti_Bot_Dastorat
 در بخش پایین، دکمه‌های مختلفی با موضوعات متنوع قرار داده شده است.
 با لمس هر دکمه، اطلاعات و محتوای مربوط به آن به صورت خودکار برای شما ارسال می‌گردد.
 
-
 2. منوی اصلی:
 در سمت چپ فیلد تایپ، دکمه آبی‌رنگی قرار دارد که «منوی ربات» است.
-
 
 « در این بخش دو گزینه مهم وجود دارد :👇🏻
 
@@ -2188,14 +2234,7 @@ rubika.ir/Peti_Bot_Dastorat
 </div>
 
 
-<!-- =========================
-     پنل فرماندهی
-========================= -->
-
-<div
-class="page"
-id="commandPage"
->
+<div class="page" id="commandPage">
 
 <section class="command-panel">
 
@@ -2224,7 +2263,6 @@ id="commandPage"
 <div class="command-status">
 
 <span class="status-dot"></span>
-
 آنلاین
 
 </div>
@@ -2232,10 +2270,7 @@ id="commandPage"
 </div>
 
 
-<div
-class="command-login"
-id="commandLogin"
->
+<div class="command-login" id="commandLogin">
 
 <input
 type="password"
@@ -2244,28 +2279,19 @@ placeholder="رمز ورود پنل فرماندهی"
 autocomplete="off"
 >
 
-<button
-class="command-btn"
-onclick="loginCommandPanel()"
->
+<button class="command-btn"
+onclick="loginCommandPanel()">
 🔐 ورود به پنل فرماندهی
 </button>
 
-<div
-class="command-error"
-id="commandError"
->
+<div class="command-error" id="commandError">
 رمز وارد شده صحیح نیست ❌
 </div>
 
 </div>
 
 
-<div
-class="command-content"
-id="commandContent"
->
-
+<div class="command-content" id="commandContent">
 
 <div class="command-stats">
 
@@ -2342,24 +2368,18 @@ class="stats-link"
 href="https://petibot.goatcounter.com/"
 target="_blank"
 data-goatcounter-click="open-dashboard"
-data-goatcounter-title="باز کردن داشبورد آمار PETI"
->
+data-goatcounter-title="باز کردن داشبورد آمار PETI">
 📈 مشاهده جزئیات آمار
 </a>
 
-<div
-class="stats-status"
-id="statsStatus"
->
+<div class="stats-status" id="statsStatus">
 در انتظار دریافت آمار...
 </div>
 
 </div>
 
 
-<!-- =========================
-     کنترل حالت تعمیرات
-========================= -->
+<!-- کنترل حالت تعمیرات -->
 
 <div class="maintenance-control">
 
@@ -2383,12 +2403,10 @@ id="statsStatus"
 
 </div>
 
-
 <button
 class="maintenance-toggle"
 id="maintenanceToggleBtn"
-onclick="toggleMaintenanceMode()"
->
+onclick="toggleMaintenanceMode()">
 🛠 فعال کردن حالت تعمیرات
 </button>
 
@@ -2402,8 +2420,7 @@ class="command-action"
 href="https://rubika.ir/Peti_Sokhango_Bot"
 target="_blank"
 data-goatcounter-click="panel-peti-bot"
-data-goatcounter-title="پنل فرماندهی - ربات Peti"
->
+data-goatcounter-title="پنل فرماندهی - ربات Peti">
 🤖 ربات Peti
 </a>
 
@@ -2412,8 +2429,7 @@ class="command-action"
 href="https://rubika.ir/Peti_Bot"
 target="_blank"
 data-goatcounter-click="panel-peti-bot2"
-data-goatcounter-title="پنل فرماندهی - Peti Bot²"
->
+data-goatcounter-title="پنل فرماندهی - Peti Bot²">
 🤖 Peti Bot²
 </a>
 
@@ -2422,8 +2438,7 @@ class="command-action"
 href="https://rubika.ir/Etla_Resani_Peti"
 target="_blank"
 data-goatcounter-click="panel-channel"
-data-goatcounter-title="پنل فرماندهی - اطلاع‌رسانی"
->
+data-goatcounter-title="پنل فرماندهی - اطلاع‌رسانی">
 📢 اطلاع‌رسانی
 </a>
 
@@ -2432,8 +2447,7 @@ class="command-action"
 href="https://rubika.ir/LinkDoni_Peti"
 target="_blank"
 data-goatcounter-click="panel-linkdoni"
-data-goatcounter-title="پنل فرماندهی - لینکدونی"
->
+data-goatcounter-title="پنل فرماندهی - لینکدونی">
 🔗 لینکدونی
 </a>
 
@@ -2442,15 +2456,13 @@ class="command-action"
 href="https://rubika.ir/joing/BBEIEAHIC0BFMRHOQMKJQEUYKZRKPESX"
 target="_blank"
 data-goatcounter-click="panel-support-group"
-data-goatcounter-title="پنل فرماندهی - گروه پشتیبانی"
->
+data-goatcounter-title="پنل فرماندهی - گروه پشتیبانی">
 👥 گروه پشتیبانی
 </a>
 
 <button
 class="command-action"
-onclick="loadPetiStats()"
->
+onclick="loadPetiStats()">
 📊 بروزرسانی آمار
 </button>
 
@@ -2459,8 +2471,7 @@ onclick="loadPetiStats()"
 
 <button
 class="command-btn command-logout"
-onclick="logoutCommandPanel()"
->
+onclick="logoutCommandPanel()">
 🚪 خروج از پنل
 </button>
 
@@ -2474,7 +2485,6 @@ onclick="logoutCommandPanel()"
 <footer>
 
 ما همیشه در کنار شما هستیم تا بهترین تجربه را داشته باشید 💙
-
 <br>
 
 © 2026 PETI BOT
@@ -2490,22 +2500,18 @@ onclick="logoutCommandPanel()"
 </main>
 
 
-<!-- =========================
-     راهنمای خرید
-========================= -->
+<!-- راهنمای خرید -->
 
 <div
 class="purchase-overlay"
 id="purchaseOverlay"
-onclick="closePurchaseOutside(event)"
->
+onclick="closePurchaseOutside(event)">
 
 <div class="purchase-box">
 
 <button
 class="purchase-close"
-onclick="closePurchaseGuide()"
->
+onclick="closePurchaseGuide()">
 ×
 </button>
 
@@ -2519,8 +2525,7 @@ onclick="closePurchaseGuide()"
 
 <div
 class="purchase-product"
-id="purchaseProduct"
->
+id="purchaseProduct">
 تبلیغات
 </div>
 
@@ -2542,8 +2547,7 @@ id="purchaseProduct"
 
 <button
 class="copy-id"
-onclick="copyText('@Tahaa_sss')"
->
+onclick="copyText('@Tahaa_sss')">
 کپی ▣
 </button>
 
@@ -2552,15 +2556,13 @@ onclick="copyText('@Tahaa_sss')"
 <a
 class="rubika-order"
 href="https://rubika.ir/Tahaa_sss"
-target="_blank"
->
+target="_blank">
 💬 ورود به روبیکا و ثبت سفارش
 </a>
 
 <button
 class="close-guide"
-onclick="closePurchaseGuide()"
->
+onclick="closePurchaseGuide()">
 بستن
 </button>
 
@@ -2571,32 +2573,12 @@ onclick="closePurchaseGuide()"
 
 <button
 class="up"
-onclick="window.scrollTo({top:0,behavior:'smooth'})"
->
+onclick="window.scrollTo({top:0,behavior:'smooth'})">
 ⌃
 </button>
 
 
 <script>
-
-/* =========================
-   تنظیمات
-========================= */
-
-const PETI_ADMIN_PASSWORD =
-"PetiAdmin2026!";
-
-
-/*
- آدرس Worker را بعداً اینجا قرار می‌دهیم.
-*/
-
-const PETI_MAINTENANCE_API =
-"YOUR-WORKER-URL";
-
-
-let petiMaintenanceEnabled=false;
-
 
 /* =========================
    جابه‌جایی صفحات
@@ -2618,16 +2600,15 @@ education:document.getElementById("navEducation"),
 command:document.getElementById("navCommand")
 };
 
-Object.values(pages).forEach(
-p=>p.classList.remove("active")
-);
+Object.values(pages).forEach(function(p){
+p.classList.remove("active");
+});
 
-Object.values(buttons).forEach(
-b=>b.classList.remove("active")
-);
+Object.values(buttons).forEach(function(b){
+b.classList.remove("active");
+});
 
 pages[page].classList.add("active");
-
 buttons[page].classList.add("active");
 
 window.scrollTo({
@@ -2646,7 +2627,7 @@ function copyText(t){
 
 if(navigator.clipboard){
 
-navigator.clipboard.writeText(t);
+navigator.clipboard.writeText(t)
 
 }else{
 
@@ -2660,7 +2641,7 @@ x.select();
 
 document.execCommand("copy");
 
-x.remove();
+x.remove()
 
 }
 
@@ -2673,54 +2654,38 @@ n.style=
 
 document.body.appendChild(n);
 
-setTimeout(
-()=>n.remove(),
-1300
-);
+setTimeout(()=>n.remove(),1300)
 
 }
 
 
 /* =========================
-   راهنمای خرید
+   خرید
 ========================= */
 
 function showPurchaseGuide(product,price){
 
-document.getElementById(
-"purchaseProduct"
-).textContent=product;
+document.getElementById("purchaseProduct").textContent=product;
 
-document.getElementById(
-"purchasePrice"
-).textContent=price;
+document.getElementById("purchasePrice").textContent=price;
 
-document.getElementById(
-"purchaseOverlay"
-).classList.add("show");
+document.getElementById("purchaseOverlay").classList.add("show");
 
 document.body.style.overflow="hidden";
 
 }
 
-
 function closePurchaseGuide(){
 
-document.getElementById(
-"purchaseOverlay"
-).classList.remove("show");
+document.getElementById("purchaseOverlay").classList.remove("show");
 
 document.body.style.overflow="";
 
 }
 
-
 function closePurchaseOutside(event){
 
-if(
-event.target ===
-document.getElementById("purchaseOverlay")
-){
+if(event.target === document.getElementById("purchaseOverlay")){
 
 closePurchaseGuide();
 
@@ -2730,12 +2695,110 @@ closePurchaseGuide();
 
 
 /* =========================
-   تعمیرات سراسری
+   ESC
+========================= */
+
+document.addEventListener("keydown",function(e){
+
+if(e.key==="Escape"){
+
+closePurchaseGuide();
+
+}
+
+});
+
+
+/* =========================
+   تنظیمات پنل
+========================= */
+
+const PETI_ADMIN_PASSWORD =
+"PetiAdmin2026!";
+
+/*
+  اینجا بعداً آدرس Worker را قرار بده
+*/
+
+const PETI_MAINTENANCE_API =
+"YOUR-WORKER-URL";
+
+let petiMaintenanceEnabled=false;
+
+
+/* =========================
+   ورود پنل
+========================= */
+
+function loginCommandPanel(){
+
+const password =
+document.getElementById("commandPassword").value;
+
+const error =
+document.getElementById("commandError");
+
+if(password === PETI_ADMIN_PASSWORD){
+
+document.getElementById("commandLogin").style.display="none";
+
+document.getElementById("commandContent").style.display="block";
+
+error.style.display="none";
+
+/* ثبت ورود مدیر */
+sessionStorage.setItem(
+"petiMaintenanceAdmin",
+"1"
+);
+
+updateMaintenanceUI();
+
+loadPetiStats();
+
+}else{
+
+error.style.display="block";
+
+}
+
+}
+
+
+/* =========================
+   خروج پنل
+========================= */
+
+function logoutCommandPanel(){
+
+document.getElementById("commandContent").style.display="none";
+
+document.getElementById("commandLogin").style.display="block";
+
+document.getElementById("commandPassword").value="";
+
+document.getElementById("commandError").style.display="none";
+
+sessionStorage.removeItem(
+"petiMaintenanceAdmin"
+);
+
+if(petiMaintenanceEnabled){
+
+showMaintenanceScreen(true);
+
+}
+
+}
+
+
+/* =========================
+   تعمیرات - نمایش صفحه
 ========================= */
 
 function showMaintenanceScreen(show){
 
-const screen=
+const screen =
 document.getElementById(
 "petiMaintenanceScreen"
 );
@@ -2759,19 +2822,23 @@ document.body.style.overflow="";
 }
 
 
+/* =========================
+   تعمیرات - بروزرسانی پنل
+========================= */
+
 function updateMaintenanceUI(){
 
-const text=
+const text =
 document.getElementById(
 "maintenanceStatusText"
 );
 
-const badge=
+const badge =
 document.getElementById(
 "maintenanceStateBadge"
 );
 
-const btn=
+const btn =
 document.getElementById(
 "maintenanceToggleBtn"
 );
@@ -2781,36 +2848,36 @@ if(!text || !badge || !btn)return;
 
 if(petiMaintenanceEnabled){
 
-text.textContent=
+text.textContent =
 "سایت در حالت تعمیرات است";
 
-badge.textContent=
+badge.textContent =
 "فعال";
 
-badge.style.color=
+badge.style.color =
 "#ffb86b";
 
-badge.style.borderColor=
+badge.style.borderColor =
 "#8a6032";
 
-btn.textContent=
+btn.textContent =
 "🟢 خاموش کردن حالت تعمیرات";
 
 }else{
 
-text.textContent=
+text.textContent =
 "سایت در حالت عادی است";
 
-badge.textContent=
+badge.textContent =
 "خاموش";
 
-badge.style.color=
+badge.style.color =
 "#58e69b";
 
-badge.style.borderColor=
+badge.style.borderColor =
 "#31516b";
 
-btn.textContent=
+btn.textContent =
 "🛠 فعال کردن حالت تعمیرات";
 
 }
@@ -2819,7 +2886,7 @@ btn.textContent=
 
 
 /* =========================
-   دریافت وضعیت مرکزی
+   دریافت وضعیت تعمیرات
 ========================= */
 
 async function getMaintenanceStatus(){
@@ -2836,10 +2903,10 @@ return;
 
 try{
 
-const response=
+const response =
 await fetch(
-PETI_MAINTENANCE_API+
-"/status?rnd="+
+PETI_MAINTENANCE_API +
+"/status?rnd=" +
 Date.now(),
 {
 method:"GET",
@@ -2847,25 +2914,24 @@ cache:"no-store"
 }
 );
 
+
 if(!response.ok){
 
 throw new Error("status");
 
 }
 
-const data=
+
+const data =
 await response.json();
 
-petiMaintenanceEnabled=
+
+petiMaintenanceEnabled =
 data.maintenance === true;
+
 
 updateMaintenanceUI();
 
-
-/*
- اگر پنل مدیریت وارد نشده باشد،
- صفحه تعمیرات نمایش داده می‌شود.
-*/
 
 if(
 !sessionStorage.getItem(
@@ -2893,15 +2959,21 @@ error
 
 
 /* =========================
-   روشن / خاموش کردن تعمیرات
+   روشن / خاموش تعمیرات
 ========================= */
 
 async function toggleMaintenanceMode(){
 
-if(
+const commandContent =
 document.getElementById(
 "commandContent"
-).style.display !== "block"
+);
+
+
+if(
+!commandContent ||
+commandContent.style.display !==
+"block"
 ){
 
 return;
@@ -2909,10 +2981,25 @@ return;
 }
 
 
-const btn=
+if(
+PETI_MAINTENANCE_API ===
+"YOUR-WORKER-URL"
+){
+
+alert(
+"ابتدا آدرس Worker را در کد سایت وارد کنید ❌"
+);
+
+return;
+
+}
+
+
+const btn =
 document.getElementById(
 "maintenanceToggleBtn"
 );
+
 
 if(btn){
 
@@ -2923,38 +3010,36 @@ btn.disabled=true;
 
 try{
 
-const response=
+const newState =
+!petiMaintenanceEnabled;
+
+
+const response =
 await fetch(
-PETI_MAINTENANCE_API+
+PETI_MAINTENANCE_API +
 "/toggle",
 {
 method:"POST",
-
 headers:{
 "Content-Type":
 "application/json"
 },
-
 body:JSON.stringify({
 
 maintenance:
-!petiMaintenanceEnabled,
+newState,
 
 password:
 PETI_ADMIN_PASSWORD
 
 })
-
 }
 );
 
 
-const data=
-await response
-.json()
-.catch(
-()=>({})
-);
+const data =
+await response.json()
+.catch(()=>({}));
 
 
 if(
@@ -2970,28 +3055,29 @@ data.error ||
 }
 
 
-petiMaintenanceEnabled=
+petiMaintenanceEnabled =
 data.maintenance === true;
+
 
 updateMaintenanceUI();
 
-
-if(petiMaintenanceEnabled){
 
 sessionStorage.setItem(
 "petiMaintenanceAdmin",
 "1"
 );
 
+
 showMaintenanceScreen(false);
+
+
+if(petiMaintenanceEnabled){
 
 alert(
 "حالت تعمیرات برای همه کاربران فعال شد ✅"
 );
 
 }else{
-
-showMaintenanceScreen(false);
 
 alert(
 "حالت تعمیرات برای همه کاربران غیرفعال شد ✅"
@@ -3022,101 +3108,13 @@ btn.disabled=false;
 
 
 /* =========================
-   ورود پنل
-========================= */
-
-function loginCommandPanel(){
-
-const password=
-document.getElementById(
-"commandPassword"
-).value;
-
-const error=
-document.getElementById(
-"commandError"
-);
-
-
-if(password === PETI_ADMIN_PASSWORD){
-
-document.getElementById(
-"commandLogin"
-).style.display="none";
-
-document.getElementById(
-"commandContent"
-).style.display="block";
-
-error.style.display="none";
-
-
-sessionStorage.setItem(
-"petiMaintenanceAdmin",
-"1"
-);
-
-
-updateMaintenanceUI();
-
-loadPetiStats();
-
-
-}else{
-
-error.style.display="block";
-
-}
-
-}
-
-
-/* =========================
-   خروج
-========================= */
-
-function logoutCommandPanel(){
-
-document.getElementById(
-"commandContent"
-).style.display="none";
-
-document.getElementById(
-"commandLogin"
-).style.display="block";
-
-document.getElementById(
-"commandPassword"
-).value="";
-
-document.getElementById(
-"commandError"
-).style.display="none";
-
-
-sessionStorage.removeItem(
-"petiMaintenanceAdmin"
-);
-
-
-if(petiMaintenanceEnabled){
-
-showMaintenanceScreen(true);
-
-}
-
-}
-
-
-/* =========================
-   عدد فارسی
+   تبدیل عدد فارسی
 ========================= */
 
 function persianNumber(number){
 
-return Number(
-number || 0
-).toLocaleString("fa-IR");
+return Number(number || 0)
+.toLocaleString("fa-IR");
 
 }
 
@@ -3129,13 +3127,13 @@ async function getGoatCounterCount(path){
 
 try{
 
-const url=
-"https://petibot.goatcounter.com/counter/"+
-encodeURIComponent(path)+
-".json?rnd="+
+const url =
+"https://petibot.goatcounter.com/counter/" +
+encodeURIComponent(path) +
+".json?rnd=" +
 Date.now();
 
-const response=
+const response =
 await fetch(
 url,
 {
@@ -3144,18 +3142,22 @@ cache:"no-store"
 }
 );
 
+
 if(!response.ok){
 
 return 0;
 
 }
 
-const data=
+
+const data =
 await response.json();
+
 
 return Number(
 data.count || 0
 );
+
 
 }catch(error){
 
@@ -3178,25 +3180,26 @@ return 0;
 
 async function loadPetiStats(){
 
-const status=
+const status =
 document.getElementById(
 "statsStatus"
 );
 
 if(!status)return;
 
-status.textContent=
+status.textContent =
 "در حال دریافت آمار واقعی...";
 
 
-const visits=
+const visits =
 await getGoatCounterCount(
 "TOTAL"
 );
 
+
 document.getElementById(
 "petiVisits"
-).textContent=
+).textContent =
 persianNumber(visits);
 
 
@@ -3226,7 +3229,7 @@ anonymousChat:
 };
 
 
-const results=
+const results =
 await Promise.all(
 
 Object.entries(
@@ -3234,87 +3237,92 @@ eventNames
 ).map(
 async ([key,path])=>{
 
-return[
+return [
 key,
 await getGoatCounterCount(path)
 ];
 
-})
+}
+)
 
 );
 
 
-const stats=
-Object.fromEntries(results);
+const stats =
+Object.fromEntries(
+results
+);
 
 
 document.getElementById(
 "petiBotClicks"
-).textContent=
+).textContent =
 persianNumber(
 stats.petiBotClicks
 );
 
 document.getElementById(
 "petiBot2Clicks"
-).textContent=
+).textContent =
 persianNumber(
 stats.petiBot2Clicks
 );
 
 document.getElementById(
 "petiChannelClicks"
-).textContent=
+).textContent =
 persianNumber(
 stats.petiChannelClicks
 );
 
 document.getElementById(
 "petiLinkClicks"
-).textContent=
+).textContent =
 persianNumber(
 stats.petiLinkClicks
 );
 
 document.getElementById(
 "petiGroupClicks"
-).textContent=
+).textContent =
 persianNumber(
 stats.petiGroupClicks
 );
 
 
-const supportClicks=
-(stats.supportEmail || 0)+
+const supportClicks =
+(stats.supportEmail || 0) +
 (stats.anonymousChat || 0);
 
 
 document.getElementById(
 "petiSupportClicks"
-).textContent=
+).textContent =
 persianNumber(
 supportClicks
 );
 
 
-const totalClicks=
-(stats.petiBotClicks || 0)+
-(stats.petiBot2Clicks || 0)+
-(stats.petiChannelClicks || 0)+
-(stats.petiLinkClicks || 0)+
-(stats.petiGroupClicks || 0)+
-(stats.supportEmail || 0)+
+const totalClicks =
+(stats.petiBotClicks || 0) +
+(stats.petiBot2Clicks || 0) +
+(stats.petiChannelClicks || 0) +
+(stats.petiLinkClicks || 0) +
+(stats.petiGroupClicks || 0) +
+(stats.supportEmail || 0) +
 (stats.anonymousChat || 0);
 
 
 document.getElementById(
 "petiClicks"
-).textContent=
-persianNumber(totalClicks);
+).textContent =
+persianNumber(
+totalClicks
+);
 
 
-status.textContent=
-"آخرین بروزرسانی: "+
+status.textContent =
+"آخرین بروزرسانی: " +
 new Date().toLocaleTimeString(
 "fa-IR"
 );
@@ -3323,32 +3331,26 @@ new Date().toLocaleTimeString(
 
 
 /* =========================
-   ESC
-========================= */
-
-document.addEventListener(
-"keydown",
-function(e){
-
-if(e.key==="Escape"){
-
-closePurchaseGuide();
-
-}
-
-}
-);
-
-
-/* =========================
-   شروع سایت
+   بروزرسانی خودکار
 ========================= */
 
 window.addEventListener(
 "load",
 function(){
 
+/* بررسی حالت تعمیرات */
 getMaintenanceStatus();
+
+
+/* هر ۳۰ ثانیه بررسی */
+setInterval(
+function(){
+
+getMaintenanceStatus();
+
+},
+30000
+);
 
 
 setTimeout(
@@ -3365,12 +3367,18 @@ setInterval(
 function(){
 
 if(
-document.getElementById(
+document
+.getElementById(
 "commandPage"
-).classList.contains("active") &&
-document.getElementById(
+)
+.classList
+.contains("active") &&
+document
+.getElementById(
 "commandContent"
-).style.display === "block"
+)
+.style.display ===
+"block"
 ){
 
 loadPetiStats();
@@ -3381,18 +3389,7 @@ loadPetiStats();
 60000
 );
 
-
-setInterval(
-function(){
-
-getMaintenanceStatus();
-
-},
-30000
-);
-
-}
-);
+});
 
 
 /* =========================
@@ -3407,7 +3404,7 @@ document
 "keydown",
 function(e){
 
-if(e.key==="Enter"){
+if(e.key === "Enter"){
 
 loginCommandPanel();
 
