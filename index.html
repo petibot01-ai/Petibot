@@ -1614,9 +1614,11 @@ id="petiMaintenanceScreen"
 💙 PETI BOT
 </div>
 
+<!-- اصلاح شده -->
 <button
+type="button"
 class="maintenance-admin-btn"
-onclick="maintenanceAdminLogin()">
+id="maintenanceAdminLoginBtn">
 🔐 ورود مدیر
 </button>
 
@@ -2798,7 +2800,9 @@ document.body.style.overflow="";
 function maintenanceAdminLogin(){
 
 const password =
-prompt("🔐 رمز پنل فرماندهی را وارد کنید:");
+window.prompt(
+"🔐 رمز پنل فرماندهی را وارد کنید:"
+);
 
 if(password === null){
 return;
@@ -2824,15 +2828,26 @@ showMaintenanceScreen(false);
 
 showPage("command");
 
+const login =
 document.getElementById(
 "commandLogin"
-).style.display="none";
+);
 
+const content =
 document.getElementById(
 "commandContent"
-).style.display="block";
+);
+
+if(login){
+login.style.display="none";
+}
+
+if(content){
+content.style.display="block";
+}
 
 updateMaintenanceUI();
+
 loadPetiStats();
 
 }else{
@@ -2929,7 +2944,6 @@ document.getElementById(
 "maintenanceText"
 );
 
-/* بررسی دقیق ورود مدیر */
 const isAdmin =
 sessionStorage.getItem(
 "petiMaintenanceAdmin"
@@ -3015,12 +3029,6 @@ console.error(
 "Maintenance status error:",
 error
 );
-
-/*
-اگر Worker پاسخ ندهد، سایت برای کاربران عادی
-باز نمی‌شود تا مشکل وضعیت تعمیرات باعث ورود
-ناخواسته به سایت نشود.
-*/
 
 if(!isAdmin){
 
@@ -3396,17 +3404,40 @@ new Date().toLocaleTimeString(
 
 
 /* =========================
-   بررسی فوری تعمیرات
+   اتصال مستقیم دکمه ورود مدیر
 ========================= */
 
-/*
-این قسمت عمداً خارج از window.load اجرا می‌شود
-تا قبل از لود کامل سایت وضعیت تعمیرات بررسی شود.
-*/
+const maintenanceLoginBtn =
+document.getElementById(
+"maintenanceAdminLoginBtn"
+);
+
+if(maintenanceLoginBtn){
+
+maintenanceLoginBtn.addEventListener(
+"click",
+maintenanceAdminLogin
+);
+
+}
+
+
+/* =========================
+   بررسی فوری تعمیرات
+========================= */
 
 getMaintenanceStatus();
 
 setInterval(
 function(){
 
-getMaintenanceStatus()
+getMaintenanceStatus();
+
+},
+30000
+);
+
+</script>
+
+</body>
+   </html>
