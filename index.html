@@ -1119,6 +1119,39 @@ color:#42c8ff;
 font-weight:800;
 }
 
+/* =========================
+   دکمه ورود مدیر در صفحه تعمیرات
+========================= */
+
+.maintenance-admin-btn{
+width:100%;
+height:50px;
+margin-top:24px;
+border:1px solid #287fba;
+border-radius:25px;
+background:linear-gradient(90deg,#1478bd,#229ce7);
+color:#fff;
+font-family:inherit;
+font-size:12px;
+font-weight:900;
+cursor:pointer;
+box-shadow:0 10px 28px rgba(20,130,220,.16);
+transition:.2s
+}
+
+.maintenance-admin-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 14px 32px rgba(20,130,220,.25)
+}
+
+.maintenance-admin-error{
+display:none;
+margin-top:10px;
+color:#ff7070;
+font-size:10px;
+font-weight:700
+}
+
 .maintenance-control{
 margin:18px 0;
 padding:18px;
@@ -1526,6 +1559,12 @@ width:62px;
 height:62px
 }
 
+.maintenance-admin-btn{
+height:48px;
+font-size:11px;
+margin-top:22px
+}
+
 .up{
 width:68px;
 height:68px;
@@ -1562,6 +1601,19 @@ id="petiMaintenanceScreen"
 
 <div class="maintenance-brand">
 💙 PETI BOT
+</div>
+
+<!-- ورود مدیر از صفحه تعمیرات -->
+<button
+class="maintenance-admin-btn"
+onclick="maintenanceAdminLogin()">
+🔐 ورود مدیر
+</button>
+
+<div
+id="maintenanceAdminError"
+class="maintenance-admin-error">
+رمز وارد شده صحیح نیست ❌
 </div>
 
 </div>
@@ -2719,6 +2771,65 @@ document.body.style.overflow="hidden";
 screen.classList.remove("show");
 
 document.body.style.overflow="";
+
+}
+
+}
+
+
+/* =========================
+   ورود مدیر از صفحه تعمیرات
+========================= */
+
+function maintenanceAdminLogin(){
+
+const password =
+prompt("🔐 رمز پنل فرماندهی را وارد کنید:");
+
+if(password === null){
+return;
+}
+
+const error =
+document.getElementById(
+"maintenanceAdminError"
+);
+
+if(password === PETI_ADMIN_PASSWORD){
+
+sessionStorage.setItem(
+"petiMaintenanceAdmin",
+"1"
+);
+
+if(error){
+error.style.display="none";
+}
+
+/* بستن صفحه تعمیرات */
+showMaintenanceScreen(false);
+
+/* رفتن مستقیم به پنل فرماندهی */
+showPage("command");
+
+/* نمایش مستقیم محتوای پنل */
+document.getElementById(
+"commandLogin"
+).style.display="none";
+
+document.getElementById(
+"commandContent"
+).style.display="block";
+
+/* دریافت وضعیت و آمار */
+updateMaintenanceUI();
+loadPetiStats();
+
+}else{
+
+if(error){
+error.style.display="block";
+}
 
 }
 
