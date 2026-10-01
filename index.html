@@ -1601,11 +1601,13 @@ id="petiMaintenanceScreen"
 <div class="maintenance-spinner"></div>
 
 <h1 class="maintenance-title" id="maintenanceTitle">
-در حال بررسی وضعیت سایت...
+ما درحال بروزرسانی سایت هستیم
 </h1>
 
 <p class="maintenance-text" id="maintenanceText">
-لطفاً چند لحظه صبر کنید.
+ما درحال اعمال تغییرات سایت هستیم
+<br>
+لطفا دقایقی دیگر مراجعه کنید.
 </p>
 
 <div class="maintenance-brand">
@@ -3033,7 +3035,7 @@ title.textContent =
 if(text){
 
 text.innerHTML =
-"در حال بررسی وضعیت سرویس هستیم" +
+"ما درحال اعمال تغییرات سایت هستیم" +
 "<br>" +
 "لطفا دقایقی دیگر مراجعه کنید.";
 
@@ -3414,73 +3416,4 @@ getMaintenanceStatus();
 
 
 /* =========================
-   آمار و کارهای مربوط به load
-========================= */
-
-window.addEventListener(
-"load",
-function(){
-
-setTimeout(
-function(){
-
-loadPetiStats();
-
-},
-1800
-);
-
-setInterval(
-function(){
-
-if(
-document
-.getElementById(
-"commandPage"
-)
-.classList
-.contains("active") &&
-document
-.getElementById(
-"commandContent"
-)
-.style.display ===
-"block"
-){
-
-loadPetiStats();
-
-}
-
-},
-60000
-);
-
-});
-
-
-/* =========================
-   Enter
-========================= */
-
-document
-.getElementById(
-"commandPassword"
-)
-.addEventListener(
-"keydown",
-function(e){
-
-if(e.key === "Enter"){
-
-loginCommandPanel();
-
-}
-
-}
-);
-
-</script>
-
-</body>
-   </html>
+   آمار و کارهای مربوط به l
