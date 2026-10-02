@@ -2574,6 +2574,7 @@ onclick="window.scrollTo({top:0,behavior:'smooth'})">
 ⌃
 </button>
 
+
 <script>
 
 /* =========================
@@ -2781,6 +2782,24 @@ let maintenanceStatusChecking=false;
 let maintenanceToggleBusy=false;
 
 
+/*
+   زمان آخرین تغییر وضعیت توسط مدیر
+   برای جلوگیری از برگشتن وضعیت به مقدار قدیمی
+*/
+
+let maintenanceLastToggleAt=0;
+
+let maintenanceLastToggleState=null;
+
+
+/*
+   تا چند میلی‌ثانیه بعد از Toggle
+   پاسخ قدیمی /status نادیده گرفته شود.
+*/
+
+const MAINTENANCE_STATUS_GRACE_PERIOD=10000;
+
+
 /* =========================
    تشخیص مدیر
 ========================= */
@@ -2838,7 +2857,10 @@ missing_secret:
 "تنظیمات امنیتی Worker کامل نیست ❌",
 
 invalid_worker_response:
-"پاسخ Worker قابل شناسایی نیست ❌"
+"پاسخ Worker قابل شناسایی نیست ❌",
+
+invalid_json:
+"پاسخ ارسال‌شده به Worker معتبر نیست ❌"
 
 };
 
@@ -3273,11 +3295,15 @@ document.body.style.overflow="";
 async function getMaintenanceStatus(){
 
 if(maintenanceToggleBusy){
+
 return;
+
 }
 
 if(maintenanceStatusChecking){
+
 return;
+
 }
 
 maintenanceStatusChecking=true;
@@ -3300,6 +3326,11 @@ document.getElementById(
 let timeoutId=null;
 
 try{
+
+/*
+   هنگام ورود عادی، صفحه تعمیرات
+   تا مشخص شدن وضعیت نمایش داده می‌شود.
+*/
 
 if(!isPetiAdmin()){
 
@@ -3329,6 +3360,7 @@ document.body.style.overflow="hidden";
 
 }
 
+
 const controller =
 new AbortController();
 
@@ -3337,7 +3369,8 @@ setTimeout(function(){
 
 controller.abort();
 
-},5000);
+},7000);
+
 
 let response;
 
@@ -3354,8 +3387,7 @@ mode:"cors",
 cache:"no-store",
 signal:controller.signal,
 headers:{
-"Accept":"application/json",
-"Cache-Control":"no-cache"
+"Accept":"application/json"
 }
 }
 );
@@ -3371,12 +3403,22 @@ throw new Error("timeout");
 
 }
 
+if(
+fetchError instanceof TypeError
+){
+
+throw new Error("network");
+
+}
+
 throw fetchError;
 
 }
 
+
 clearTimeout(timeoutId);
 timeoutId=null;
+
 
 if(!response.ok){
 
@@ -3403,6 +3445,7 @@ response.status
 
 }
 
+
 let data=null;
 
 try{
@@ -3418,7 +3461,9 @@ throw new Error(
 
 }
 
+
 if(
+!data ||
 typeof data.maintenance !==
 "boolean"
 ){
@@ -3429,12 +3474,56 @@ throw new Error(
 
 }
 
+
+/*
+   ==========================================
+   محافظت در برابر پاسخ قدیمی Worker
+   ==========================================
+*/
+
+const timeSinceToggle =
+Date.now() -
+maintenanceLastToggleAt;
+
+
+/*
+   اگر اخیراً Toggle کرده‌ایم و Worker
+   مقدار مخالف برگرداند، فعلاً به آن
+   پاسخ قدیمی اعتماد نمی‌کنیم.
+*/
+
+if(
+maintenanceLastToggleAt>0 &&
+timeSinceToggle <
+MAINTENANCE_STATUS_GRACE_PERIOD &&
+maintenanceLastToggleState !== null &&
+data.maintenance !==
+maintenanceLastToggleState
+){
+
+console.warn(
+"Old maintenance status ignored:",
+data.maintenance,
+"expected:",
+maintenanceLastToggleState
+);
+
+return;
+
+}
+
+
+/*
+   وضعیت واقعی Worker
+*/
+
 petiMaintenanceEnabled =
 data.maintenance;
 
 updateMaintenanceUI();
 
 applyMaintenanceState();
+
 
 }catch(error){
 
@@ -3449,6 +3538,12 @@ console.error(
 error
 );
 
+
+/*
+   برای مدیر، در صورت خطای بررسی
+   وضعیت را تغییر نمی‌دهیم.
+*/
+
 if(isPetiAdmin()){
 
 document.documentElement.classList.remove(
@@ -3460,6 +3555,12 @@ document.body.style.overflow="";
 return;
 
 }
+
+
+/*
+   برای بازدیدکننده عادی، در صورت
+   خطای سرویس، سایت را باز نمی‌کنیم.
+*/
 
 petiMaintenanceEnabled=true;
 
@@ -3478,7 +3579,7 @@ maintenanceStatusChecking=false;
 
 /* =========================
    روشن / خاموش تعمیرات
-   نسخه اصلاح شده
+   نسخه نهایی اصلاح شده
 ========================= */
 
 async function toggleMaintenanceMode(){
@@ -3514,15 +3615,35 @@ return;
 
 }
 
+
 const btn =
 document.getElementById(
 "maintenanceToggleBtn"
 );
 
+
+/*
+   وضعیت جدید
+*/
+
 const newState =
 !petiMaintenanceEnabled;
 
+
 maintenanceToggleBusy=true;
+
+
+/*
+   ثبت زمان و وضعیت مورد انتظار
+   قبل از ارسال درخواست
+*/
+
+maintenanceLastToggleAt =
+Date.now();
+
+maintenanceLastToggleState =
+newState;
+
 
 if(btn){
 
@@ -3533,12 +3654,15 @@ btn.textContent =
 
 }
 
+
 let timeoutId=null;
+
 
 try{
 
 const controller =
 new AbortController();
+
 
 timeoutId =
 setTimeout(function(){
@@ -3548,9 +3672,11 @@ controller.abort();
 },15000);
 
 
-/* =========================
-   ارسال درخواست به Worker
-========================= */
+/*
+   ==========================================
+   ارسال به Worker
+   ==========================================
+*/
 
 let response;
 
@@ -3566,18 +3692,20 @@ method:"POST",
 mode:"cors",
 cache:"no-store",
 signal:controller.signal,
+
 headers:{
 "Content-Type":
 "application/json",
+
 "Accept":
-"application/json",
-"Cache-Control":
-"no-cache"
+"application/json"
 },
+
 body:
 JSON.stringify({
 password:
 PETI_ADMIN_PASSWORD,
+
 maintenance:
 newState
 })
@@ -3607,18 +3735,23 @@ throw fetchError;
 
 }
 
+
 clearTimeout(timeoutId);
 timeoutId=null;
 
 
-/* =========================
-   دریافت پاسخ Worker
-========================= */
+/*
+   ==========================================
+   خواندن پاسخ Worker
+   ==========================================
+*/
 
 const responseText =
 await response.text();
 
+
 let data=null;
+
 
 if(responseText){
 
@@ -3643,9 +3776,11 @@ throw new Error(
 }
 
 
-/* =========================
+/*
+   ==========================================
    بررسی HTTP
-========================= */
+   ==========================================
+*/
 
 if(!response.ok){
 
@@ -3667,6 +3802,7 @@ data.details
 ? data.details
 : "HTTP " + response.status;
 
+
 throw new Error(
 errorCode +
 "|" +
@@ -3676,9 +3812,11 @@ details
 }
 
 
-/* =========================
-   بررسی پاسخ Worker
-========================= */
+/*
+   ==========================================
+   بررسی پاسخ موفق
+   ==========================================
+*/
 
 if(
 !data ||
@@ -3693,27 +3831,55 @@ data
 );
 
 throw new Error(
-"toggle_failed"
+"invalid_worker_response"
 );
 
 }
 
 
-/* =========================
-   موفقیت
-========================= */
+/*
+   ==========================================
+   اعمال مستقیم وضعیت موفق Worker
+   ==========================================
+*/
 
 petiMaintenanceEnabled =
 data.maintenance;
 
+
+/*
+   وضعیت ثبت‌شده Worker
+   باید دقیقاً برابر وضعیت درخواستی باشد.
+*/
+
+maintenanceLastToggleAt =
+Date.now();
+
+maintenanceLastToggleState =
+data.maintenance;
+
+
+/*
+   به‌روزرسانی پنل
+*/
+
 updateMaintenanceUI();
+
+
+/*
+   اعمال وضعیت
+   برای مدیر صفحه تعمیرات نمایش داده نمی‌شود،
+   ولی دکمه پنل روی وضعیت صحیح می‌ماند.
+*/
 
 applyMaintenanceState();
 
 
 /*
-   بعد از موفقیت، وضعیت واقعی
-   دوباره از Worker بررسی می‌شود.
+   ==========================================
+   بعد از چند ثانیه یک بار وضعیت واقعی
+   Worker را دوباره بررسی می‌کنیم.
+   ==========================================
 */
 
 setTimeout(function(){
@@ -3727,7 +3893,7 @@ getMaintenanceStatus();
 
 }
 
-},2000);
+},11000);
 
 
 }catch(error){
@@ -3737,7 +3903,17 @@ console.error(
 error
 );
 
+
+/*
+   در صورت خطا، وضعیت قبلی حفظ می‌شود.
+*/
+
+maintenanceLastToggleState=null;
+maintenanceLastToggleAt=0;
+
+
 let code="toggle_failed";
+
 
 const raw =
 String(
@@ -3747,17 +3923,14 @@ error.message
 : ""
 );
 
-if(
-raw==="timeout"
-){
+
+if(raw==="timeout"){
 
 code="timeout";
 
 }
 
-else if(
-raw==="network"
-){
+else if(raw==="network"){
 
 code="network";
 
@@ -3804,10 +3977,26 @@ code="missing_secret";
 }
 
 else if(
+raw.startsWith("invalid_json")
+){
+
+code="invalid_json";
+
+}
+
+else if(
 raw.startsWith("toggle_failed")
 ){
 
 code="toggle_failed";
+
+}
+
+else if(
+raw.startsWith("status_http")
+){
+
+code="status_http";
 
 }
 
@@ -3819,6 +4008,7 @@ code="network";
 
 }
 
+
 const details =
 raw.indexOf("|")>=0
 ? raw.substring(
@@ -3826,12 +4016,14 @@ raw.indexOf("|")+1
 )
 : "";
 
+
 alert(
 maintenanceErrorMessage(
 code,
 details
 )
 );
+
 
 }finally{
 
@@ -3841,7 +4033,9 @@ clearTimeout(timeoutId);
 
 }
 
+
 maintenanceToggleBusy=false;
+
 
 if(btn){
 
@@ -3939,6 +4133,7 @@ break;
 
 });
 
+
 const bot=
 document.getElementById(
 "petiBotClicks"
@@ -3973,6 +4168,7 @@ const clicks=
 document.getElementById(
 "petiClicks"
 );
+
 
 if(bot){
 
@@ -4023,6 +4219,7 @@ totalClicks.toLocaleString("fa-IR");
 
 }
 
+
 const visits=
 document.getElementById(
 "petiVisits"
@@ -4034,12 +4231,14 @@ visits.textContent="۱";
 
 }
 
+
 if(status){
 
 status.textContent =
 "آمار داخلی صفحه بروزرسانی شد.";
 
 }
+
 
 }catch(error){
 
@@ -4117,8 +4316,6 @@ loginCommandPanel();
 }
 );
 
-}
-
 
 /* =========================
    باز کردن خودکار پنل برای مدیر
@@ -4173,6 +4370,26 @@ if(
 !maintenanceToggleBusy &&
 !maintenanceStatusChecking
 ){
+
+/*
+   اگر تازه وضعیت را تغییر داده‌ایم،
+   تا پایان بازه محافظتی درخواست
+   دوره‌ای را انجام نمی‌دهیم.
+*/
+
+const elapsed =
+Date.now() -
+maintenanceLastToggleAt;
+
+if(
+maintenanceLastToggleAt>0 &&
+elapsed <
+MAINTENANCE_STATUS_GRACE_PERIOD
+){
+
+return;
+
+}
 
 getMaintenanceStatus();
 
