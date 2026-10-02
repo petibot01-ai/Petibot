@@ -2690,6 +2690,12 @@ let petiMaintenanceEnabled=false;
 
 let maintenanceStatusChecking=false;
 
+/*
+   جلوگیری از تداخل درخواست روشن/خاموش
+   با بررسی خودکار هر ۲ ثانیه
+*/
+let maintenanceToggleBusy=false;
+
 
 /* =========================
    تشخیص مدیر وارد شده
@@ -2700,6 +2706,54 @@ function isPetiAdmin(){
 return sessionStorage.getItem(
 "petiMaintenanceAdmin"
 )==="1";
+
+}
+
+
+/* =========================
+   خطای قابل فهم سرویس
+========================= */
+
+function maintenanceErrorMessage(errorCode,details){
+
+const messages={
+
+unauthorized:
+"رمز مدیر توسط سرویس تأیید نشد ❌",
+
+github_read_failed:
+"سرویس به فایل maintenance.json در GitHub دسترسی پیدا نکرد ❌",
+
+github_write_failed:
+"سرویس نتوانست وضعیت maintenance.json را در GitHub تغییر دهد ❌",
+
+toggle_failed:
+"درخواست تغییر حالت تعمیرات ناموفق بود ❌",
+
+status_http:
+"سرویس مدیریت تعمیرات پاسخ صحیح نداد ❌",
+
+status_failed:
+"دریافت وضعیت تعمیرات از Worker ناموفق بود ❌",
+
+upstream:
+"Worker نتوانست وضعیت سایت را از GitHub دریافت کند ❌"
+
+};
+
+if(messages[errorCode]){
+return messages[errorCode];
+}
+
+if(errorCode === "network"){
+return "اتصال به Worker برقرار نشد ❌";
+}
+
+if(errorCode === "timeout"){
+return "پاسخ Worker بیش از حد طول کشید ❌";
+}
+
+return "خطای نامشخص در سرویس مدیریت تعمیرات ❌";
 
 }
 
@@ -2980,7 +3034,10 @@ text.innerHTML =
 
 }
 
-/* مدیر وارد شده باشد، صفحه تعمیرات نمایش داده نشود */
+/*
+   مدیر وارد شده باشد،
+   صفحه تعمیرات هرگز روی پنل او نمایش داده نمی‌شود.
+*/
 
 if(isPetiAdmin()){
 
@@ -3025,6 +3082,14 @@ document.body.style.overflow="";
 
 async function getMaintenanceStatus(){
 
+/*
+   هنگام روشن/خاموش کردن،
+   polling نباید درخواست جدید بفرستد.
+*/
+if(maintenanceToggleBusy){
+return;
+}
+
 if(maintenanceStatusChecking){
 return;
 }
@@ -3046,7 +3111,49 @@ document.getElementById(
 "maintenanceText"
 );
 
+let timeoutId=null;
+
 try{
+
+/*
+   اگر کاربر عادی است، صفحه تعمیرات
+   بلافاصله در حالت بررسی نمایش داده می‌شود.
+   بنابراین دیگر چند ثانیه صفحه خالی نمی‌ماند.
+*/
+
+if(!isPetiAdmin()){
+
+screen.classList.add("show");
+
+if(title){
+
+title.textContent =
+"ما درحال بروزرسانی سایت هستیم";
+
+}
+
+if(text){
+
+text.innerHTML =
+"درحال بررسی وضعیت سرویس هستیم" +
+"<br>" +
+"لطفا دقایقی دیگر مراجعه کنید.";
+
+}
+
+document.body.style.overflow="hidden";
+
+}
+
+const controller =
+new AbortController();
+
+timeoutId =
+setTimeout(function(){
+
+controller.abort();
+
+},2500);
 
 const response =
 await fetch(
@@ -3056,12 +3163,15 @@ Date.now(),
 {
 method:"GET",
 cache:"no-store",
+signal:controller.signal,
 headers:{
 "Accept":"application/json",
 "Cache-Control":"no-cache"
 }
 }
 );
+
+clearTimeout(timeoutId);
 
 if(!response.ok){
 
@@ -3075,8 +3185,19 @@ response.status
 const data =
 await response.json();
 
+if(
+typeof data.maintenance !==
+"boolean"
+){
+
+throw new Error(
+"status_failed"
+);
+
+}
+
 petiMaintenanceEnabled =
-data.maintenance === true;
+data.maintenance;
 
 updateMaintenanceUI();
 
@@ -3084,15 +3205,35 @@ applyMaintenanceState();
 
 }catch(error){
 
+if(timeoutId){
+clearTimeout(timeoutId);
+}
+
 console.error(
 "Maintenance status error:",
 error
 );
 
 /*
-   در صورت خطای Worker:
-   کاربران عادی صفحه تعمیرات را می‌بینند،
-   ولی مدیر واردشده از پنل خارج نمی‌شود.
+   مدیر واردشده نباید با خطای Worker
+   از پنل خارج شود.
+*/
+
+if(isPetiAdmin()){
+
+document.documentElement.classList.remove(
+"peti-maintenance-checking"
+);
+
+document.body.style.overflow="";
+
+return;
+
+}
+
+/*
+   برای کاربر عادی در صورت قطعی Worker،
+   صفحه تعمیرات حفظ می‌شود.
 */
 
 petiMaintenanceEnabled=true;
@@ -3131,15 +3272,27 @@ return;
 
 }
 
+/*
+   اگر قبلاً یک درخواست در حال انجام است،
+   درخواست دوم اجرا نشود.
+*/
+if(maintenanceToggleBusy){
+return;
+}
+
 const btn =
 document.getElementById(
 "maintenanceToggleBtn"
 );
 
+maintenanceToggleBusy=true;
+
 if(btn){
 
 btn.disabled=true;
 
+btn.textContent =
+"⏳ در حال اتصال به سرویس...";
 }
 
 try{
@@ -3147,7 +3300,21 @@ try{
 const newState =
 !petiMaintenanceEnabled;
 
-const response =
+const controller =
+new AbortController();
+
+const timeoutId =
+setTimeout(function(){
+
+controller.abort();
+
+},10000);
+
+let response;
+
+try{
+
+response =
 await fetch(
 PETI_MAINTENANCE_API +
 "/toggle?rnd=" +
@@ -3155,8 +3322,11 @@ Date.now(),
 {
 method:"POST",
 cache:"no-store",
+signal:controller.signal,
 headers:{
 "Content-Type":
+"application/json",
+"Accept":
 "application/json",
 "Cache-Control":
 "no-cache"
@@ -3173,35 +3343,89 @@ PETI_ADMIN_PASSWORD
 }
 );
 
-const data =
-await response.json()
-.catch(()=>({}));
+}catch(fetchError){
+
+clearTimeout(timeoutId);
+
+if(fetchError.name === "AbortError"){
+
+throw new Error(
+"timeout"
+);
+
+}
+
+throw new Error(
+"network"
+);
+
+}
+
+clearTimeout(timeoutId);
+
+let data={};
+
+try{
+
+data =
+await response.json();
+
+}catch(jsonError){
+
+data={};
+
+}
 
 if(
 !response.ok ||
 data.ok !== true
 ){
 
-throw new Error(
+const error =
+new Error(
 data.error ||
-"toggle"
+"toggle_failed"
 );
 
+error.details =
+data.details ||
+"";
+
+error.httpStatus =
+response.status;
+
+throw error;
+
 }
+
+/*
+   نتیجه مستقیم Worker معتبر است.
+   دیگر بعد از toggle درخواست /status نمی‌فرستیم،
+   چون ممکن است GitHub/Raw هنوز نسخه قبلی
+   را از cache تحویل دهد.
+*/
 
 petiMaintenanceEnabled =
 data.maintenance === true;
 
 updateMaintenanceUI();
 
+applyMaintenanceState();
+
 /*
-   مدیر همچنان داخل پنل باقی می‌ماند،
-   ولی سایر کاربران وضعیت جدید را
-   از Worker دریافت می‌کنند.
+   مدیر همچنان در پنل می‌ماند.
 */
+if(isPetiAdmin()){
 
-await getMaintenanceStatus();
+showPage("command");
 
+showMaintenanceScreen(false);
+
+}
+
+/*
+   پیام موفقیت بر اساس نتیجه واقعی Worker
+*/
 if(petiMaintenanceEnabled){
 
 alert(
@@ -3223,15 +3447,71 @@ console.error(
 error
 );
 
-alert(
-"اتصال به سرویس مدیریت تعمیرات برقرار نشد ❌"
+let message =
+maintenanceErrorMessage(
+error.message,
+error.details
 );
 
+/*
+   اگر خطای HTTP مشخص باشد،
+   شماره آن هم به مدیر نمایش داده می‌شود.
+*/
+
+if(error.httpStatus){
+
+message +=
+"\nکد HTTP: " +
+error.httpStatus;
+
+}
+
+/*
+   جزئیات مهم GitHub را در صورت وجود
+   کوتاه و قابل فهم نمایش می‌دهیم.
+*/
+
+if(
+error.details &&
+typeof error.details === "string"
+){
+
+let details =
+error.details;
+
+if(details.length > 300){
+
+details =
+details.substring(0,300) +
+"...";
+
+}
+
+message +=
+"\n\nجزئیات سرویس:\n" +
+details;
+
+}
+
+alert(message);
+
+}else{
+
+if(btn){
+
+updateMaintenanceUI();
+
+}
+
 }finally{
+
+maintenanceToggleBusy=false;
 
 if(btn){
 
 btn.disabled=false;
+
+updateMaintenanceUI();
 
 }
 
@@ -3475,15 +3755,20 @@ getMaintenanceStatus();
 
 
 /*
-   بررسی سریع وضعیت مرکزی.
+   بررسی وضعیت مرکزی.
    هر ۲ ثانیه وضعیت Worker بررسی می‌شود.
-   مدیر از این بررسی مستثنی است.
+   هنگام روشن/خاموش کردن، این بررسی
+   موقتاً متوقف می‌شود تا تداخل ایجاد نکند.
 */
 
 setInterval(
 function(){
 
+if(!maintenanceToggleBusy){
+
 getMaintenanceStatus();
+
+}
 
 },
 2000
