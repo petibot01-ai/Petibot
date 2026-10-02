@@ -2688,6 +2688,8 @@ const PETI_MAINTENANCE_API =
 
 let petiMaintenanceEnabled=false;
 
+let maintenanceStatusChecking=false;
+
 
 /* =========================
    ورود پنل
@@ -2713,6 +2715,8 @@ sessionStorage.setItem(
 "petiMaintenanceAdmin",
 "1"
 );
+
+showMaintenanceScreen(false);
 
 updateMaintenanceUI();
 
@@ -2945,7 +2949,19 @@ document.getElementById(
 
 if(!screen)return;
 
-if(petiMaintenanceEnabled){
+/*
+   اصلاح اصلی:
+   مدیر وارد شده نباید با بررسی‌های
+   لحظه‌ای دوباره از پنل خارج شود.
+*/
+
+const isAdmin =
+sessionStorage.getItem(
+"petiMaintenanceAdmin"
+) === "1";
+
+
+if(petiMaintenanceEnabled && !isAdmin){
 
 if(title){
 
@@ -2962,12 +2978,6 @@ text.innerHTML =
 "لطفا دقایقی دیگر مراجعه کنید.";
 
 }
-
-/*
-   مهم:
-   حالت تعمیرات برای همه کاربران اعمال می‌شود.
-   حتی اگر قبلاً مدیر وارد پنل شده باشد.
-*/
 
 screen.classList.add("show");
 
@@ -2998,6 +3008,12 @@ document.body.style.overflow="";
 
 async function getMaintenanceStatus(){
 
+if(maintenanceStatusChecking){
+return;
+}
+
+maintenanceStatusChecking=true;
+
 const screen =
 document.getElementById(
 "petiMaintenanceScreen"
@@ -3014,11 +3030,6 @@ document.getElementById(
 );
 
 try{
-
-/*
-   rnd باعث می‌شود هر بار درخواست جدید
-   به Worker ارسال شود و پاسخ قدیمی کش نشود.
-*/
 
 const response =
 await fetch(
@@ -3047,20 +3058,8 @@ response.status
 const data =
 await response.json();
 
-const newState =
-data.maintenance === true;
-
-/*
-   فقط وقتی وضعیت واقعاً تغییر کرده،
-   UI دوباره اعمال می‌شود.
-*/
-
-if(newState !== petiMaintenanceEnabled){
-
 petiMaintenanceEnabled =
-newState;
-
-}
+data.maintenance === true;
 
 updateMaintenanceUI();
 
@@ -3074,10 +3073,16 @@ error
 );
 
 /*
-   در صورت خطای دریافت وضعیت،
-   برای جلوگیری از نمایش اشتباه سایت،
-   حالت تعمیرات فعال می‌ماند.
+   اگر مدیر قبلاً وارد شده،
+   خطای دریافت وضعیت نباید پنل او را ببندد.
 */
+
+const isAdmin =
+sessionStorage.getItem(
+"petiMaintenanceAdmin"
+) === "1";
+
+if(!isAdmin){
 
 petiMaintenanceEnabled=true;
 
@@ -3104,6 +3109,12 @@ document.documentElement.classList.remove(
 );
 
 document.body.style.overflow="hidden";
+
+}
+
+}finally{
+
+maintenanceStatusChecking=false;
 
 }
 
@@ -3189,19 +3200,15 @@ data.error ||
 
 }
 
-/*
-   ثبت فوری نتیجه برگشتی Worker
-*/
-
 petiMaintenanceEnabled =
 data.maintenance === true;
 
 updateMaintenanceUI();
 
 /*
-   وضعیت واقعی را بلافاصله دوباره
-   از Worker دریافت می‌کنیم تا مطمئن شویم
-   تغییر در سمت مرکزی ثبت شده است.
+   مدیر همچنان داخل پنل باقی می‌ماند،
+   ولی سایر کاربران وضعیت جدید را
+   از Worker دریافت می‌کنند.
 */
 
 await getMaintenanceStatus();
@@ -3479,10 +3486,9 @@ getMaintenanceStatus();
 
 
 /*
-   بررسی بسیار سریع وضعیت مرکزی.
-   هر ۲ ثانیه وضعیت Worker بررسی می‌شود
-   تا روشن/خاموش شدن حالت تعمیرات برای
-   کاربران تقریباً لحظه‌ای اعمال شود.
+   بررسی سریع وضعیت مرکزی.
+   هر ۲ ثانیه وضعیت Worker بررسی می‌شود.
+   مدیر از این بررسی مستثنی است.
 */
 
 setInterval(
@@ -3497,4 +3503,4 @@ getMaintenanceStatus();
 </script>
 
 </body>
-</html>
+   </html>
