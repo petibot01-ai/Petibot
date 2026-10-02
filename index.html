@@ -7,7 +7,17 @@
 
 <!-- جلوگیری از نمایش سایت قبل از بررسی حالت تعمیرات -->
 <script>
-document.documentElement.classList.add("peti-maintenance-checking");
+(function(){
+  try{
+    if(sessionStorage.getItem("petiMaintenanceAdmin")==="1"){
+      document.documentElement.classList.add("peti-admin");
+    }else{
+      document.documentElement.classList.add("peti-maintenance-checking");
+    }
+  }catch(e){
+    document.documentElement.classList.add("peti-maintenance-checking");
+  }
+})();
 </script>
 
 <!-- GoatCounter -->
@@ -21,14 +31,38 @@ src="https://gc.zgo.at/count.js">
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 
+/* =====================================================
+   نمایش فوری صفحه تعمیرات قبل از پاسخ Worker
+===================================================== */
+
 html.peti-maintenance-checking body{
 overflow:hidden!important;
 }
 
+/*
+   تا وقتی وضعیت Worker مشخص نشده:
+   تمام محتوای اصلی مخفی است.
+*/
 html.peti-maintenance-checking body > main,
 html.peti-maintenance-checking body > footer,
 html.peti-maintenance-checking body > .purchase-overlay,
 html.peti-maintenance-checking body > .up{
+visibility:hidden!important;
+}
+
+/*
+   صفحه تعمیرات بدون هیچ تأخیری نمایش داده می‌شود.
+*/
+html.peti-maintenance-checking .maintenance-screen{
+display:flex!important;
+visibility:visible!important;
+}
+
+/*
+   ادمین نباید صفحه تعمیرات اولیه را ببیند.
+*/
+html.peti-admin .maintenance-screen{
+display:none!important;
 visibility:hidden!important;
 }
 
@@ -2690,10 +2724,6 @@ let petiMaintenanceEnabled=false;
 
 let maintenanceStatusChecking=false;
 
-/*
-   جلوگیری از تداخل درخواست روشن/خاموش
-   با بررسی خودکار هر ۲ ثانیه
-*/
 let maintenanceToggleBusy=false;
 
 
@@ -2745,11 +2775,11 @@ if(messages[errorCode]){
 return messages[errorCode];
 }
 
-if(errorCode === "network"){
+if(errorCode==="network"){
 return "اتصال به Worker برقرار نشد ❌";
 }
 
-if(errorCode === "timeout"){
+if(errorCode==="timeout"){
 return "پاسخ Worker بیش از حد طول کشید ❌";
 }
 
@@ -2770,7 +2800,7 @@ document.getElementById("commandPassword").value;
 const error =
 document.getElementById("commandError");
 
-if(password === PETI_ADMIN_PASSWORD){
+if(password===PETI_ADMIN_PASSWORD){
 
 document.getElementById("commandLogin").style.display="none";
 
@@ -2782,6 +2812,8 @@ sessionStorage.setItem(
 "petiMaintenanceAdmin",
 "1"
 );
+
+document.documentElement.classList.add("peti-admin");
 
 showMaintenanceScreen(false);
 
@@ -2815,6 +2847,8 @@ document.getElementById("commandError").style.display="none";
 sessionStorage.removeItem(
 "petiMaintenanceAdmin"
 );
+
+document.documentElement.classList.remove("peti-admin");
 
 if(petiMaintenanceEnabled){
 
@@ -2874,7 +2908,7 @@ window.prompt(
 "🔐 رمز پنل فرماندهی را وارد کنید:"
 );
 
-if(password === null){
+if(password===null){
 return;
 }
 
@@ -2883,12 +2917,14 @@ document.getElementById(
 "maintenanceAdminError"
 );
 
-if(password === PETI_ADMIN_PASSWORD){
+if(password===PETI_ADMIN_PASSWORD){
 
 sessionStorage.setItem(
 "petiMaintenanceAdmin",
 "1"
 );
+
+document.documentElement.classList.add("peti-admin");
 
 if(error){
 error.style.display="none";
@@ -3034,11 +3070,6 @@ text.innerHTML =
 
 }
 
-/*
-   مدیر وارد شده باشد،
-   صفحه تعمیرات هرگز روی پنل او نمایش داده نمی‌شود.
-*/
-
 if(isPetiAdmin()){
 
 screen.classList.remove("show");
@@ -3082,10 +3113,6 @@ document.body.style.overflow="";
 
 async function getMaintenanceStatus(){
 
-/*
-   هنگام روشن/خاموش کردن،
-   polling نباید درخواست جدید بفرستد.
-*/
 if(maintenanceToggleBusy){
 return;
 }
@@ -3116,9 +3143,9 @@ let timeoutId=null;
 try{
 
 /*
-   اگر کاربر عادی است، صفحه تعمیرات
-   بلافاصله در حالت بررسی نمایش داده می‌شود.
-   بنابراین دیگر چند ثانیه صفحه خالی نمی‌ماند.
+   این بخش دیگر لازم نیست منتظر Worker بماند.
+   صفحه تعمیرات قبلاً توسط CSS نمایش داده شده است.
+   اینجا فقط برای اطمینان، آن را فعال نگه می‌داریم.
 */
 
 if(!isPetiAdmin()){
@@ -3214,11 +3241,6 @@ console.error(
 error
 );
 
-/*
-   مدیر واردشده نباید با خطای Worker
-   از پنل خارج شود.
-*/
-
 if(isPetiAdmin()){
 
 document.documentElement.classList.remove(
@@ -3232,8 +3254,8 @@ return;
 }
 
 /*
-   برای کاربر عادی در صورت قطعی Worker،
-   صفحه تعمیرات حفظ می‌شود.
+   اگر Worker جواب نداد،
+   صفحه تعمیرات همچنان نمایش داده می‌شود.
 */
 
 petiMaintenanceEnabled=true;
@@ -3272,10 +3294,6 @@ return;
 
 }
 
-/*
-   اگر قبلاً یک درخواست در حال انجام است،
-   درخواست دوم اجرا نشود.
-*/
 if(maintenanceToggleBusy){
 return;
 }
@@ -3293,6 +3311,7 @@ btn.disabled=true;
 
 btn.textContent =
 "⏳ در حال اتصال به سرویس...";
+
 }
 
 try{
@@ -3324,457 +3343,4 @@ method:"POST",
 cache:"no-store",
 signal:controller.signal,
 headers:{
-"Content-Type":
-"application/json",
-"Accept":
-"application/json",
-"Cache-Control":
-"no-cache"
-},
-body:JSON.stringify({
-
-maintenance:
-newState,
-
-password:
-PETI_ADMIN_PASSWORD
-
-})
-}
-);
-
-}catch(fetchError){
-
-clearTimeout(timeoutId);
-
-if(fetchError.name === "AbortError"){
-
-throw new Error(
-"timeout"
-);
-
-}
-
-throw new Error(
-"network"
-);
-
-}
-
-clearTimeout(timeoutId);
-
-let data={};
-
-try{
-
-data =
-await response.json();
-
-}catch(jsonError){
-
-data={};
-
-}
-
-if(
-!response.ok ||
-data.ok !== true
-){
-
-const error =
-new Error(
-data.error ||
-"toggle_failed"
-);
-
-error.details =
-data.details ||
-"";
-
-error.httpStatus =
-response.status;
-
-throw error;
-
-}
-
-/*
-   نتیجه مستقیم Worker معتبر است.
-   دیگر بعد از toggle درخواست /status نمی‌فرستیم،
-   چون ممکن است GitHub/Raw هنوز نسخه قبلی
-   را از cache تحویل دهد.
-*/
-
-petiMaintenanceEnabled =
-data.maintenance === true;
-
-updateMaintenanceUI();
-
-applyMaintenanceState();
-
-/*
-   مدیر همچنان در پنل می‌ماند.
-*/
-if(isPetiAdmin()){
-
-showPage("command");
-
-showMaintenanceScreen(false);
-
-}
-
-/*
-   پیام موفقیت بر اساس نتیجه واقعی Worker
-*/
-if(petiMaintenanceEnabled){
-
-alert(
-"حالت تعمیرات برای همه کاربران فعال شد ✅"
-);
-
-}else{
-
-alert(
-"حالت تعمیرات برای همه کاربران غیرفعال شد ✅"
-);
-
-}
-
-}catch(error){
-
-console.error(
-"Maintenance toggle error:",
-error
-);
-
-let message =
-maintenanceErrorMessage(
-error.message,
-error.details
-);
-
-/*
-   اگر خطای HTTP مشخص باشد،
-   شماره آن هم به مدیر نمایش داده می‌شود.
-*/
-
-if(error.httpStatus){
-
-message +=
-"\nکد HTTP: " +
-error.httpStatus;
-
-}
-
-/*
-   جزئیات مهم GitHub را در صورت وجود
-   کوتاه و قابل فهم نمایش می‌دهیم.
-*/
-
-if(
-error.details &&
-typeof error.details === "string"
-){
-
-let details =
-error.details;
-
-if(details.length > 300){
-
-details =
-details.substring(0,300) +
-"...";
-
-}
-
-message +=
-"\n\nجزئیات سرویس:\n" +
-details;
-
-}
-
-alert(message);
-
-}else{
-
-if(btn){
-
-updateMaintenanceUI();
-
-}
-
-}finally{
-
-maintenanceToggleBusy=false;
-
-if(btn){
-
-btn.disabled=false;
-
-updateMaintenanceUI();
-
-}
-
-}
-
-}
-
-
-/* =========================
-   تبدیل عدد فارسی
-========================= */
-
-function persianNumber(number){
-
-return Number(number || 0)
-.toLocaleString("fa-IR");
-
-}
-
-
-/* =========================
-   GoatCounter
-========================= */
-
-async function getGoatCounterCount(path){
-
-try{
-
-const url =
-"https://petibot.goatcounter.com/counter/" +
-encodeURIComponent(path) +
-".json?rnd=" +
-Date.now();
-
-const response =
-await fetch(
-url,
-{
-method:"GET",
-cache:"no-store"
-}
-);
-
-if(!response.ok){
-
-return 0;
-
-}
-
-const data =
-await response.json();
-
-return Number(
-data.count || 0
-);
-
-}catch(error){
-
-console.error(
-"GoatCounter error:",
-path,
-error
-);
-
-return 0;
-
-}
-
-}
-
-
-/* =========================
-   آمار
-========================= */
-
-async function loadPetiStats(){
-
-const status =
-document.getElementById(
-"statsStatus"
-);
-
-if(!status)return;
-
-status.textContent =
-"در حال دریافت آمار واقعی...";
-
-const visits =
-await getGoatCounterCount(
-"TOTAL"
-);
-
-document.getElementById(
-"petiVisits"
-).textContent =
-persianNumber(visits);
-
-const eventNames={
-
-petiBotClicks:
-"peti-bot",
-
-petiBot2Clicks:
-"peti-bot2",
-
-petiChannelClicks:
-"peti-channel",
-
-petiLinkClicks:
-"peti-linkdoni",
-
-petiGroupClicks:
-"peti-support-group",
-
-supportEmail:
-"support-email",
-
-anonymousChat:
-"anonymous-chat"
-
-};
-
-const results =
-await Promise.all(
-
-Object.entries(
-eventNames
-).map(
-async ([key,path])=>{
-
-return [
-key,
-await getGoatCounterCount(path)
-];
-
-}
-)
-
-);
-
-const stats =
-Object.fromEntries(
-results
-);
-
-document.getElementById(
-"petiBotClicks"
-).textContent =
-persianNumber(
-stats.petiBotClicks
-);
-
-document.getElementById(
-"petiBot2Clicks"
-).textContent =
-persianNumber(
-stats.petiBot2Clicks
-);
-
-document.getElementById(
-"petiChannelClicks"
-).textContent =
-persianNumber(
-stats.petiChannelClicks
-);
-
-document.getElementById(
-"petiLinkClicks"
-).textContent =
-persianNumber(
-stats.petiLinkClicks
-);
-
-document.getElementById(
-"petiGroupClicks"
-).textContent =
-persianNumber(
-stats.petiGroupClicks
-);
-
-const supportClicks =
-(stats.supportEmail || 0) +
-(stats.anonymousChat || 0);
-
-document.getElementById(
-"petiSupportClicks"
-).textContent =
-persianNumber(
-supportClicks
-);
-
-const totalClicks =
-(stats.petiBotClicks || 0) +
-(stats.petiBot2Clicks || 0) +
-(stats.petiChannelClicks || 0) +
-(stats.petiLinkClicks || 0) +
-(stats.petiGroupClicks || 0) +
-(stats.supportEmail || 0) +
-(stats.anonymousChat || 0);
-
-document.getElementById(
-"petiClicks"
-).textContent =
-persianNumber(
-totalClicks
-);
-
-status.textContent =
-"آخرین بروزرسانی: " +
-new Date().toLocaleTimeString(
-"fa-IR"
-);
-
-}
-
-
-/* =========================
-   اتصال مستقیم دکمه ورود مدیر
-========================= */
-
-const maintenanceLoginBtn =
-document.getElementById(
-"maintenanceAdminLoginBtn"
-);
-
-if(maintenanceLoginBtn){
-
-maintenanceLoginBtn.addEventListener(
-"click",
-maintenanceAdminLogin
-);
-
-}
-
-
-/* =========================
-   بررسی فوری تعمیرات
-========================= */
-
-getMaintenanceStatus();
-
-
-/*
-   بررسی وضعیت مرکزی.
-   هر ۲ ثانیه وضعیت Worker بررسی می‌شود.
-   هنگام روشن/خاموش کردن، این بررسی
-   موقتاً متوقف می‌شود تا تداخل ایجاد نکند.
-*/
-
-setInterval(
-function(){
-
-if(!maintenanceToggleBusy){
-
-getMaintenanceStatus();
-
-}
-
-},
-2000
-);
-
-</script>
-
-</body>
-   </html>
+"Content
