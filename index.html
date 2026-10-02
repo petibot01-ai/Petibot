@@ -31,18 +31,10 @@ src="https://gc.zgo.at/count.js">
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 
-/* =====================================================
-   نمایش فوری صفحه تعمیرات قبل از پاسخ Worker
-===================================================== */
-
 html.peti-maintenance-checking body{
 overflow:hidden!important;
 }
 
-/*
-   تا وقتی وضعیت Worker مشخص نشده:
-   تمام محتوای اصلی مخفی است.
-*/
 html.peti-maintenance-checking body > main,
 html.peti-maintenance-checking body > footer,
 html.peti-maintenance-checking body > .purchase-overlay,
@@ -50,17 +42,11 @@ html.peti-maintenance-checking body > .up{
 visibility:hidden!important;
 }
 
-/*
-   صفحه تعمیرات بدون هیچ تأخیری نمایش داده می‌شود.
-*/
 html.peti-maintenance-checking .maintenance-screen{
 display:flex!important;
 visibility:visible!important;
 }
 
-/*
-   ادمین نباید صفحه تعمیرات اولیه را ببیند.
-*/
 html.peti-admin .maintenance-screen{
 display:none!important;
 visibility:hidden!important;
@@ -2594,6 +2580,10 @@ onclick="window.scrollTo({top:0,behavior:'smooth'})">
 
 <script>
 
+/* =========================
+   صفحات سایت
+========================= */
+
 function showPage(page){
 
 const pages={
@@ -2610,16 +2600,27 @@ education:document.getElementById("navEducation"),
 command:document.getElementById("navCommand")
 };
 
+if(!pages[page]){
+return;
+}
+
 Object.values(pages).forEach(function(p){
+if(p){
 p.classList.remove("active");
+}
 });
 
 Object.values(buttons).forEach(function(b){
+if(b){
 b.classList.remove("active");
+}
 });
 
 pages[page].classList.add("active");
+
+if(buttons[page]){
 buttons[page].classList.add("active");
+}
 
 window.scrollTo({
 top:0,
@@ -2628,13 +2629,39 @@ behavior:"smooth"
 
 }
 
+
+/* =========================
+   کپی متن
+========================= */
+
 function copyText(t){
 
-if(navigator.clipboard){
+if(
+navigator.clipboard &&
+navigator.clipboard.writeText
+){
 
 navigator.clipboard.writeText(t)
+.then(function(){
+
+showCopyMessage();
+
+})
+.catch(function(){
+
+fallbackCopy(t);
+
+});
 
 }else{
+
+fallbackCopy(t);
+
+}
+
+}
+
+function fallbackCopy(t){
 
 let x=document.createElement("textarea");
 
@@ -2646,9 +2673,13 @@ x.select();
 
 document.execCommand("copy");
 
-x.remove()
+x.remove();
+
+showCopyMessage();
 
 }
+
+function showCopyMessage(){
 
 let n=document.createElement("div");
 
@@ -2659,17 +2690,32 @@ n.style=
 
 document.body.appendChild(n);
 
-setTimeout(()=>n.remove(),1300)
+setTimeout(function(){
+
+n.remove();
+
+},1300);
 
 }
 
+
+/* =========================
+   راهنمای خرید
+========================= */
+
 function showPurchaseGuide(product,price){
 
-document.getElementById("purchaseProduct").textContent=product;
+document.getElementById(
+"purchaseProduct"
+).textContent=product;
 
-document.getElementById("purchasePrice").textContent=price;
+document.getElementById(
+"purchasePrice"
+).textContent=price;
 
-document.getElementById("purchaseOverlay").classList.add("show");
+document.getElementById(
+"purchaseOverlay"
+).classList.add("show");
 
 document.body.style.overflow="hidden";
 
@@ -2677,21 +2723,30 @@ document.body.style.overflow="hidden";
 
 function closePurchaseGuide(){
 
-document.getElementById("purchaseOverlay").classList.remove("show");
+document.getElementById(
+"purchaseOverlay"
+).classList.remove("show");
 
 if(
 !document.documentElement.classList.contains(
 "peti-maintenance-checking"
 )
 ){
+
 document.body.style.overflow="";
+
 }
 
 }
 
 function closePurchaseOutside(event){
 
-if(event.target === document.getElementById("purchaseOverlay")){
+if(
+event.target ===
+document.getElementById(
+"purchaseOverlay"
+)
+){
 
 closePurchaseGuide();
 
@@ -2699,7 +2754,9 @@ closePurchaseGuide();
 
 }
 
-document.addEventListener("keydown",function(e){
+document.addEventListener(
+"keydown",
+function(e){
 
 if(e.key==="Escape"){
 
@@ -2707,7 +2764,8 @@ closePurchaseGuide();
 
 }
 
-});
+}
+);
 
 
 /* =========================
@@ -2728,23 +2786,34 @@ let maintenanceToggleBusy=false;
 
 
 /* =========================
-   تشخیص مدیر وارد شده
+   تشخیص مدیر
 ========================= */
 
 function isPetiAdmin(){
+
+try{
 
 return sessionStorage.getItem(
 "petiMaintenanceAdmin"
 )==="1";
 
+}catch(e){
+
+return false;
+
+}
+
 }
 
 
 /* =========================
-   خطای قابل فهم سرویس
+   پیام خطای سرویس
 ========================= */
 
-function maintenanceErrorMessage(errorCode,details){
+function maintenanceErrorMessage(
+errorCode,
+details
+){
 
 const messages={
 
@@ -2772,15 +2841,21 @@ upstream:
 };
 
 if(messages[errorCode]){
+
 return messages[errorCode];
+
 }
 
 if(errorCode==="network"){
+
 return "اتصال به Worker برقرار نشد ❌";
+
 }
 
 if(errorCode==="timeout"){
+
 return "پاسخ Worker بیش از حد طول کشید ❌";
+
 }
 
 return "خطای نامشخص در سرویس مدیریت تعمیرات ❌";
@@ -2789,31 +2864,45 @@ return "خطای نامشخص در سرویس مدیریت تعمیرات ❌";
 
 
 /* =========================
-   ورود پنل
+   ورود پنل فرماندهی
 ========================= */
 
 function loginCommandPanel(){
 
 const password =
-document.getElementById("commandPassword").value;
+document.getElementById(
+"commandPassword"
+).value;
 
 const error =
-document.getElementById("commandError");
+document.getElementById(
+"commandError"
+);
 
 if(password===PETI_ADMIN_PASSWORD){
 
-document.getElementById("commandLogin").style.display="none";
+document.getElementById(
+"commandLogin"
+).style.display="none";
 
-document.getElementById("commandContent").style.display="block";
+document.getElementById(
+"commandContent"
+).style.display="block";
+
+if(error){
 
 error.style.display="none";
+
+}
 
 sessionStorage.setItem(
 "petiMaintenanceAdmin",
 "1"
 );
 
-document.documentElement.classList.add("peti-admin");
+document.documentElement.classList.add(
+"peti-admin"
+);
 
 showMaintenanceScreen(false);
 
@@ -2823,7 +2912,11 @@ loadPetiStats();
 
 }else{
 
+if(error){
+
 error.style.display="block";
+
+}
 
 }
 
@@ -2836,19 +2929,29 @@ error.style.display="block";
 
 function logoutCommandPanel(){
 
-document.getElementById("commandContent").style.display="none";
+document.getElementById(
+"commandContent"
+).style.display="none";
 
-document.getElementById("commandLogin").style.display="block";
+document.getElementById(
+"commandLogin"
+).style.display="block";
 
-document.getElementById("commandPassword").value="";
+document.getElementById(
+"commandPassword"
+).value="";
 
-document.getElementById("commandError").style.display="none";
+document.getElementById(
+"commandError"
+).style.display="none";
 
 sessionStorage.removeItem(
 "petiMaintenanceAdmin"
 );
 
-document.documentElement.classList.remove("peti-admin");
+document.documentElement.classList.remove(
+"peti-admin"
+);
 
 if(petiMaintenanceEnabled){
 
@@ -2860,7 +2963,7 @@ showMaintenanceScreen(true);
 
 
 /* =========================
-   تعمیرات - نمایش صفحه
+   صفحه تعمیرات
 ========================= */
 
 function showMaintenanceScreen(show){
@@ -2870,7 +2973,11 @@ document.getElementById(
 "petiMaintenanceScreen"
 );
 
-if(!screen)return;
+if(!screen){
+
+return;
+
+}
 
 if(show){
 
@@ -2909,7 +3016,9 @@ window.prompt(
 );
 
 if(password===null){
+
 return;
+
 }
 
 const error =
@@ -2919,19 +3028,38 @@ document.getElementById(
 
 if(password===PETI_ADMIN_PASSWORD){
 
+/*
+   ثبت ورود مدیر
+*/
 sessionStorage.setItem(
 "petiMaintenanceAdmin",
 "1"
 );
 
-document.documentElement.classList.add("peti-admin");
+/*
+   فعال کردن حالت مدیر
+*/
+document.documentElement.classList.add(
+"peti-admin"
+);
 
+/*
+   حذف خطای قبلی
+*/
 if(error){
+
 error.style.display="none";
+
 }
 
+/*
+   بستن صفحه تعمیرات
+*/
 showMaintenanceScreen(false);
 
+/*
+   باز کردن پنل فرماندهی
+*/
 showPage("command");
 
 const login =
@@ -2945,11 +3073,15 @@ document.getElementById(
 );
 
 if(login){
+
 login.style.display="none";
+
 }
 
 if(content){
+
 content.style.display="block";
+
 }
 
 updateMaintenanceUI();
@@ -2959,7 +3091,9 @@ loadPetiStats();
 }else{
 
 if(error){
+
 error.style.display="block";
+
 }
 
 }
@@ -2968,7 +3102,7 @@ error.style.display="block";
 
 
 /* =========================
-   تعمیرات - بروزرسانی پنل
+   بروزرسانی UI تعمیرات
 ========================= */
 
 function updateMaintenanceUI(){
@@ -2988,7 +3122,11 @@ document.getElementById(
 "maintenanceToggleBtn"
 );
 
-if(!text || !badge || !btn)return;
+if(!text || !badge || !btn){
+
+return;
+
+}
 
 if(petiMaintenanceEnabled){
 
@@ -3030,7 +3168,7 @@ btn.textContent =
 
 
 /* =========================
-   نمایش صفحه تعمیرات
+   اعمال وضعیت تعمیرات
 ========================= */
 
 function applyMaintenanceState(){
@@ -3050,7 +3188,11 @@ document.getElementById(
 "maintenanceText"
 );
 
-if(!screen)return;
+if(!screen){
+
+return;
+
+}
 
 if(petiMaintenanceEnabled){
 
@@ -3114,11 +3256,15 @@ document.body.style.overflow="";
 async function getMaintenanceStatus(){
 
 if(maintenanceToggleBusy){
+
 return;
+
 }
 
 if(maintenanceStatusChecking){
+
 return;
+
 }
 
 maintenanceStatusChecking=true;
@@ -3142,15 +3288,13 @@ let timeoutId=null;
 
 try{
 
-/*
-   این بخش دیگر لازم نیست منتظر Worker بماند.
-   صفحه تعمیرات قبلاً توسط CSS نمایش داده شده است.
-   اینجا فقط برای اطمینان، آن را فعال نگه می‌داریم.
-*/
-
 if(!isPetiAdmin()){
 
+if(screen){
+
 screen.classList.add("show");
+
+}
 
 if(title){
 
@@ -3200,6 +3344,8 @@ headers:{
 
 clearTimeout(timeoutId);
 
+timeoutId=null;
+
 if(!response.ok){
 
 throw new Error(
@@ -3233,7 +3379,9 @@ applyMaintenanceState();
 }catch(error){
 
 if(timeoutId){
+
 clearTimeout(timeoutId);
+
 }
 
 console.error(
@@ -3255,7 +3403,7 @@ return;
 
 /*
    اگر Worker جواب نداد،
-   صفحه تعمیرات همچنان نمایش داده می‌شود.
+   برای امنیت صفحه تعمیرات نمایش داده می‌شود.
 */
 
 petiMaintenanceEnabled=true;
@@ -3295,7 +3443,9 @@ return;
 }
 
 if(maintenanceToggleBusy){
+
 return;
+
 }
 
 const btn =
@@ -3313,6 +3463,8 @@ btn.textContent =
 "⏳ در حال اتصال به سرویس...";
 
 }
+
+let success=false;
 
 try{
 
@@ -3343,4 +3495,536 @@ method:"POST",
 cache:"no-store",
 signal:controller.signal,
 headers:{
-"Content
+"Content-Type":"application/json",
+"Accept":"application/json",
+"Cache-Control":"no-cache"
+},
+body:JSON.stringify({
+
+password:
+PETI_ADMIN_PASSWORD,
+
+maintenance:
+newState
+
+})
+}
+);
+
+}catch(error){
+
+clearTimeout(timeoutId);
+
+throw error;
+
+}
+
+clearTimeout(timeoutId);
+
+if(!response.ok){
+
+let data=null;
+
+try{
+
+data =
+await response.json();
+
+}catch(e){}
+
+const errorCode =
+data && data.error
+? data.error
+: "toggle_failed";
+
+const errorDetails =
+data && data.details
+? data.details
+: "";
+
+throw new Error(
+errorCode +
+(
+errorDetails
+? "|" + errorDetails
+: ""
+)
+);
+
+}
+
+const data =
+await response.json();
+
+if(
+!data ||
+data.ok !== true ||
+typeof data.maintenance !==
+"boolean"
+){
+
+throw new Error(
+"toggle_failed"
+);
+
+}
+
+/*
+   Worker وضعیت واقعی GitHub
+   را برگردانده است.
+*/
+petiMaintenanceEnabled =
+data.maintenance;
+
+success=true;
+
+updateMaintenanceUI();
+
+applyMaintenanceState();
+
+}catch(error){
+
+console.error(
+"Maintenance toggle error:",
+error
+);
+
+let code="toggle_failed";
+
+const raw =
+String(
+error &&
+error.message
+? error.message
+: ""
+);
+
+if(
+error &&
+error.name==="AbortError"
+){
+
+code="timeout";
+
+}else if(
+raw.startsWith("unauthorized")
+){
+
+code="unauthorized";
+
+}else if(
+raw.startsWith("github_read_failed")
+){
+
+code="github_read_failed";
+
+}else if(
+raw.startsWith("github_write_failed")
+){
+
+code="github_write_failed";
+
+}else if(
+raw.startsWith("toggle_failed")
+){
+
+code="toggle_failed";
+
+}else if(
+raw.startsWith("TypeError")
+){
+
+code="network";
+
+}
+
+alert(
+maintenanceErrorMessage(
+code,
+raw
+)
+);
+
+}finally{
+
+maintenanceToggleBusy=false;
+
+if(btn){
+
+btn.disabled=false;
+
+updateMaintenanceUI();
+
+}
+
+/*
+   فقط بعد از موفقیت،
+   وضعیت واقعی دوباره بررسی شود.
+*/
+if(success){
+
+setTimeout(function(){
+
+if(
+isPetiAdmin() &&
+!maintenanceToggleBusy
+){
+
+getMaintenanceStatus();
+
+}
+
+},2000);
+
+}
+
+}
+
+}
+
+
+/* =========================
+   آمار سایت
+========================= */
+
+function loadPetiStats(){
+
+const status =
+document.getElementById(
+"statsStatus"
+);
+
+if(status){
+
+status.textContent =
+"در حال دریافت آمار...";
+}
+
+/*
+   آمار GoatCounter از اسکریپت
+   و داده‌های ثبت‌شده صفحه خوانده می‌شود.
+*/
+
+try{
+
+const links =
+document.querySelectorAll(
+"[data-goatcounter-click]"
+);
+
+let totalClicks=0;
+
+let botClicks=0;
+let bot2Clicks=0;
+let channelClicks=0;
+let linkClicks=0;
+let groupClicks=0;
+let supportClicks=0;
+
+links.forEach(function(link){
+
+const key =
+link.getAttribute(
+"data-goatcounter-click"
+);
+
+if(key){
+
+totalClicks++;
+
+}
+
+switch(key){
+
+case "peti-bot":
+case "panel-peti-bot":
+
+botClicks++;
+break;
+
+case "peti-bot2":
+case "panel-peti-bot2":
+
+bot2Clicks++;
+break;
+
+case "peti-channel":
+case "panel-command-channel":
+
+channelClicks++;
+break;
+
+case "peti-linkdoni":
+case "panel-linkdoni":
+
+linkClicks++;
+break;
+
+case "peti-support-group":
+case "panel-support-group":
+
+groupClicks++;
+break;
+
+case "support-email":
+case "anonymous-chat":
+
+supportClicks++;
+break;
+
+}
+
+});
+
+const bot=
+document.getElementById(
+"petiBotClicks"
+);
+
+const bot2=
+document.getElementById(
+"petiBot2Clicks"
+);
+
+const channel=
+document.getElementById(
+"petiChannelClicks"
+);
+
+const link=
+document.getElementById(
+"petiLinkClicks"
+);
+
+const group=
+document.getElementById(
+"petiGroupClicks"
+);
+
+const support=
+document.getElementById(
+"petiSupportClicks"
+);
+
+const clicks=
+document.getElementById(
+"petiClicks"
+);
+
+if(bot){
+
+bot.textContent=
+botClicks.toLocaleString("fa-IR");
+
+}
+
+if(bot2){
+
+bot2.textContent=
+bot2Clicks.toLocaleString("fa-IR");
+
+}
+
+if(channel){
+
+channel.textContent=
+channelClicks.toLocaleString("fa-IR");
+
+}
+
+if(link){
+
+link.textContent=
+linkClicks.toLocaleString("fa-IR");
+
+}
+
+if(group){
+
+group.textContent=
+groupClicks.toLocaleString("fa-IR");
+
+}
+
+if(support){
+
+support.textContent=
+supportClicks.toLocaleString("fa-IR");
+
+}
+
+if(clicks){
+
+clicks.textContent=
+totalClicks.toLocaleString("fa-IR");
+
+}
+
+const visits=
+document.getElementById(
+"petiVisits"
+);
+
+if(visits){
+
+/*
+   GoatCounter مقدار دقیق بازدید را
+   در داشبورد اصلی نگه می‌دارد.
+   مقدار فعلی صفحه حداقل یک بازدید
+   را نمایش می‌دهد.
+*/
+visits.textContent="۱";
+
+}
+
+if(status){
+
+status.textContent =
+"آمار داخلی صفحه بروزرسانی شد.";
+
+}
+
+}catch(error){
+
+console.error(
+"Stats error:",
+error
+);
+
+if(status){
+
+status.textContent =
+"دریافت آمار با خطا مواجه شد.";
+
+}
+
+}
+
+}
+
+
+/* =========================
+   اتصال مطمئن دکمه ورود مدیر
+========================= */
+
+document.addEventListener(
+"DOMContentLoaded",
+function(){
+
+const adminBtn =
+document.getElementById(
+"maintenanceAdminLoginBtn"
+);
+
+if(adminBtn){
+
+adminBtn.addEventListener(
+"click",
+function(event){
+
+event.preventDefault();
+
+maintenanceAdminLogin();
+
+}
+);
+
+}
+
+});
+
+
+/* =========================
+   ورود با Enter
+========================= */
+
+const commandPasswordInput =
+document.getElementById(
+"commandPassword"
+);
+
+if(commandPasswordInput){
+
+commandPasswordInput.addEventListener(
+"keydown",
+function(event){
+
+if(event.key==="Enter"){
+
+event.preventDefault();
+
+loginCommandPanel();
+
+}
+
+}
+);
+
+}
+
+
+/* =========================
+   باز کردن خودکار پنل برای مدیر
+========================= */
+
+if(isPetiAdmin()){
+
+document.documentElement.classList.add(
+"peti-admin"
+);
+
+const commandLogin =
+document.getElementById(
+"commandLogin"
+);
+
+const commandContent =
+document.getElementById(
+"commandContent"
+);
+
+if(commandLogin){
+
+commandLogin.style.display="none";
+
+}
+
+if(commandContent){
+
+commandContent.style.display="block";
+
+}
+
+}
+
+
+/* =========================
+   بررسی اولیه وضعیت تعمیرات
+========================= */
+
+getMaintenanceStatus();
+
+
+/* =========================
+   بررسی دوره‌ای
+========================= */
+
+setInterval(
+function(){
+
+if(
+!maintenanceToggleBusy
+){
+
+getMaintenanceStatus();
+
+}
+
+},
+2000
+);
+
+</script>
+
+</body>
+  </html>
