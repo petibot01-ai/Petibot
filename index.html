@@ -1614,7 +1614,6 @@ id="petiMaintenanceScreen"
 💙 PETI BOT
 </div>
 
-<!-- اصلاح شده -->
 <button
 type="button"
 class="maintenance-admin-btn"
@@ -2924,10 +2923,10 @@ btn.textContent =
 
 
 /* =========================
-   دریافت وضعیت تعمیرات
+   نمایش صفحه تعمیرات
 ========================= */
 
-async function getMaintenanceStatus(){
+function applyMaintenanceState(){
 
 const screen =
 document.getElementById(
@@ -2944,48 +2943,9 @@ document.getElementById(
 "maintenanceText"
 );
 
-const isAdmin =
-sessionStorage.getItem(
-"petiMaintenanceAdmin"
-) === "1";
+if(!screen)return;
 
-try{
-
-const response =
-await fetch(
-PETI_MAINTENANCE_API +
-"/status?rnd=" +
-Date.now(),
-{
-method:"GET",
-cache:"no-store",
-headers:{
-"Accept":"application/json"
-}
-}
-);
-
-if(!response.ok){
-
-throw new Error(
-"status_http_" +
-response.status
-);
-
-}
-
-const data =
-await response.json();
-
-petiMaintenanceEnabled =
-data.maintenance === true;
-
-updateMaintenanceUI();
-
-if(
-petiMaintenanceEnabled &&
-!isAdmin
-){
+if(petiMaintenanceEnabled){
 
 if(title){
 
@@ -3002,6 +2962,12 @@ text.innerHTML =
 "لطفا دقایقی دیگر مراجعه کنید.";
 
 }
+
+/*
+   مهم:
+   حالت تعمیرات برای همه کاربران اعمال می‌شود.
+   حتی اگر قبلاً مدیر وارد پنل شده باشد.
+*/
 
 screen.classList.add("show");
 
@@ -3023,6 +2989,83 @@ document.body.style.overflow="";
 
 }
 
+}
+
+
+/* =========================
+   دریافت وضعیت تعمیرات
+========================= */
+
+async function getMaintenanceStatus(){
+
+const screen =
+document.getElementById(
+"petiMaintenanceScreen"
+);
+
+const title =
+document.getElementById(
+"maintenanceTitle"
+);
+
+const text =
+document.getElementById(
+"maintenanceText"
+);
+
+try{
+
+/*
+   rnd باعث می‌شود هر بار درخواست جدید
+   به Worker ارسال شود و پاسخ قدیمی کش نشود.
+*/
+
+const response =
+await fetch(
+PETI_MAINTENANCE_API +
+"/status?rnd=" +
+Date.now(),
+{
+method:"GET",
+cache:"no-store",
+headers:{
+"Accept":"application/json",
+"Cache-Control":"no-cache"
+}
+}
+);
+
+if(!response.ok){
+
+throw new Error(
+"status_http_" +
+response.status
+);
+
+}
+
+const data =
+await response.json();
+
+const newState =
+data.maintenance === true;
+
+/*
+   فقط وقتی وضعیت واقعاً تغییر کرده،
+   UI دوباره اعمال می‌شود.
+*/
+
+if(newState !== petiMaintenanceEnabled){
+
+petiMaintenanceEnabled =
+newState;
+
+}
+
+updateMaintenanceUI();
+
+applyMaintenanceState();
+
 }catch(error){
 
 console.error(
@@ -3030,7 +3073,11 @@ console.error(
 error
 );
 
-if(!isAdmin){
+/*
+   در صورت خطای دریافت وضعیت،
+   برای جلوگیری از نمایش اشتباه سایت،
+   حالت تعمیرات فعال می‌ماند.
+*/
 
 petiMaintenanceEnabled=true;
 
@@ -3057,16 +3104,6 @@ document.documentElement.classList.remove(
 );
 
 document.body.style.overflow="hidden";
-
-}else{
-
-document.documentElement.classList.remove(
-"peti-maintenance-checking"
-);
-
-document.body.style.overflow="";
-
-}
 
 }
 
@@ -3113,12 +3150,16 @@ const newState =
 const response =
 await fetch(
 PETI_MAINTENANCE_API +
-"/toggle",
+"/toggle?rnd=" +
+Date.now(),
 {
 method:"POST",
+cache:"no-store",
 headers:{
 "Content-Type":
-"application/json"
+"application/json",
+"Cache-Control":
+"no-cache"
 },
 body:JSON.stringify({
 
@@ -3148,17 +3189,22 @@ data.error ||
 
 }
 
+/*
+   ثبت فوری نتیجه برگشتی Worker
+*/
+
 petiMaintenanceEnabled =
 data.maintenance === true;
 
 updateMaintenanceUI();
 
-sessionStorage.setItem(
-"petiMaintenanceAdmin",
-"1"
-);
+/*
+   وضعیت واقعی را بلافاصله دوباره
+   از Worker دریافت می‌کنیم تا مطمئن شویم
+   تغییر در سمت مرکزی ثبت شده است.
+*/
 
-showMaintenanceScreen(false);
+await getMaintenanceStatus();
 
 if(petiMaintenanceEnabled){
 
@@ -3176,7 +3222,10 @@ alert(
 
 }catch(error){
 
-console.error(error);
+console.error(
+"Maintenance toggle error:",
+error
+);
 
 alert(
 "اتصال به سرویس مدیریت تعمیرات برقرار نشد ❌"
@@ -3428,16 +3477,24 @@ maintenanceAdminLogin
 
 getMaintenanceStatus();
 
+
+/*
+   بررسی بسیار سریع وضعیت مرکزی.
+   هر ۲ ثانیه وضعیت Worker بررسی می‌شود
+   تا روشن/خاموش شدن حالت تعمیرات برای
+   کاربران تقریباً لحظه‌ای اعمال شود.
+*/
+
 setInterval(
 function(){
 
 getMaintenanceStatus();
 
 },
-30000
+2000
 );
 
 </script>
 
 </body>
-   </html>
+</html>
