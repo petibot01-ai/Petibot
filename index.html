@@ -1611,10 +1611,7 @@ font-size:34px
 
 <body>
 
-<div
-class="maintenance-screen"
-id="petiMaintenanceScreen"
->
+<div class="maintenance-screen" id="petiMaintenanceScreen">
 
 <div class="maintenance-box">
 
@@ -1648,7 +1645,6 @@ class="maintenance-admin-error">
 </div>
 
 </div>
-
 </div>
 
 <main class="wrap" id="top">
@@ -2836,7 +2832,13 @@ status_failed:
 "دریافت وضعیت تعمیرات از Worker ناموفق بود ❌",
 
 upstream:
-"Worker نتوانست وضعیت سایت را از GitHub دریافت کند ❌"
+"Worker نتوانست وضعیت سایت را از GitHub دریافت کند ❌",
+
+missing_secret:
+"تنظیمات امنیتی Worker کامل نیست ❌",
+
+invalid_worker_response:
+"پاسخ Worker قابل شناسایی نیست ❌"
 
 };
 
@@ -2855,6 +2857,24 @@ return "اتصال به Worker برقرار نشد ❌";
 if(errorCode==="timeout"){
 
 return "پاسخ Worker بیش از حد طول کشید ❌";
+
+}
+
+if(errorCode==="cors"){
+
+return "اتصال از سایت به Worker توسط CORS مسدود شد ❌";
+
+}
+
+if(
+details &&
+details.length>0
+){
+
+console.error(
+"Maintenance details:",
+details
+);
 
 }
 
@@ -2909,6 +2929,8 @@ showMaintenanceScreen(false);
 updateMaintenanceUI();
 
 loadPetiStats();
+
+getMaintenanceStatus();
 
 }else{
 
@@ -3028,38 +3050,23 @@ document.getElementById(
 
 if(password===PETI_ADMIN_PASSWORD){
 
-/*
-   ثبت ورود مدیر
-*/
 sessionStorage.setItem(
 "petiMaintenanceAdmin",
 "1"
 );
 
-/*
-   فعال کردن حالت مدیر
-*/
 document.documentElement.classList.add(
 "peti-admin"
 );
 
-/*
-   حذف خطای قبلی
-*/
 if(error){
 
 error.style.display="none";
 
 }
 
-/*
-   بستن صفحه تعمیرات
-*/
 showMaintenanceScreen(false);
 
-/*
-   باز کردن پنل فرماندهی
-*/
 showPage("command");
 
 const login =
@@ -3087,6 +3094,8 @@ content.style.display="block";
 updateMaintenanceUI();
 
 loadPetiStats();
+
+getMaintenanceStatus();
 
 }else{
 
@@ -3142,8 +3151,12 @@ badge.style.color =
 badge.style.borderColor =
 "#8a6032";
 
+if(!maintenanceToggleBusy){
+
 btn.textContent =
 "🟢 خاموش کردن حالت تعمیرات";
+
+}
 
 }else{
 
@@ -3159,8 +3172,12 @@ badge.style.color =
 badge.style.borderColor =
 "#31516b";
 
+if(!maintenanceToggleBusy){
+
 btn.textContent =
 "🛠 فعال کردن حالت تعمیرات";
+
+}
 
 }
 
@@ -3256,15 +3273,11 @@ document.body.style.overflow="";
 async function getMaintenanceStatus(){
 
 if(maintenanceToggleBusy){
-
 return;
-
 }
 
 if(maintenanceStatusChecking){
-
 return;
-
 }
 
 maintenanceStatusChecking=true;
@@ -3324,15 +3337,20 @@ setTimeout(function(){
 
 controller.abort();
 
-},2500);
+},5000);
 
-const response =
+let response;
+
+try{
+
+response =
 await fetch(
 PETI_MAINTENANCE_API +
 "/status?rnd=" +
 Date.now(),
 {
 method:"GET",
+mode:"cors",
 cache:"no-store",
 signal:controller.signal,
 headers:{
@@ -3342,21 +3360,63 @@ headers:{
 }
 );
 
-clearTimeout(timeoutId);
+}catch(fetchError){
 
+if(
+fetchError &&
+fetchError.name==="AbortError"
+){
+
+throw new Error("timeout");
+
+}
+
+throw fetchError;
+
+}
+
+clearTimeout(timeoutId);
 timeoutId=null;
 
 if(!response.ok){
 
+let errorData=null;
+
+try{
+
+errorData =
+await response.json();
+
+}catch(e){}
+
+const code =
+errorData &&
+errorData.error
+? errorData.error
+: "status_http";
+
 throw new Error(
-"status_http_" +
+code +
+"|" +
 response.status
 );
 
 }
 
-const data =
+let data=null;
+
+try{
+
+data =
 await response.json();
+
+}catch(e){
+
+throw new Error(
+"status_failed"
+);
+
+}
 
 if(
 typeof data.maintenance !==
@@ -3401,11 +3461,6 @@ return;
 
 }
 
-/*
-   اگر Worker جواب نداد،
-   برای امنیت صفحه تعمیرات نمایش داده می‌شود.
-*/
-
 petiMaintenanceEnabled=true;
 
 updateMaintenanceUI();
@@ -3423,6 +3478,7 @@ maintenanceStatusChecking=false;
 
 /* =========================
    روشن / خاموش تعمیرات
+   نسخه اصلاح شده
 ========================= */
 
 async function toggleMaintenanceMode(){
@@ -3442,6 +3498,16 @@ return;
 
 }
 
+if(!isPetiAdmin()){
+
+alert(
+"ابتدا وارد پنل مدیر شوید ❌"
+);
+
+return;
+
+}
+
 if(maintenanceToggleBusy){
 
 return;
@@ -3453,6 +3519,9 @@ document.getElementById(
 "maintenanceToggleBtn"
 );
 
+const newState =
+!petiMaintenanceEnabled;
+
 maintenanceToggleBusy=true;
 
 if(btn){
@@ -3460,26 +3529,28 @@ if(btn){
 btn.disabled=true;
 
 btn.textContent =
-"⏳ در حال اتصال به سرویس...";
+"⏳ در حال تغییر وضعیت...";
 
 }
 
-let success=false;
+let timeoutId=null;
 
 try{
-
-const newState =
-!petiMaintenanceEnabled;
 
 const controller =
 new AbortController();
 
-const timeoutId =
+timeoutId =
 setTimeout(function(){
 
 controller.abort();
 
-},10000);
+},15000);
+
+
+/* =========================
+   ارسال درخواست به Worker
+========================= */
 
 let response;
 
@@ -3492,69 +3563,122 @@ PETI_MAINTENANCE_API +
 Date.now(),
 {
 method:"POST",
+mode:"cors",
 cache:"no-store",
 signal:controller.signal,
 headers:{
-"Content-Type":"application/json",
-"Accept":"application/json",
-"Cache-Control":"no-cache"
+"Content-Type":
+"application/json",
+"Accept":
+"application/json",
+"Cache-Control":
+"no-cache"
 },
-body:JSON.stringify({
-
+body:
+JSON.stringify({
 password:
 PETI_ADMIN_PASSWORD,
-
 maintenance:
 newState
-
 })
 }
 );
 
-}catch(error){
+}catch(fetchError){
 
-clearTimeout(timeoutId);
+if(
+fetchError &&
+fetchError.name==="AbortError"
+){
 
-throw error;
+throw new Error("timeout");
+
+}
+
+if(
+fetchError instanceof TypeError
+){
+
+throw new Error("network");
+
+}
+
+throw fetchError;
 
 }
 
 clearTimeout(timeoutId);
+timeoutId=null;
 
-if(!response.ok){
+
+/* =========================
+   دریافت پاسخ Worker
+========================= */
+
+const responseText =
+await response.text();
 
 let data=null;
+
+if(responseText){
 
 try{
 
 data =
-await response.json();
+JSON.parse(responseText);
 
-}catch(e){}
+}catch(parseError){
 
-const errorCode =
-data && data.error
-? data.error
-: "toggle_failed";
-
-const errorDetails =
-data && data.details
-? data.details
-: "";
+console.error(
+"Worker response:",
+responseText
+);
 
 throw new Error(
-errorCode +
-(
-errorDetails
-? "|" + errorDetails
-: ""
-)
+"invalid_worker_response"
 );
 
 }
 
-const data =
-await response.json();
+}
+
+
+/* =========================
+   بررسی HTTP
+========================= */
+
+if(!response.ok){
+
+console.error(
+"Worker HTTP Error:",
+response.status,
+data
+);
+
+const errorCode =
+data &&
+data.error
+? data.error
+: "toggle_failed";
+
+const details =
+data &&
+data.details
+? data.details
+: "HTTP " + response.status;
+
+throw new Error(
+errorCode +
+"|" +
+details
+);
+
+}
+
+
+/* =========================
+   بررسی پاسخ Worker
+========================= */
 
 if(
 !data ||
@@ -3563,24 +3687,48 @@ typeof data.maintenance !==
 "boolean"
 ){
 
+console.error(
+"Invalid Worker response:",
+data
+);
+
 throw new Error(
 "toggle_failed"
 );
 
 }
 
-/*
-   Worker وضعیت واقعی GitHub
-   را برگردانده است.
-*/
+
+/* =========================
+   موفقیت
+========================= */
+
 petiMaintenanceEnabled =
 data.maintenance;
-
-success=true;
 
 updateMaintenanceUI();
 
 applyMaintenanceState();
+
+
+/*
+   بعد از موفقیت، وضعیت واقعی
+   دوباره از Worker بررسی می‌شود.
+*/
+
+setTimeout(function(){
+
+if(
+isPetiAdmin() &&
+!maintenanceToggleBusy
+){
+
+getMaintenanceStatus();
+
+}
+
+},2000);
+
 
 }catch(error){
 
@@ -3600,37 +3748,70 @@ error.message
 );
 
 if(
-error &&
-error.name==="AbortError"
+raw==="timeout"
 ){
 
 code="timeout";
 
-}else if(
+}
+
+else if(
+raw==="network"
+){
+
+code="network";
+
+}
+
+else if(
+raw==="invalid_worker_response"
+){
+
+code="invalid_worker_response";
+
+}
+
+else if(
 raw.startsWith("unauthorized")
 ){
 
 code="unauthorized";
 
-}else if(
+}
+
+else if(
 raw.startsWith("github_read_failed")
 ){
 
 code="github_read_failed";
 
-}else if(
+}
+
+else if(
 raw.startsWith("github_write_failed")
 ){
 
 code="github_write_failed";
 
-}else if(
+}
+
+else if(
+raw.startsWith("missing_secret")
+){
+
+code="missing_secret";
+
+}
+
+else if(
 raw.startsWith("toggle_failed")
 ){
 
 code="toggle_failed";
 
-}else if(
+}
+
+else if(
 raw.startsWith("TypeError")
 ){
 
@@ -3638,14 +3819,27 @@ code="network";
 
 }
 
+const details =
+raw.indexOf("|")>=0
+? raw.substring(
+raw.indexOf("|")+1
+)
+: "";
+
 alert(
 maintenanceErrorMessage(
 code,
-raw
+details
 )
 );
 
 }finally{
+
+if(timeoutId){
+
+clearTimeout(timeoutId);
+
+}
 
 maintenanceToggleBusy=false;
 
@@ -3654,27 +3848,6 @@ if(btn){
 btn.disabled=false;
 
 updateMaintenanceUI();
-
-}
-
-/*
-   فقط بعد از موفقیت،
-   وضعیت واقعی دوباره بررسی شود.
-*/
-if(success){
-
-setTimeout(function(){
-
-if(
-isPetiAdmin() &&
-!maintenanceToggleBusy
-){
-
-getMaintenanceStatus();
-
-}
-
-},2000);
 
 }
 
@@ -3698,12 +3871,8 @@ if(status){
 
 status.textContent =
 "در حال دریافت آمار...";
-}
 
-/*
-   آمار GoatCounter از اسکریپت
-   و داده‌های ثبت‌شده صفحه خوانده می‌شود.
-*/
+}
 
 try{
 
@@ -3738,37 +3907,31 @@ switch(key){
 
 case "peti-bot":
 case "panel-peti-bot":
-
 botClicks++;
 break;
 
 case "peti-bot2":
 case "panel-peti-bot2":
-
 bot2Clicks++;
 break;
 
 case "peti-channel":
 case "panel-command-channel":
-
 channelClicks++;
 break;
 
 case "peti-linkdoni":
 case "panel-linkdoni":
-
 linkClicks++;
 break;
 
 case "peti-support-group":
 case "panel-support-group":
-
 groupClicks++;
 break;
 
 case "support-email":
 case "anonymous-chat":
-
 supportClicks++;
 break;
 
@@ -3867,12 +4030,6 @@ document.getElementById(
 
 if(visits){
 
-/*
-   GoatCounter مقدار دقیق بازدید را
-   در داشبورد اصلی نگه می‌دارد.
-   مقدار فعلی صفحه حداقل یک بازدید
-   را نمایش می‌دهد.
-*/
 visits.textContent="۱";
 
 }
@@ -3904,7 +4061,7 @@ status.textContent =
 
 
 /* =========================
-   اتصال مطمئن دکمه ورود مدیر
+   اتصال دکمه ورود مدیر
 ========================= */
 
 document.addEventListener(
@@ -4013,7 +4170,8 @@ setInterval(
 function(){
 
 if(
-!maintenanceToggleBusy
+!maintenanceToggleBusy &&
+!maintenanceStatusChecking
 ){
 
 getMaintenanceStatus();
@@ -4021,7 +4179,7 @@ getMaintenanceStatus();
 }
 
 },
-2000
+5000
 );
 
 </script>
