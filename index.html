@@ -2692,6 +2692,19 @@ let maintenanceStatusChecking=false;
 
 
 /* =========================
+   تشخیص مدیر وارد شده
+========================= */
+
+function isPetiAdmin(){
+
+return sessionStorage.getItem(
+"petiMaintenanceAdmin"
+)==="1";
+
+}
+
+
+/* =========================
    ورود پنل
 ========================= */
 
@@ -2949,19 +2962,7 @@ document.getElementById(
 
 if(!screen)return;
 
-/*
-   اصلاح اصلی:
-   مدیر وارد شده نباید با بررسی‌های
-   لحظه‌ای دوباره از پنل خارج شود.
-*/
-
-const isAdmin =
-sessionStorage.getItem(
-"petiMaintenanceAdmin"
-) === "1";
-
-
-if(petiMaintenanceEnabled && !isAdmin){
+if(petiMaintenanceEnabled){
 
 if(title){
 
@@ -2976,6 +2977,22 @@ text.innerHTML =
 "درحال بررسی وضعیت سرویس هستیم" +
 "<br>" +
 "لطفا دقایقی دیگر مراجعه کنید.";
+
+}
+
+/* مدیر وارد شده باشد، صفحه تعمیرات نمایش داده نشود */
+
+if(isPetiAdmin()){
+
+screen.classList.remove("show");
+
+document.documentElement.classList.remove(
+"peti-maintenance-checking"
+);
+
+document.body.style.overflow="";
+
+return;
 
 }
 
@@ -3073,44 +3090,16 @@ error
 );
 
 /*
-   اگر مدیر قبلاً وارد شده،
-   خطای دریافت وضعیت نباید پنل او را ببندد.
+   در صورت خطای Worker:
+   کاربران عادی صفحه تعمیرات را می‌بینند،
+   ولی مدیر واردشده از پنل خارج نمی‌شود.
 */
-
-const isAdmin =
-sessionStorage.getItem(
-"petiMaintenanceAdmin"
-) === "1";
-
-if(!isAdmin){
 
 petiMaintenanceEnabled=true;
 
-if(title){
+updateMaintenanceUI();
 
-title.textContent =
-"ما درحال بروزرسانی سایت هستیم";
-
-}
-
-if(text){
-
-text.innerHTML =
-"درحال بررسی وضعیت سرویس هستیم" +
-"<br>" +
-"لطفا دقایقی دیگر مراجعه کنید.";
-
-}
-
-screen.classList.add("show");
-
-document.documentElement.classList.remove(
-"peti-maintenance-checking"
-);
-
-document.body.style.overflow="hidden";
-
-}
+applyMaintenanceState();
 
 }finally{
 
