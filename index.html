@@ -14,11 +14,6 @@
     if(sessionStorage.getItem("petiMaintenanceAdmin")==="1"){
       root.classList.add("peti-admin");
     }else{
-      /*
-        تا زمانی که وضعیت واقعی Worker مشخص نشده،
-        محتوای اصلی نمایش داده نمی‌شود.
-        این کار جلوی نمایش لحظه‌ای سایت در زمان تعمیرات را می‌گیرد.
-      */
       root.classList.add("peti-maintenance-checking");
     }
   }catch(e){
@@ -39,17 +34,14 @@ src="https://gc.zgo.at/count.js">
 html{scroll-behavior:smooth}
 
 /* =========================================================
-   منطق نمایش اصلی سایت در حالت تعمیرات
+   منطق اصلی حالت تعمیرات
 ========================================================= */
 
-/*
-  هنگام بررسی اولیه:
-  سایت اصلی، منو، فوتر، خرید و دکمه بالا مخفی هستند.
-*/
 html.peti-maintenance-checking #top,
 html.peti-maintenance-checking .purchase-overlay,
 html.peti-maintenance-checking .up{
 display:none!important;
+visibility:hidden!important;
 }
 
 html.peti-maintenance-checking .maintenance-screen{
@@ -57,10 +49,6 @@ display:flex!important;
 visibility:visible!important;
 }
 
-/*
-  حالت تعمیرات فعال:
-  هیچ‌کدام از محتوای اصلی سایت نمایش داده نمی‌شوند.
-*/
 html.peti-maintenance-active #top,
 html.peti-maintenance-active .purchase-overlay,
 html.peti-maintenance-active .up{
@@ -68,17 +56,12 @@ display:none!important;
 visibility:hidden!important;
 }
 
-/*
-  خود صفحه تعمیرات در حالت فعال دیده شود.
-*/
 html.peti-maintenance-active .maintenance-screen{
 display:flex!important;
 visibility:visible!important;
 }
 
-/*
-  مدیر حتی در حالت تعمیرات می‌تواند سایت/پنل را ببیند.
-*/
+/* مدیر همیشه می‌تواند پنل را ببیند */
 html.peti-admin #top{
 display:block!important;
 visibility:visible!important;
@@ -1175,9 +1158,7 @@ animation:petiSpin 1s linear infinite;
 }
 
 @keyframes petiSpin{
-to{
-transform:rotate(360deg);
-}
+to{transform:rotate(360deg)}
 }
 
 .maintenance-title{
@@ -2620,7 +2601,6 @@ onclick="window.scrollTo({top:0,behavior:'smooth'})">
 ⌃
 </button>
 
-
 <script>
 
 /* =========================================================
@@ -2629,10 +2609,6 @@ onclick="window.scrollTo({top:0,behavior:'smooth'})">
 
 function showPage(page){
 
-/*
-  اگر تعمیرات فعال یا وضعیت هنوز مشخص نشده باشد،
-  کاربر عادی اجازه نمایش صفحات اصلی را ندارد.
-*/
 if(
 !isPetiAdmin() &&
 (
@@ -2688,7 +2664,7 @@ behavior:"smooth"
 
 
 /* =========================================================
-   کپی متن
+   کپی
 ========================================================= */
 
 function copyText(t){
@@ -2700,14 +2676,10 @@ navigator.clipboard.writeText
 
 navigator.clipboard.writeText(t)
 .then(function(){
-
 showCopyMessage();
-
 })
 .catch(function(){
-
 fallbackCopy(t);
-
 });
 
 }else{
@@ -2748,16 +2720,14 @@ n.style=
 document.body.appendChild(n);
 
 setTimeout(function(){
-
 n.remove();
-
 },1300);
 
 }
 
 
 /* =========================================================
-   راهنمای خرید
+   خرید
 ========================================================= */
 
 function showPurchaseGuide(product,price){
@@ -2772,17 +2742,10 @@ petiMaintenanceEnabled ||
 return;
 }
 
-document.getElementById(
-"purchaseProduct"
-).textContent=product;
+document.getElementById("purchaseProduct").textContent=product;
+document.getElementById("purchasePrice").textContent=price;
 
-document.getElementById(
-"purchasePrice"
-).textContent=price;
-
-document.getElementById(
-"purchaseOverlay"
-).classList.add("show");
+document.getElementById("purchaseOverlay").classList.add("show");
 
 document.body.style.overflow="hidden";
 
@@ -2790,9 +2753,7 @@ document.body.style.overflow="hidden";
 
 function closePurchaseGuide(){
 
-document.getElementById(
-"purchaseOverlay"
-).classList.remove("show");
+document.getElementById("purchaseOverlay").classList.remove("show");
 
 if(
 !petiMaintenanceEnabled &&
@@ -2811,9 +2772,7 @@ function closePurchaseOutside(event){
 
 if(
 event.target ===
-document.getElementById(
-"purchaseOverlay"
-)
+document.getElementById("purchaseOverlay")
 ){
 
 closePurchaseGuide();
@@ -2827,9 +2786,7 @@ document.addEventListener(
 function(e){
 
 if(e.key==="Escape"){
-
 closePurchaseGuide();
-
 }
 
 }
@@ -2840,31 +2797,19 @@ closePurchaseGuide();
    تنظیمات پنل
 ========================================================= */
 
-const PETI_ADMIN_PASSWORD =
-"PetiAdmin2026!";
+const PETI_ADMIN_PASSWORD="PetiAdmin2026!";
 
-const PETI_MAINTENANCE_API =
+const PETI_MAINTENANCE_API=
 "https://peti-maintenance-v2.petibot01.workers.dev";
 
 let petiMaintenanceEnabled=false;
 let maintenanceStatusChecking=false;
 let maintenanceToggleBusy=false;
 
-/*
-  مشخص می‌کند حداقل یک وضعیت معتبر
-  از Worker دریافت شده است.
-*/
 let maintenanceStatusKnown=false;
 
 let maintenanceLastToggleAt=0;
 let maintenanceLastToggleState=null;
-
-/*
-  بعد از تغییر موفق، برای جلوگیری از
-  دریافت پاسخ قدیمی Worker، وضعیت قبلی
-  برای مدتی محافظت می‌شود.
-*/
-const MAINTENANCE_STATUS_GRACE_PERIOD=10000;
 
 
 /* =========================================================
@@ -2889,30 +2834,27 @@ return false;
 
 
 /* =========================================================
-   مدیریت کلاس‌های نمایش
+   وضعیت ظاهری
 ========================================================= */
 
 function setMaintenanceVisualState(){
 
 const root=document.documentElement;
 
-const active =
-petiMaintenanceEnabled &&
-!isPetiAdmin();
-
 if(isPetiAdmin()){
 
-root.classList.remove(
-"peti-maintenance-active"
-);
+root.classList.add("peti-admin");
 
 root.classList.remove(
+"peti-maintenance-active",
 "peti-maintenance-checking"
 );
 
 return;
 
 }
+
+root.classList.remove("peti-admin");
 
 if(!maintenanceStatusKnown){
 
@@ -2932,7 +2874,7 @@ root.classList.remove(
 "peti-maintenance-checking"
 );
 
-if(active){
+if(petiMaintenanceEnabled){
 
 root.classList.add(
 "peti-maintenance-active"
@@ -2950,7 +2892,7 @@ root.classList.remove(
 
 
 /* =========================================================
-   پیام خطای سرویس
+   پیام خطا
 ========================================================= */
 
 function maintenanceErrorMessage(
@@ -3008,42 +2950,27 @@ if(errorCode==="cors"){
 return "اتصال از سایت به Worker توسط CORS مسدود شد ❌";
 }
 
-if(details && details.length>0){
-
-console.error(
-"Maintenance details:",
-details
-);
-
-}
-
 return "خطای نامشخص در سرویس مدیریت تعمیرات ❌";
 
 }
 
 
 /* =========================================================
-   ورود پنل فرماندهی
+   ورود پنل
 ========================================================= */
 
 function loginCommandPanel(){
 
-const passwordInput =
-document.getElementById(
-"commandPassword"
-);
+const passwordInput=
+document.getElementById("commandPassword");
 
-const password =
-passwordInput
-? passwordInput.value
-: "";
+const password=
+passwordInput ? passwordInput.value : "";
 
-const error =
-document.getElementById(
-"commandError"
-);
+const error=
+document.getElementById("commandError");
 
-if(password === PETI_ADMIN_PASSWORD){
+if(password===PETI_ADMIN_PASSWORD){
 
 try{
 
@@ -3059,10 +2986,7 @@ document.documentElement.classList.add(
 );
 
 document.documentElement.classList.remove(
-"peti-maintenance-active"
-);
-
-document.documentElement.classList.remove(
+"peti-maintenance-active",
 "peti-maintenance-checking"
 );
 
@@ -3070,15 +2994,11 @@ if(error){
 error.style.display="none";
 }
 
-const commandLogin =
-document.getElementById(
-"commandLogin"
-);
+const commandLogin=
+document.getElementById("commandLogin");
 
-const commandContent =
-document.getElementById(
-"commandContent"
-);
+const commandContent=
+document.getElementById("commandContent");
 
 if(commandLogin){
 commandLogin.style.display="none";
@@ -3094,6 +3014,11 @@ showPage("command");
 
 updateMaintenanceUI();
 loadPetiStats();
+
+/*
+  وضعیت Worker را می‌گیریم، اما چون مدیر هستیم
+  صفحه تعمیرات دوباره روی ما اعمال نمی‌شود.
+*/
 getMaintenanceStatus();
 
 }else{
@@ -3108,30 +3033,22 @@ error.style.display="block";
 
 
 /* =========================================================
-   خروج پنل
+   خروج
 ========================================================= */
 
 function logoutCommandPanel(){
 
-const commandContent =
-document.getElementById(
-"commandContent"
-);
+const commandContent=
+document.getElementById("commandContent");
 
-const commandLogin =
-document.getElementById(
-"commandLogin"
-);
+const commandLogin=
+document.getElementById("commandLogin");
 
-const password =
-document.getElementById(
-"commandPassword"
-);
+const password=
+document.getElementById("commandPassword");
 
-const error =
-document.getElementById(
-"commandError"
-);
+const error=
+document.getElementById("commandError");
 
 if(commandContent){
 commandContent.style.display="none";
@@ -3161,10 +3078,6 @@ document.documentElement.classList.remove(
 "peti-admin"
 );
 
-/*
-  بعد از خروج، وضعیت واقعی فعلی دوباره
-  روی ظاهر سایت اعمال می‌شود.
-*/
 setMaintenanceVisualState();
 
 applyMaintenanceState();
@@ -3178,7 +3091,7 @@ applyMaintenanceState();
 
 function showMaintenanceScreen(show){
 
-const screen =
+const screen=
 document.getElementById(
 "petiMaintenanceScreen"
 );
@@ -3190,6 +3103,7 @@ return;
 if(show && isPetiAdmin()){
 
 screen.classList.remove("show");
+
 screen.style.display="none";
 screen.style.visibility="hidden";
 
@@ -3198,10 +3112,7 @@ document.documentElement.classList.add(
 );
 
 document.documentElement.classList.remove(
-"peti-maintenance-active"
-);
-
-document.documentElement.classList.remove(
+"peti-maintenance-active",
 "peti-maintenance-checking"
 );
 
@@ -3214,6 +3125,7 @@ return;
 if(show){
 
 screen.classList.add("show");
+
 screen.style.display="flex";
 screen.style.visibility="visible";
 
@@ -3222,6 +3134,7 @@ document.body.style.overflow="hidden";
 }else{
 
 screen.classList.remove("show");
+
 screen.style.display="none";
 screen.style.visibility="hidden";
 
@@ -3247,7 +3160,7 @@ document.body.style.overflow="";
 
 function maintenanceAdminLogin(){
 
-const password =
+const password=
 window.prompt(
 "🔐 رمز پنل فرماندهی را وارد کنید:"
 );
@@ -3256,7 +3169,7 @@ if(password===null){
 return;
 }
 
-const error =
+const error=
 document.getElementById(
 "maintenanceAdminError"
 );
@@ -3277,10 +3190,7 @@ document.documentElement.classList.add(
 );
 
 document.documentElement.classList.remove(
-"peti-maintenance-active"
-);
-
-document.documentElement.classList.remove(
+"peti-maintenance-active",
 "peti-maintenance-checking"
 );
 
@@ -3290,17 +3200,11 @@ error.style.display="none";
 
 showMaintenanceScreen(false);
 
-showPage("command");
+const login=
+document.getElementById("commandLogin");
 
-const login =
-document.getElementById(
-"commandLogin"
-);
-
-const content =
-document.getElementById(
-"commandContent"
-);
+const content=
+document.getElementById("commandContent");
 
 if(login){
 login.style.display="none";
@@ -3309,6 +3213,8 @@ login.style.display="none";
 if(content){
 content.style.display="block";
 }
+
+showPage("command");
 
 updateMaintenanceUI();
 loadPetiStats();
@@ -3326,22 +3232,22 @@ error.style.display="block";
 
 
 /* =========================================================
-   بروزرسانی UI تعمیرات
+   UI تعمیرات
 ========================================================= */
 
 function updateMaintenanceUI(){
 
-const text =
+const text=
 document.getElementById(
 "maintenanceStatusText"
 );
 
-const badge =
+const badge=
 document.getElementById(
 "maintenanceStateBadge"
 );
 
-const btn =
+const btn=
 document.getElementById(
 "maintenanceToggleBtn"
 );
@@ -3352,23 +3258,13 @@ return;
 
 if(!maintenanceStatusKnown){
 
-text.textContent =
-"در حال بررسی وضعیت...";
-
-badge.textContent =
-"...";
-
-badge.style.color =
-"#8da5bf";
-
-badge.style.borderColor =
-"#31516b";
+text.textContent="در حال بررسی وضعیت...";
+badge.textContent="...";
+badge.style.color="#8da5bf";
+badge.style.borderColor="#31516b";
 
 if(!maintenanceToggleBusy){
-
-btn.textContent =
-"⏳ در حال بررسی وضعیت...";
-
+btn.textContent="⏳ در حال بررسی وضعیت...";
 }
 
 return;
@@ -3377,44 +3273,30 @@ return;
 
 if(petiMaintenanceEnabled){
 
-text.textContent =
+text.textContent=
 "سایت در حالت تعمیرات است";
 
-badge.textContent =
-"فعال";
+badge.textContent="فعال";
 
-badge.style.color =
-"#ffb86b";
-
-badge.style.borderColor =
-"#8a6032";
+badge.style.color="#ffb86b";
+badge.style.borderColor="#8a6032";
 
 if(!maintenanceToggleBusy){
-
-btn.textContent =
-"🟢 خاموش کردن حالت تعمیرات";
-
+btn.textContent="🟢 خاموش کردن حالت تعمیرات";
 }
 
 }else{
 
-text.textContent =
+text.textContent=
 "سایت در حالت عادی است";
 
-badge.textContent =
-"خاموش";
+badge.textContent="خاموش";
 
-badge.style.color =
-"#58e69b";
-
-badge.style.borderColor =
-"#31516b";
+badge.style.color="#58e69b";
+badge.style.borderColor="#31516b";
 
 if(!maintenanceToggleBusy){
-
-btn.textContent =
-"🛠 فعال کردن حالت تعمیرات";
-
+btn.textContent="🛠 فعال کردن حالت تعمیرات";
 }
 
 }
@@ -3423,22 +3305,22 @@ btn.textContent =
 
 
 /* =========================================================
-   اعمال وضعیت تعمیرات
+   اعمال وضعیت
 ========================================================= */
 
 function applyMaintenanceState(){
 
-const screen =
+const screen=
 document.getElementById(
 "petiMaintenanceScreen"
 );
 
-const title =
+const title=
 document.getElementById(
 "maintenanceTitle"
 );
 
-const text =
+const text=
 document.getElementById(
 "maintenanceText"
 );
@@ -3448,9 +3330,7 @@ return;
 }
 
 
-/*
-  مدیر همیشه از محدودیت تعمیرات مستثنی است.
-*/
+/* مدیر همیشه آزاد است */
 if(isPetiAdmin()){
 
 document.documentElement.classList.add(
@@ -3458,10 +3338,7 @@ document.documentElement.classList.add(
 );
 
 document.documentElement.classList.remove(
-"peti-maintenance-active"
-);
-
-document.documentElement.classList.remove(
+"peti-maintenance-active",
 "peti-maintenance-checking"
 );
 
@@ -3477,9 +3354,7 @@ return;
 }
 
 
-/*
-  هنوز وضعیت واقعی مشخص نشده.
-*/
+/* هنوز وضعیت مشخص نشده */
 if(!maintenanceStatusKnown){
 
 document.documentElement.classList.add(
@@ -3491,21 +3366,19 @@ document.documentElement.classList.remove(
 );
 
 if(title){
-
-title.textContent =
+title.textContent=
 "درحال بررسی وضعیت سایت";
 }
 
 if(text){
-
-text.innerHTML =
-"لطفا چند لحظه صبر کنید" +
-"<br>" +
+text.innerHTML=
+"لطفا چند لحظه صبر کنید"+
+"<br>"+
 "درحال بررسی وضعیت سرویس هستیم.";
-
 }
 
 screen.classList.add("show");
+
 screen.style.display="flex";
 screen.style.visibility="visible";
 
@@ -3516,9 +3389,7 @@ return;
 }
 
 
-/*
-  تعمیرات روشن.
-*/
+/* تعمیرات فعال */
 if(petiMaintenanceEnabled){
 
 document.documentElement.classList.remove(
@@ -3530,22 +3401,19 @@ document.documentElement.classList.add(
 );
 
 if(title){
-
-title.textContent =
+title.textContent=
 "ما درحال بروزرسانی سایت هستیم";
-
 }
 
 if(text){
-
-text.innerHTML =
-"درحال بررسی وضعیت سرویس هستیم" +
-"<br>" +
+text.innerHTML=
+"درحال بررسی وضعیت سرویس هستیم"+
+"<br>"+
 "لطفا دقایقی دیگر مراجعه کنید.";
-
 }
 
 screen.classList.add("show");
+
 screen.style.display="flex";
 screen.style.visibility="visible";
 
@@ -3556,14 +3424,9 @@ return;
 }
 
 
-/*
-  تعمیرات خاموش.
-*/
+/* تعمیرات خاموش */
 document.documentElement.classList.remove(
-"peti-maintenance-checking"
-);
-
-document.documentElement.classList.remove(
+"peti-maintenance-checking",
 "peti-maintenance-active"
 );
 
@@ -3578,7 +3441,7 @@ document.body.style.overflow="";
 
 
 /* =========================================================
-   دریافت وضعیت تعمیرات
+   دریافت وضعیت
 ========================================================= */
 
 async function getMaintenanceStatus(){
@@ -3604,14 +3467,11 @@ document.documentElement.classList.add(
 );
 
 document.documentElement.classList.remove(
-"peti-maintenance-active"
-);
-
-document.documentElement.classList.remove(
+"peti-maintenance-active",
 "peti-maintenance-checking"
 );
 
-const adminScreen =
+const adminScreen=
 document.getElementById(
 "petiMaintenanceScreen"
 );
@@ -3619,6 +3479,7 @@ document.getElementById(
 if(adminScreen){
 
 adminScreen.classList.remove("show");
+
 adminScreen.style.display="none";
 adminScreen.style.visibility="hidden";
 
@@ -3628,10 +3489,10 @@ document.body.style.overflow="";
 
 }
 
-const controller =
+const controller=
 new AbortController();
 
-timeoutId =
+timeoutId=
 setTimeout(function(){
 
 controller.abort();
@@ -3642,10 +3503,10 @@ let response;
 
 try{
 
-response =
+response=
 await fetch(
-PETI_MAINTENANCE_API +
-"/status?rnd=" +
+PETI_MAINTENANCE_API+
+"/status?rnd="+
 Date.now(),
 {
 method:"GET",
@@ -3670,12 +3531,8 @@ throw new Error("timeout");
 
 }
 
-if(
-fetchError instanceof TypeError
-){
-
+if(fetchError instanceof TypeError){
 throw new Error("network");
-
 }
 
 throw fetchError;
@@ -3690,22 +3547,17 @@ if(!response.ok){
 let errorData=null;
 
 try{
-
-errorData =
-await response.json();
-
+errorData=await response.json();
 }catch(e){}
 
-const code =
+const code=
 errorData &&
 errorData.error
 ? errorData.error
 : "status_http";
 
 throw new Error(
-code +
-"|" +
-response.status
+code+"|"+response.status
 );
 
 }
@@ -3714,44 +3566,40 @@ let data=null;
 
 try{
 
-data =
-await response.json();
+data=await response.json();
 
 }catch(e){
 
-throw new Error(
-"status_failed"
-);
+throw new Error("status_failed");
 
 }
 
 if(
 !data ||
-typeof data.maintenance !==
-"boolean"
+typeof data.maintenance!=="boolean"
 ){
 
-throw new Error(
-"status_failed"
-);
+throw new Error("status_failed");
 
 }
 
 
 /*
-  محافظت در برابر پاسخ قدیمی Worker
+=========================================================
+  نکته مهم:
+  اگر تازه دکمه را زده‌ایم و Worker هنوز پاسخ
+  قدیمی می‌دهد، پاسخ قدیمی را نادیده می‌گیریم.
+=========================================================
 */
-const timeSinceToggle =
-Date.now() -
-maintenanceLastToggleAt;
+
+const timeSinceToggle=
+Date.now()-maintenanceLastToggleAt;
 
 if(
 maintenanceLastToggleAt>0 &&
-timeSinceToggle <
-MAINTENANCE_STATUS_GRACE_PERIOD &&
-maintenanceLastToggleState !== null &&
-data.maintenance !==
-maintenanceLastToggleState
+timeSinceToggle<10000 &&
+maintenanceLastToggleState!==null &&
+data.maintenance!==maintenanceLastToggleState
 ){
 
 console.warn(
@@ -3766,17 +3614,13 @@ return;
 }
 
 
-/*
-  وضعیت معتبر دریافت شد.
-*/
+/* وضعیت معتبر */
 maintenanceStatusKnown=true;
 
-petiMaintenanceEnabled =
-data.maintenance;
+petiMaintenanceEnabled=data.maintenance;
 
 updateMaintenanceUI();
 applyMaintenanceState();
-
 
 }catch(error){
 
@@ -3790,9 +3634,7 @@ error
 );
 
 
-/*
-  مدیر با خطای Worker از پنل خارج نمی‌شود.
-*/
+/* مدیر نباید از پنل بیرون بیفتد */
 if(isPetiAdmin()){
 
 document.documentElement.classList.add(
@@ -3800,14 +3642,11 @@ document.documentElement.classList.add(
 );
 
 document.documentElement.classList.remove(
-"peti-maintenance-active"
-);
-
-document.documentElement.classList.remove(
+"peti-maintenance-active",
 "peti-maintenance-checking"
 );
 
-const adminScreen =
+const adminScreen=
 document.getElementById(
 "petiMaintenanceScreen"
 );
@@ -3815,6 +3654,7 @@ document.getElementById(
 if(adminScreen){
 
 adminScreen.classList.remove("show");
+
 adminScreen.style.display="none";
 adminScreen.style.visibility="hidden";
 
@@ -3829,15 +3669,9 @@ return;
 
 /*
   اگر قبلاً وضعیت معتبر داشته‌ایم،
-  خطای موقت نباید وضعیت را تغییر دهد.
+  خطا نباید وضعیت فعلی را تغییر دهد.
 */
 if(maintenanceStatusKnown){
-
-console.warn(
-"Maintenance status check failed; keeping previous state:",
-petiMaintenanceEnabled,
-error
-);
 
 updateMaintenanceUI();
 applyMaintenanceState();
@@ -3848,9 +3682,8 @@ return;
 
 
 /*
-  هنوز هیچ وضعیت معتبر دریافت نشده:
-  Fail-Safe فعال می‌شود تا محتوای اصلی
-  در زمان نامشخص بودن وضعیت نمایش داده نشود.
+  اولین اتصال ناموفق:
+  سایت اصلی نمایش داده نشود.
 */
 petiMaintenanceEnabled=true;
 
@@ -3867,7 +3700,7 @@ maintenanceStatusChecking=false;
 
 
 /* =========================================================
-   روشن / خاموش تعمیرات
+   روشن / خاموش تعمیرات - اصلاح نهایی
 ========================================================= */
 
 async function toggleMaintenanceMode(){
@@ -3888,7 +3721,8 @@ return;
 
 
 /*
-  فقط بر اساس آخرین وضعیت معتبر تصمیم بگیر.
+  اگر هنوز وضعیت مشخص نشده،
+  فقط یک بار آن را دریافت کن.
 */
 if(!maintenanceStatusKnown){
 
@@ -3906,22 +3740,16 @@ return;
 
 }
 
-const btn =
+const btn=
 document.getElementById(
 "maintenanceToggleBtn"
 );
 
-const newState =
+const newState=
 !petiMaintenanceEnabled;
 
-const previousState =
+const previousState=
 petiMaintenanceEnabled;
-
-maintenanceLastToggleAt =
-Date.now();
-
-maintenanceLastToggleState =
-newState;
 
 maintenanceToggleBusy=true;
 
@@ -3929,7 +3757,7 @@ if(btn){
 
 btn.disabled=true;
 
-btn.textContent =
+btn.textContent=
 "⏳ در حال تغییر وضعیت...";
 
 }
@@ -3938,10 +3766,10 @@ let timeoutId=null;
 
 try{
 
-const controller =
+const controller=
 new AbortController();
 
-timeoutId =
+timeoutId=
 setTimeout(function(){
 
 controller.abort();
@@ -3952,10 +3780,10 @@ let response;
 
 try{
 
-response =
+response=
 await fetch(
-PETI_MAINTENANCE_API +
-"/toggle?rnd=" +
+PETI_MAINTENANCE_API+
+"/toggle?rnd="+
 Date.now(),
 {
 method:"POST",
@@ -3964,20 +3792,14 @@ cache:"no-store",
 signal:controller.signal,
 
 headers:{
-"Content-Type":
-"application/json",
-"Accept":
-"application/json",
-"Cache-Control":
-"no-cache"
+"Content-Type":"application/json",
+"Accept":"application/json",
+"Cache-Control":"no-cache"
 },
 
-body:
-JSON.stringify({
-password:
-PETI_ADMIN_PASSWORD,
-maintenance:
-newState
+body:JSON.stringify({
+password:PETI_ADMIN_PASSWORD,
+maintenance:newState
 })
 }
 );
@@ -3993,12 +3815,8 @@ throw new Error("timeout");
 
 }
 
-if(
-fetchError instanceof TypeError
-){
-
+if(fetchError instanceof TypeError){
 throw new Error("network");
-
 }
 
 throw fetchError;
@@ -4008,17 +3826,17 @@ throw fetchError;
 clearTimeout(timeoutId);
 timeoutId=null;
 
-const responseText =
+const responseText=
 await response.text();
 
 let data=null;
 
-if(responseText){
-
 try{
 
-data =
-JSON.parse(responseText);
+data=
+responseText
+? JSON.parse(responseText)
+: null;
 
 }catch(e){
 
@@ -4033,8 +3851,6 @@ throw new Error(
 
 }
 
-}
-
 if(!response.ok){
 
 console.error(
@@ -4043,31 +3859,28 @@ response.status,
 data
 );
 
-const errorCode =
+const errorCode=
 data &&
 data.error
 ? data.error
 : "toggle_failed";
 
-const details =
+const details=
 data &&
 data.details
 ? data.details
-: "HTTP " + response.status;
+: "HTTP "+response.status;
 
 throw new Error(
-errorCode +
-"|" +
-details
+errorCode+"|"+details
 );
 
 }
 
 if(
 !data ||
-data.ok !== true ||
-typeof data.maintenance !==
-"boolean"
+data.ok!==true ||
+typeof data.maintenance!=="boolean"
 ){
 
 console.error(
@@ -4083,18 +3896,23 @@ throw new Error(
 
 
 /*
-  پاسخ موفق Worker.
-  به پاسخ موفق اعتماد می‌کنیم.
+=========================================================
+  پاسخ موفق Worker
+=========================================================
 */
-petiMaintenanceEnabled =
+
+petiMaintenanceEnabled=
 data.maintenance;
 
 maintenanceStatusKnown=true;
 
-maintenanceLastToggleAt =
+/*
+  پاسخ همین toggle معتبرترین پاسخ فعلی است.
+*/
+maintenanceLastToggleAt=
 Date.now();
 
-maintenanceLastToggleState =
+maintenanceLastToggleState=
 data.maintenance;
 
 updateMaintenanceUI();
@@ -4102,22 +3920,15 @@ applyMaintenanceState();
 
 
 /*
-  بررسی مجدد بعد از فرصت کافی برای
-  ذخیره شدن وضعیت در Worker/GitHub.
+=========================================================
+  مهم:
+  دیگر بعد از ۱۱ ثانیه getMaintenanceStatus()
+  اجرا نمی‌شود.
+  
+  این همان چیزی بود که باعث می‌شد وضعیت
+  خاموش/روشن دوباره برگردد.
+=========================================================
 */
-setTimeout(function(){
-
-if(
-isPetiAdmin() &&
-!maintenanceToggleBusy
-){
-
-getMaintenanceStatus();
-
-}
-
-},11000);
-
 
 }catch(error){
 
@@ -4127,10 +3938,8 @@ error
 );
 
 
-/*
-  در صورت شکست، وضعیت قبلی دقیقاً حفظ شود.
-*/
-petiMaintenanceEnabled =
+/* شکست واقعی = حفظ وضعیت قبلی */
+petiMaintenanceEnabled=
 previousState;
 
 maintenanceLastToggleState=null;
@@ -4139,7 +3948,7 @@ maintenanceLastToggleAt=0;
 updateMaintenanceUI();
 applyMaintenanceState();
 
-const raw =
+const raw=
 String(
 error &&
 error.message
@@ -4177,7 +3986,7 @@ else if(raw.startsWith("toggle_failed")){
 code="toggle_failed";
 }
 
-const details =
+const details=
 raw.indexOf("|")>=0
 ? raw.substring(raw.indexOf("|")+1)
 : "";
@@ -4216,21 +4025,19 @@ updateMaintenanceUI();
 
 function loadPetiStats(){
 
-const status =
+const status=
 document.getElementById(
 "statsStatus"
 );
 
 if(status){
-
-status.textContent =
+status.textContent=
 "در حال دریافت آمار...";
-
 }
 
 try{
 
-const links =
+const links=
 document.querySelectorAll(
 "[data-goatcounter-click]"
 );
@@ -4245,7 +4052,7 @@ let supportClicks=0;
 
 links.forEach(function(link){
 
-const key =
+const key=
 link.getAttribute(
 "data-goatcounter-click"
 );
@@ -4333,17 +4140,15 @@ clicks.textContent=
 totalClicks.toLocaleString("fa-IR");
 }
 
-const visits =
-document.getElementById(
-"petiVisits"
-);
+const visits=
+document.getElementById("petiVisits");
 
 if(visits){
 visits.textContent="۱";
 }
 
 if(status){
-status.textContent =
+status.textContent=
 "آمار داخلی صفحه بروزرسانی شد.";
 }
 
@@ -4355,10 +4160,8 @@ error
 );
 
 if(status){
-
-status.textContent =
+status.textContent=
 "دریافت آمار با خطا مواجه شد.";
-
 }
 
 }
@@ -4374,7 +4177,7 @@ document.addEventListener(
 "DOMContentLoaded",
 function(){
 
-const adminBtn =
+const adminBtn=
 document.getElementById(
 "maintenanceAdminLoginBtn"
 );
@@ -4399,14 +4202,14 @@ maintenanceAdminLogin();
 
 
 /* =========================================================
-   آماده‌سازی صفحه بعد از لود
+   آماده‌سازی
 ========================================================= */
 
 document.addEventListener(
 "DOMContentLoaded",
 function(){
 
-const commandPasswordInput =
+const commandPasswordInput=
 document.getElementById(
 "commandPassword"
 );
@@ -4432,8 +4235,8 @@ loginCommandPanel();
 
 
 /*
-  اگر قبلاً مدیر وارد شده،
-  پنل را مستقیماً باز کن.
+  اگر مدیر قبلاً وارد شده،
+  پنل مستقیماً قابل استفاده است.
 */
 if(isPetiAdmin()){
 
@@ -4442,22 +4245,15 @@ document.documentElement.classList.add(
 );
 
 document.documentElement.classList.remove(
-"peti-maintenance-active"
-);
-
-document.documentElement.classList.remove(
+"peti-maintenance-active",
 "peti-maintenance-checking"
 );
 
-const commandLogin =
-document.getElementById(
-"commandLogin"
-);
+const commandLogin=
+document.getElementById("commandLogin");
 
-const commandContent =
-document.getElementById(
-"commandContent"
-);
+const commandContent=
+document.getElementById("commandContent");
 
 if(commandLogin){
 commandLogin.style.display="none";
@@ -4467,7 +4263,7 @@ if(commandContent){
 commandContent.style.display="block";
 }
 
-const screen =
+const screen=
 document.getElementById(
 "petiMaintenanceScreen"
 );
@@ -4477,7 +4273,6 @@ if(screen){
 screen.classList.remove("show");
 
 screen.style.display="none";
-
 screen.style.visibility="hidden";
 
 }
@@ -4489,47 +4284,23 @@ loadPetiStats();
 
 
 /*
-  بررسی اولیه وضعیت تعمیرات.
+  فقط در شروع صفحه وضعیت Worker را می‌گیریم.
 */
 getMaintenanceStatus();
 
 
 /*
-  بررسی دوره‌ای وضعیت.
+=========================================================
+  polling پنج‌ثانیه‌ای حذف شد.
+  
+  دیگر وضعیت toggle توسط /status
+  هر چند ثانیه بازنویسی نمی‌شود.
+=========================================================
 */
-setInterval(
-function(){
-
-if(
-!maintenanceToggleBusy &&
-!maintenanceStatusChecking
-){
-
-const elapsed =
-Date.now() -
-maintenanceLastToggleAt;
-
-if(
-maintenanceLastToggleAt>0 &&
-elapsed <
-MAINTENANCE_STATUS_GRACE_PERIOD
-){
-
-return;
-
-}
-
-getMaintenanceStatus();
-
-}
-
-},
-5000
-);
 
 });
 
 </script>
 
 </body>
-              </html>
+  </html>
