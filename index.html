@@ -2750,6 +2750,16 @@ let petiMaintenanceEnabled=false;
 let maintenanceStatusChecking=false;
 let maintenanceToggleBusy=false;
 
+/*
+   مشخص می‌کند آیا حداقل یک بار
+   وضعیت واقعی از Worker دریافت شده است یا نه.
+   
+   بعد از مشخص شدن وضعیت واقعی،
+   خطاهای موقت Worker دیگر باعث
+   روشن شدن خودکار حالت تعمیرات نمی‌شوند.
+*/
+let maintenanceStatusKnown=false;
+
 let maintenanceLastToggleAt=0;
 let maintenanceLastToggleState=null;
 
@@ -3290,12 +3300,6 @@ let timeoutId=null;
 
 try{
 
-/*
-   مهم:
-   در اینجا دیگر صفحه تعمیرات
-   قبل از پاسخ Worker نمایش داده نمی‌شود.
-*/
-
 if(isPetiAdmin()){
 
 document.documentElement.classList.add(
@@ -3458,9 +3462,12 @@ return;
 
 
 /*
-   فقط بعد از دریافت وضعیت واقعی
-   از Worker صفحه تعمیرات تغییر می‌کند.
+   وضعیت دریافتی معتبر است.
+   از این لحظه به بعد خطاهای موقت
+   Worker نباید وضعیت فعلی را تغییر دهند.
 */
+
+maintenanceStatusKnown=true;
 
 petiMaintenanceEnabled =
 data.maintenance;
@@ -3512,10 +3519,33 @@ return;
 
 
 /*
-   اگر Worker در دسترس نبود،
-   برای امنیت سایت تعمیرات نمایش داده می‌شود.
-   این حالت فقط بعد از خطا رخ می‌دهد،
-   نه قبل از پاسخ Worker.
+   نکته مهم:
+   
+   اگر وضعیت واقعی قبلاً دریافت شده باشد،
+   خطای موقت Worker نباید حالت تعمیرات
+   را روشن یا خاموش کند.
+
+   بنابراین مقدار قبلی حفظ می‌شود.
+*/
+
+if(maintenanceStatusKnown){
+
+console.warn(
+"Maintenance status check failed; keeping previous state:",
+petiMaintenanceEnabled,
+error
+);
+
+updateMaintenanceUI();
+return;
+
+}
+
+
+/*
+   فقط اگر هنوز حتی یک وضعیت معتبر
+   از Worker دریافت نشده باشد، صفحه تعمیرات
+   به صورت Fail-Safe نمایش داده می‌شود.
 */
 
 petiMaintenanceEnabled=true;
@@ -3732,6 +3762,13 @@ throw new Error(
 
 petiMaintenanceEnabled =
 data.maintenance;
+
+/*
+   چون Worker وضعیت معتبر برگردانده،
+   وضعیت را معتبر و شناخته‌شده در نظر می‌گیریم.
+*/
+
+maintenanceStatusKnown=true;
 
 maintenanceLastToggleAt =
 Date.now();
@@ -4122,7 +4159,6 @@ loadPetiStats();
 
 /*
    بررسی اولیه وضعیت تعمیرات
-   بدون نمایش موقت صفحه تعمیرات
 */
 
 getMaintenanceStatus();
