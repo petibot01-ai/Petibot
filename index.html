@@ -5,19 +5,71 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>دسترسی سریع به سرویس های Peti</title>
 
-<!-- تشخیص اولیه مدیر / وضعیت بررسی -->
+<!-- =========================================================
+     تشخیص اولیه مدیر / وضعیت ذخیره‌شده تعمیرات
+     
+     این بخش برای جلوگیری از فلش شدن صفحه تعمیرات است.
+========================================================= -->
 <script>
 (function(){
   try{
+
     const root=document.documentElement;
 
-    if(sessionStorage.getItem("petiMaintenanceAdmin")==="1"){
+    /* مدیر قبلی */
+    if(
+      sessionStorage.getItem("petiMaintenanceAdmin")==="1"
+    ){
+
       root.classList.add("peti-admin");
-    }else{
-      root.classList.add("peti-maintenance-checking");
+
+      return;
+
     }
+
+    /*
+      آخرین وضعیت معتبر ذخیره‌شده.
+      اگر خاموش بوده، صفحه اصلی از همان ابتدا نمایش داده می‌شود
+      و دیگر صفحه تعمیرات لحظه‌ای ظاهر نمی‌شود.
+    */
+    const saved=
+      localStorage.getItem(
+        "petiMaintenanceState"
+      );
+
+    if(saved==="on"){
+
+      root.classList.add(
+        "peti-maintenance-active"
+      );
+
+    }
+    else{
+
+      /*
+        اگر خاموش یا هنوز ذخیره نشده باشد،
+        هیچ کلاس checking اضافه نمی‌کنیم.
+        
+        این کار جلوی فلش شدن صفحه تعمیرات را می‌گیرد.
+      */
+      root.classList.remove(
+        "peti-maintenance-active",
+        "peti-maintenance-checking"
+      );
+
+    }
+
   }catch(e){
-    document.documentElement.classList.add("peti-maintenance-checking");
+
+    /*
+      در صورت خطای Storage،
+      صفحه اصلی نمایش داده شود و فلش تعمیرات نداشته باشیم.
+    */
+    document.documentElement.classList.remove(
+      "peti-maintenance-active",
+      "peti-maintenance-checking"
+    );
+
   }
 })();
 </script>
@@ -2813,6 +2865,45 @@ let maintenanceLastToggleState=null;
 
 
 /* =========================================================
+   بازیابی آخرین وضعیت ذخیره‌شده
+========================================================= */
+
+(function(){
+
+try{
+
+const saved=
+localStorage.getItem(
+"petiMaintenanceState"
+);
+
+if(saved==="on"){
+
+petiMaintenanceEnabled=true;
+maintenanceStatusKnown=true;
+
+}
+
+else if(saved==="off"){
+
+petiMaintenanceEnabled=false;
+maintenanceStatusKnown=true;
+
+}
+
+}catch(e){
+
+console.warn(
+"Maintenance localStorage unavailable:",
+e
+);
+
+}
+
+})();
+
+
+/* =========================================================
    تشخیص مدیر
 ========================================================= */
 
@@ -2827,6 +2918,33 @@ return sessionStorage.getItem(
 }catch(e){
 
 return false;
+
+}
+
+}
+
+
+/* =========================================================
+   ذخیره وضعیت تعمیرات
+========================================================= */
+
+function saveMaintenanceState(state){
+
+try{
+
+localStorage.setItem(
+"petiMaintenanceState",
+state
+? "on"
+: "off"
+);
+
+}catch(e){
+
+console.warn(
+"Could not save maintenance state:",
+e
+);
 
 }
 
@@ -2858,7 +2976,11 @@ root.classList.remove("peti-admin");
 
 if(!maintenanceStatusKnown){
 
-root.classList.add(
+/*
+  دیگر هنگام شروع سایت صفحه تعمیرات
+  به صورت ناگهانی نمایش داده نمی‌شود.
+*/
+root.classList.remove(
 "peti-maintenance-checking"
 );
 
@@ -3015,10 +3137,6 @@ showPage("command");
 updateMaintenanceUI();
 loadPetiStats();
 
-/*
-  وضعیت Worker را می‌گیریم، اما چون مدیر هستیم
-  صفحه تعمیرات دوباره روی ما اعمال نمی‌شود.
-*/
 getMaintenanceStatus();
 
 }else{
@@ -3357,32 +3475,21 @@ return;
 /* هنوز وضعیت مشخص نشده */
 if(!maintenanceStatusKnown){
 
-document.documentElement.classList.add(
-"peti-maintenance-checking"
-);
-
+/*
+  در این حالت دیگر صفحه تعمیرات را
+  به صورت فلشی نمایش نمی‌دهیم.
+*/
 document.documentElement.classList.remove(
+"peti-maintenance-checking",
 "peti-maintenance-active"
 );
 
-if(title){
-title.textContent=
-"درحال بررسی وضعیت سایت";
-}
+screen.classList.remove("show");
 
-if(text){
-text.innerHTML=
-"لطفا چند لحظه صبر کنید"+
-"<br>"+
-"درحال بررسی وضعیت سرویس هستیم.";
-}
+screen.style.display="none";
+screen.style.visibility="hidden";
 
-screen.classList.add("show");
-
-screen.style.display="flex";
-screen.style.visibility="visible";
-
-document.body.style.overflow="hidden";
+document.body.style.overflow="";
 
 return;
 
@@ -3586,9 +3693,8 @@ throw new Error("status_failed");
 
 /*
 =========================================================
-  نکته مهم:
-  اگر تازه دکمه را زده‌ایم و Worker هنوز پاسخ
-  قدیمی می‌دهد، پاسخ قدیمی را نادیده می‌گیریم.
+  اگر تازه toggle انجام شده و Worker پاسخ قدیمی دارد،
+  پاسخ قدیمی نادیده گرفته می‌شود.
 =========================================================
 */
 
@@ -3614,10 +3720,22 @@ return;
 }
 
 
-/* وضعیت معتبر */
+/* =========================================================
+   وضعیت معتبر
+========================================================= */
+
 maintenanceStatusKnown=true;
 
 petiMaintenanceEnabled=data.maintenance;
+
+
+/*
+  ذخیره آخرین وضعیت معتبر برای جلوگیری از فلش
+  در بازدید بعدی.
+*/
+saveMaintenanceState(
+data.maintenance
+);
 
 updateMaintenanceUI();
 applyMaintenanceState();
@@ -3682,10 +3800,23 @@ return;
 
 
 /*
-  اولین اتصال ناموفق:
-  سایت اصلی نمایش داده نشود.
+=========================================================
+  اگر هیچ وضعیت ذخیره‌شده‌ای وجود ندارد و
+  اولین اتصال ناموفق باشد:
+  
+  برای امنیت، سایت اصلی نمایش داده نمی‌شود.
+  
+  اما اگر قبلاً OFF ذخیره شده باشد،
+  این بخش اصلاً اجرا نمی‌شود چون
+  maintenanceStatusKnown=true است.
+=========================================================
 */
+
 petiMaintenanceEnabled=true;
+
+maintenanceStatusKnown=true;
+
+saveMaintenanceState(true);
 
 updateMaintenanceUI();
 applyMaintenanceState();
@@ -3700,7 +3831,7 @@ maintenanceStatusChecking=false;
 
 
 /* =========================================================
-   روشن / خاموش تعمیرات - اصلاح نهایی
+   روشن / خاموش تعمیرات
 ========================================================= */
 
 async function toggleMaintenanceMode(){
@@ -3895,16 +4026,25 @@ throw new Error(
 }
 
 
-/*
-=========================================================
-  پاسخ موفق Worker
-=========================================================
-*/
+/* =========================================================
+   پاسخ موفق Worker
+========================================================= */
 
 petiMaintenanceEnabled=
 data.maintenance;
 
 maintenanceStatusKnown=true;
+
+
+/*
+  ذخیره فوری وضعیت جدید.
+  این باعث می‌شود در باز کردن مجدد سایت،
+  همان وضعیت آخرین toggle نمایش داده شود.
+*/
+saveMaintenanceState(
+data.maintenance
+);
+
 
 /*
   پاسخ همین toggle معتبرترین پاسخ فعلی است.
@@ -3921,12 +4061,7 @@ applyMaintenanceState();
 
 /*
 =========================================================
-  مهم:
-  دیگر بعد از ۱۱ ثانیه getMaintenanceStatus()
-  اجرا نمی‌شود.
-  
-  این همان چیزی بود که باعث می‌شد وضعیت
-  خاموش/روشن دوباره برگردد.
+  هیچ polling یا بررسی تأخیری وجود ندارد.
 =========================================================
 */
 
@@ -3941,6 +4076,15 @@ error
 /* شکست واقعی = حفظ وضعیت قبلی */
 petiMaintenanceEnabled=
 previousState;
+
+maintenanceStatusKnown=true;
+
+/*
+  وضعیت ذخیره‌شده قبلی را هم حفظ می‌کنیم.
+*/
+saveMaintenanceState(
+previousState
+);
 
 maintenanceLastToggleState=null;
 maintenanceLastToggleAt=0;
@@ -4284,19 +4428,14 @@ loadPetiStats();
 
 
 /*
-  فقط در شروع صفحه وضعیت Worker را می‌گیریم.
-*/
-getMaintenanceStatus();
-
-
-/*
 =========================================================
-  polling پنج‌ثانیه‌ای حذف شد.
+  وضعیت Worker فقط در شروع صفحه بررسی می‌شود.
   
-  دیگر وضعیت toggle توسط /status
-  هر چند ثانیه بازنویسی نمی‌شود.
+  polling پنج‌ثانیه‌ای وجود ندارد.
 =========================================================
 */
+
+getMaintenanceStatus();
 
 });
 
